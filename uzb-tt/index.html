@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подработка в Узбекистане — деньги сегодня</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink:  #ff2d55;
+      --cyan:  #00f5d4;
+      --purple: #bf5af2;
+      --bg:    #000;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── scanline texture ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.012) 2px,
+        rgba(255,255,255,0.012) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── noise blobs ── */
+    .blob { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
+    .b1 {
+      width: 500px; height: 500px;
+      background: rgba(255,45,85,0.2);
+      top: -150px; right: -100px;
+      animation: pulse1 6s ease-in-out infinite alternate;
+    }
+    .b2 {
+      width: 420px; height: 420px;
+      background: rgba(0,245,212,0.15);
+      bottom: -100px; left: -80px;
+      animation: pulse2 8s ease-in-out infinite alternate;
+    }
+    .b3 {
+      width: 280px; height: 280px;
+      background: rgba(191,90,242,0.18);
+      top: 50%; left: 50%;
+      animation: pulse3 10s ease-in-out infinite alternate;
+    }
+    @keyframes pulse1 { to { transform: scale(1.15) translate(-30px, 40px); } }
+    @keyframes pulse2 { to { transform: scale(1.12) translate(40px, -30px); } }
+    @keyframes pulse3 { to { transform: scale(1.2) translate(-50px, 30px); } }
+
+    /* ── layout ── */
+    .page {
+      position: relative; z-index: 1;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 16px 80px;
+    }
+
+    /* ── top pill ── */
+    .top-pill {
+      display: flex; justify-content: center;
+      padding: 20px 0 0;
+      animation: dropIn 0.4s ease both;
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 18px; border-radius: 999px;
+      font-size: 10px; font-weight: 800;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      border: 1px solid rgba(255,45,85,0.4);
+      background: rgba(255,45,85,0.08);
+      color: var(--pink);
+    }
+    .pill-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--pink);
+      box-shadow: 0 0 8px var(--pink);
+      animation: blink 1.4s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+    /* ── hero ── */
+    .hero {
+      text-align: center;
+      padding: 36px 0 0;
+      animation: dropIn 0.5s ease 0.05s both;
+    }
+
+    .kicker {
+      font-size: 0.7rem; font-weight: 800;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 12vw, 5.5rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+    }
+
+    .word-pink {
+      display: block;
+      background: linear-gradient(90deg, var(--pink) 0%, #ff6b8a 50%, var(--pink) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s linear infinite;
+    }
+    .word-cyan {
+      display: block;
+      background: linear-gradient(90deg, var(--cyan) 0%, #a8fff1 50%, var(--cyan) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3.5s linear infinite reverse;
+    }
+    @keyframes shimmer { to { background-position: 200% center; } }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 22px auto 0;
+      padding: 10px 20px;
+      border-radius: 12px;
+      background: rgba(0,245,212,0.08);
+      border: 1px solid rgba(0,245,212,0.2);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--cyan);
+    }
+
+    .hero-sub {
+      margin: 16px auto 0;
+      max-width: 460px;
+      font-size: clamp(0.9rem, 3vw, 1rem);
+      color: rgba(255,255,255,0.45);
+      line-height: 1.7;
+    }
+    .hero-sub strong { color: rgba(255,255,255,0.85); font-weight: 700; }
+
+    /* ── top CTA ── */
+    .cta-top {
+      margin-top: 28px;
+      display: flex; justify-content: center;
+      animation: dropIn 0.5s ease 0.1s both;
+    }
+
+    /* ── jobs grid ── */
+    .section-label {
+      font-size: 0.68rem; font-weight: 800;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      text-align: center;
+      margin: 48px 0 16px;
+      animation: dropIn 0.5s ease 0.15s both;
+    }
+
+    .jobs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      animation: dropIn 0.5s ease 0.2s both;
+    }
+
+    .job {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+      cursor: default;
+    }
+    .job:hover {
+      border-color: rgba(255,45,85,0.3);
+      background: rgba(255,45,85,0.06);
+      transform: translateY(-2px);
+    }
+    .job-icon {
+      width: 42px; height: 42px; flex-shrink: 0;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      background: rgba(255,255,255,0.06);
+    }
+    .job-info strong {
+      display: block; font-size: 0.85rem; font-weight: 800;
+      margin-bottom: 2px;
+    }
+    .job-info span {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.38);
+      display: block; line-height: 1.4;
+    }
+
+    /* ── perks row ── */
+    .perks {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 10px; margin-top: 12px;
+      animation: dropIn 0.5s ease 0.25s both;
+    }
+
+    .perk {
+      text-align: center;
+      padding: 18px 10px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .perk:hover { border-color: rgba(0,245,212,0.25); background: rgba(0,245,212,0.04); }
+    .perk .ico { font-size: 1.5rem; display: block; margin-bottom: 8px; }
+    .perk strong { display: block; font-size: 0.78rem; font-weight: 800; margin-bottom: 3px; }
+    .perk span { font-size: 0.68rem; color: rgba(255,255,255,0.38); line-height: 1.4; display: block; }
+
+    /* ── big CTA ── */
+    .cta-block {
+      margin-top: 48px; text-align: center;
+      animation: dropIn 0.5s ease 0.3s both;
+    }
+
+    .cta-label {
+      font-size: clamp(1.4rem, 5vw, 1.9rem);
+      font-weight: 900; letter-spacing: -0.02em;
+      line-height: 1.15; margin-bottom: 10px;
+    }
+
+    .cta-sub {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 28px; line-height: 1.6;
+    }
+
+    /* ── button ── */
+    .btn-tg {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 18px 40px;
+      border-radius: 16px;
+      font-size: 1.05rem; font-weight: 900;
+      text-decoration: none; color: #fff;
+      background: linear-gradient(135deg, #2aabee 0%, #006aff 100%);
+      box-shadow: 0 8px 36px rgba(42,171,238,0.45);
+      transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+      position: relative; overflow: hidden;
+      letter-spacing: 0.01em;
+    }
+    .btn-tg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.2s;
+    }
+    .btn-tg:hover::before { background: rgba(255,255,255,0.1); }
+    .btn-tg:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 16px 48px rgba(42,171,238,0.6);
+      filter: brightness(1.08);
+    }
+    .btn-tg:active { transform: scale(0.98); }
+
+    /* pulse ring on button */
+    .btn-wrap {
+      position: relative; display: inline-block;
+    }
+    .btn-wrap::before, .btn-wrap::after {
+      content: '';
+      position: absolute; inset: -6px;
+      border-radius: 22px;
+      border: 1.5px solid rgba(42,171,238,0.3);
+      animation: ring 2.5s ease-out infinite;
+    }
+    .btn-wrap::after { animation-delay: 1.25s; }
+    @keyframes ring {
+      0%   { opacity: 0.6; transform: scale(1); }
+      100% { opacity: 0;   transform: scale(1.15); }
+    }
+
+    /* ── ticker ── */
+    .ticker-wrap {
+      overflow: hidden;
+      margin-top: 44px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 12px 0;
+      animation: dropIn 0.5s ease 0.35s both;
+    }
+    .ticker {
+      display: flex; gap: 40px;
+      white-space: nowrap;
+      animation: ticker 18s linear infinite;
+      width: max-content;
+    }
+    .ticker-item {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+    .ticker-item .dot-t {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--pink);
+      box-shadow: 0 0 6px var(--pink);
+    }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    footer {
+      text-align: center; margin-top: 52px;
+      font-size: 0.68rem; color: rgba(255,255,255,0.14);
+      animation: dropIn 0.5s ease 0.4s both;
+    }
+
+    @keyframes dropIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 420px) {
+      .jobs { grid-template-columns: 1fr; }
+      .perks { grid-template-columns: 1fr; }
+      .btn-tg { padding: 16px 28px; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+<div class="blob b3"></div>
+
+<div class="page">
+
+  <div class="top-pill">
+    <div class="pill">
+      <span class="pill-dot"></span>
+      Подработка · Узбекистан · Деньги сегодня
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="kicker">Быстрые деньги без опыта</div>
+    <h1>
+      <span class="word-pink">Работай</span>
+      <span style="color:#fff">сегодня —</span>
+      <span class="word-cyan">плати</span>
+      <span style="color:#fff">сегодня</span>
+    </h1>
+
+    <div class="hero-tag">
+      💸 Выплата в день работы — без задержек
+    </div>
+
+    <p class="hero-sub">
+      <strong>Любой город Узбекистана.</strong> Без опыта, без резюме.<br>
+      Выходи на смену — получи деньги той же ночью.
+    </p>
+  </section>
+
+  <div class="cta-top">
+    <div class="btn-wrap">
+      <a class="btn-tg"
+         href="https://t.me/rabota_TT_RF?text=%D0%A5%D0%BE%D1%87%D1%83%20%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D1%82%D1%8C%21%20%D0%A0%D0%B0%D1%81%D1%81%D0%BA%D0%B0%D0%B6%D0%B8%D1%82%D0%B5%20%D0%BF%D0%BE%D0%B4%D1%80%D0%BE%D0%B1%D0%BD%D0%B5%D0%B5%20%F0%9F%94%A5"
+         target="_blank" rel="noopener">
+        <svg width="20" height="20" fill="#fff" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+        Хочу работать — пишу сейчас
+      </a>
+    </div>
+  </div>
+
+  <div class="section-label">Доступные вакансии прямо сейчас</div>
+
+  <div class="jobs">
+    <div class="job">
+      <div class="job-icon">🛵</div>
+      <div class="job-info">
+        <strong>Курьер</strong>
+        <span>Пешком, велосипед<br>или авто</span>
+      </div>
+    </div>
+    <div class="job">
+      <div class="job-icon">🏗</div>
+      <div class="job-info">
+        <strong>Стройка</strong>
+        <span>Разнорабочий,<br>подсобник</span>
+      </div>
+    </div>
+    <div class="job">
+      <div class="job-icon">🛡</div>
+      <div class="job-info">
+        <strong>Охранник</strong>
+        <span>Магазин, склад,<br>объект</span>
+      </div>
+    </div>
+    <div class="job">
+      <div class="job-icon">🎬</div>
+      <div class="job-info">
+        <strong>Массовка</strong>
+        <span>Съёмки, события,<br>реклама</span>
+      </div>
+    </div>
+    <div class="job">
+      <div class="job-icon">📄</div>
+      <div class="job-info">
+        <strong>Листовки</strong>
+        <span>Раздача промо,<br>акции</span>
+      </div>
+    </div>
+    <div class="job">
+      <div class="job-icon">📦</div>
+      <div class="job-info">
+        <strong>Сортировка</strong>
+        <span>Склад, посылки,<br>товары</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="perks" style="margin-top:24px">
+    <div class="perk">
+      <span class="ico">⚡</span>
+      <strong>Старт сегодня</strong>
+      <span>Пишешь — выходишь в ту же смену</span>
+    </div>
+    <div class="perk">
+      <span class="ico">📍</span>
+      <strong>Весь Узбекистан</strong>
+      <span>Ташкент, Самарканд, Фергана и далее</span>
+    </div>
+    <div class="perk">
+      <span class="ico">🙌</span>
+      <strong>Без опыта</strong>
+      <span>Берём всех — объясним на месте</span>
+    </div>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span class="ticker-item"><span class="dot-t"></span>Деньги в тот же день</span>
+      <span class="ticker-item"><span class="dot-t"></span>Курьер</span>
+      <span class="ticker-item"><span class="dot-t"></span>Охранник</span>
+      <span class="ticker-item"><span class="dot-t"></span>Стройка</span>
+      <span class="ticker-item"><span class="dot-t"></span>Массовка</span>
+      <span class="ticker-item"><span class="dot-t"></span>Листовки</span>
+      <span class="ticker-item"><span class="dot-t"></span>Сортировка</span>
+      <span class="ticker-item"><span class="dot-t"></span>Любой город</span>
+      <span class="ticker-item"><span class="dot-t"></span>Без опыта</span>
+      <!-- дублируем для бесконечности -->
+      <span class="ticker-item"><span class="dot-t"></span>Деньги в тот же день</span>
+      <span class="ticker-item"><span class="dot-t"></span>Курьер</span>
+      <span class="ticker-item"><span class="dot-t"></span>Охранник</span>
+      <span class="ticker-item"><span class="dot-t"></span>Стройка</span>
+      <span class="ticker-item"><span class="dot-t"></span>Массовка</span>
+      <span class="ticker-item"><span class="dot-t"></span>Листовки</span>
+      <span class="ticker-item"><span class="dot-t"></span>Сортировка</span>
+      <span class="ticker-item"><span class="dot-t"></span>Любой город</span>
+      <span class="ticker-item"><span class="dot-t"></span>Без опыта</span>
+    </div>
+  </div>
+
+  <!-- BOTTOM CTA -->
+  <div class="cta-block">
+    <div class="cta-label">Готов стартовать? 🔥</div>
+    <p class="cta-sub">Напиши в Telegram — ответим за 15 минут<br>и подберём смену рядом с тобой.</p>
+    <div class="btn-wrap">
+      <a class="btn-tg"
+         href="https://t.me/rabota_TT_RF?text=%D0%A5%D0%BE%D1%87%D1%83%20%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D1%82%D1%8C%21%20%D0%A0%D0%B0%D1%81%D1%81%D0%BA%D0%B0%D0%B6%D0%B8%D1%82%D0%B5%20%D0%BF%D0%BE%D0%B4%D1%80%D0%BE%D0%B1%D0%BD%D0%B5%D0%B5%20%F0%9F%94%A5"
+         target="_blank" rel="noopener">
+        <svg width="20" height="20" fill="#fff" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.061c.537-.194 1.006.131.833.941z"/></svg>
+        Написать в Telegram 🔥
+      </a>
+    </div>
+  </div>
+
+  <footer>© 2025 · Подработка в Узбекистане</footer>
+</div>
+
+</body>
+</html>
