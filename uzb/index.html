@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Работа в Узбекистане и за рубежом</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:  #00c9a7;
+      --green: #00e676;
+      --sky:   #29b6f6;
+      --bg:    #050c10;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── canvas ── */
+    #canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    /* ── blobs ── */
+    .blob { position: fixed; border-radius: 50%; filter: blur(130px); pointer-events: none; z-index: 0; }
+    .b1 {
+      width: 580px; height: 580px;
+      background: radial-gradient(circle, rgba(0,201,167,0.16) 0%, transparent 70%);
+      top: -200px; left: -180px;
+      animation: b1a 17s ease-in-out infinite alternate;
+    }
+    .b2 {
+      width: 460px; height: 460px;
+      background: radial-gradient(circle, rgba(41,182,246,0.15) 0%, transparent 70%);
+      bottom: -130px; right: -120px;
+      animation: b2a 13s ease-in-out infinite alternate;
+    }
+    .b3 {
+      width: 340px; height: 340px;
+      background: radial-gradient(circle, rgba(0,230,118,0.1) 0%, transparent 70%);
+      top: 45%; left: 52%;
+      animation: b3a 21s ease-in-out infinite alternate;
+    }
+    @keyframes b1a { to { transform: translate(60px, 55px) scale(1.08); } }
+    @keyframes b2a { to { transform: translate(-50px, -65px) scale(1.1); } }
+    @keyframes b3a { to { transform: translate(-30px, 40px) scale(1.13); } }
+
+    /* ── layout ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 840px;
+      margin: 0 auto;
+      padding: 0 18px 80px;
+    }
+
+    /* ── topbar ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 0 0;
+      gap: 12px;
+      flex-wrap: wrap;
+      animation: slideDown 0.5s ease both;
+    }
+
+    .flag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,201,167,0.28);
+      background: rgba(0,201,167,0.07);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--teal);
+      text-transform: uppercase;
+    }
+    .flag-bar { display: flex; flex-direction: column; gap: 2px; }
+    .flag-bar span { width: 22px; height: 5px; border-radius: 2px; }
+    .fb  { background: var(--sky);   box-shadow: 0 0 5px rgba(41,182,246,0.6); }
+    .fw  { background: rgba(255,255,255,0.9); }
+    .fg  { background: var(--teal);  box-shadow: 0 0 5px rgba(0,201,167,0.6); }
+
+    /* top buttons */
+    .top-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .btn-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 20px;
+      border-radius: 12px;
+      font-size: 0.83rem;
+      font-weight: 700;
+      text-decoration: none;
+      color: #fff;
+      transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-sm::after { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.1); opacity: 0; transition: opacity .2s; }
+    .btn-sm:hover::after { opacity: 1; }
+    .btn-sm:hover { transform: translateY(-2px); }
+
+    .btg {
+      background: linear-gradient(135deg, #2aabee, #006aff);
+      box-shadow: 0 4px 20px rgba(42,171,238,0.35);
+    }
+    .btg:hover { box-shadow: 0 8px 28px rgba(42,171,238,0.55); filter: brightness(1.1); }
+
+    /* ── hero ── */
+    .hero {
+      text-align: center;
+      padding: 62px 0 0;
+      animation: fadeUp 0.6s ease 0.1s both;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 24px;
+    }
+    .eyebrow::before, .eyebrow::after {
+      content: ''; display: inline-block;
+      width: 28px; height: 1px;
+      background: rgba(255,255,255,0.15);
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 9vw, 5.8rem);
+      font-weight: 900;
+      line-height: 1.03;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+    }
+
+    .teal-shine {
+      background: linear-gradient(90deg, var(--teal) 0%, #a0ffe6 35%, var(--sky) 65%, var(--teal) 100%);
+      background-size: 220% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+    .sky-shine {
+      background: linear-gradient(90deg, var(--sky) 0%, #80d8ff 40%, var(--green) 80%, var(--sky) 100%);
+      background-size: 220% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 5.5s linear infinite reverse;
+    }
+    @keyframes shimmer { to { background-position: 220% center; } }
+
+    .hero-sub {
+      margin: 28px auto 0;
+      max-width: 560px;
+      font-size: clamp(0.95rem, 2.5vw, 1.08rem);
+      color: rgba(255,255,255,0.52);
+      line-height: 1.8;
+    }
+    .hero-sub strong { color: rgba(255,255,255,0.88); font-weight: 600; }
+
+    /* ── cards ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 18px;
+      margin-top: 54px;
+      animation: fadeUp 0.6s ease 0.2s both;
+    }
+
+    .card {
+      border-radius: 24px;
+      padding: 32px 28px 36px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover { transform: translateY(-5px); }
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: 24px;
+      padding: 1px;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    .card-teal {
+      background: linear-gradient(150deg, rgba(0,201,167,0.09) 0%, rgba(41,182,246,0.05) 100%);
+    }
+    .card-teal::before {
+      background: linear-gradient(135deg, rgba(0,201,167,0.5), rgba(41,182,246,0.2));
+    }
+    .card-teal:hover { box-shadow: 0 24px 64px rgba(0,201,167,0.12); }
+
+    .card-sky {
+      background: linear-gradient(150deg, rgba(41,182,246,0.1) 0%, rgba(0,230,118,0.05) 100%);
+    }
+    .card-sky::before {
+      background: linear-gradient(135deg, rgba(41,182,246,0.5), rgba(0,230,118,0.2));
+    }
+    .card-sky:hover { box-shadow: 0 24px 64px rgba(41,182,246,0.12); }
+
+    .chip {
+      display: inline-block;
+      font-size: 9px; font-weight: 800;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 999px;
+      margin-bottom: 16px;
+    }
+    .chip-teal { background: rgba(0,201,167,0.13); color: var(--teal); }
+    .chip-sky  { background: rgba(41,182,246,0.15); color: var(--sky); }
+
+    .card-icon { font-size: 2.2rem; margin-bottom: 12px; display: block; }
+
+    .card h2 {
+      font-size: 1.1rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      margin-bottom: 20px;
+    }
+
+    .salary {
+      font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+      font-weight: 900; line-height: 1.1; margin-bottom: 5px;
+    }
+    .card-teal .salary { color: var(--teal); text-shadow: 0 0 28px rgba(0,201,167,0.45); }
+    .card-sky  .salary { color: var(--sky);  text-shadow: 0 0 28px rgba(41,182,246,0.45); }
+
+    .salary-note { font-size: 0.75rem; color: rgba(255,255,255,0.36); margin-bottom: 20px; font-weight: 500; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 7px; }
+    .tag {
+      font-size: 0.72rem; font-weight: 600;
+      padding: 5px 11px; border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.62);
+    }
+
+    /* ── perks ── */
+    .perks {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+      animation: fadeUp 0.6s ease 0.3s both;
+    }
+
+    .perk {
+      display: flex; align-items: flex-start; gap: 11px;
+      padding: 18px 15px; border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .perk:hover { border-color: rgba(0,201,167,0.22); background: rgba(0,201,167,0.04); }
+    .perk-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+    .perk strong { display: block; font-size: 0.83rem; font-weight: 700; margin-bottom: 3px; }
+    .perk span { font-size: 0.73rem; color: rgba(255,255,255,0.4); line-height: 1.5; display: block; }
+
+    /* ── counters ── */
+    .counters {
+      display: flex;
+      justify-content: center;
+      gap: 44px; margin-top: 54px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s ease 0.4s both;
+    }
+    .counter { text-align: center; }
+    .counter .num {
+      font-size: 2rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--teal), var(--sky));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text; display: block;
+    }
+    .counter .lbl {
+      font-size: 0.7rem; font-weight: 600;
+      color: rgba(255,255,255,0.32);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      display: block; margin-top: 3px;
+    }
+
+    /* ── separator ── */
+    .sep {
+      display: flex; align-items: center; gap: 16px;
+      margin: 56px 0 0;
+      animation: fadeUp 0.6s ease 0.5s both;
+    }
+    .sep::before, .sep::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.09), transparent);
+    }
+    .sep span {
+      font-size: 0.74rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.28); white-space: nowrap;
+    }
+
+    /* ── CTA ── */
+    .cta {
+      text-align: center; margin-top: 44px;
+      animation: fadeUp 0.6s ease 0.55s both;
+    }
+    .cta h3 {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 900; letter-spacing: -0.02em; margin-bottom: 12px;
+    }
+    .cta p {
+      font-size: 0.95rem; color: rgba(255,255,255,0.48);
+      line-height: 1.7; max-width: 460px;
+      margin: 0 auto 36px;
+    }
+
+    .btn-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    .btn-lg {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 18px 40px; border-radius: 16px;
+      font-size: 1.05rem; font-weight: 800;
+      text-decoration: none; color: #fff;
+      transition: transform 0.25s, box-shadow 0.25s, filter 0.25s;
+      position: relative; overflow: hidden;
+    }
+    .btn-lg::before { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0); transition: background .2s; }
+    .btn-lg:hover::before { background: rgba(255,255,255,0.08); }
+    .btn-lg:hover { transform: translateY(-4px); }
+    .btn-lg:active { transform: translateY(0); }
+
+    .btn-tg-lg {
+      background: linear-gradient(135deg, #2aabee, #0055cc);
+      box-shadow: 0 8px 36px rgba(42,171,238,0.42);
+    }
+    .btn-tg-lg:hover { box-shadow: 0 18px 52px rgba(42,171,238,0.62); filter: brightness(1.08); }
+
+    /* ── footer ── */
+    footer {
+      text-align: center; margin-top: 68px;
+      font-size: 0.71rem; color: rgba(255,255,255,0.17);
+      animation: fadeUp 0.6s ease 0.65s both;
+    }
+
+    @keyframes slideDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(22px)}  to{opacity:1;transform:translateY(0)} }
+
+    @media (max-width: 520px) {
+      .perks { grid-template-columns: 1fr; }
+      .topbar { justify-content: center; }
+      .flag-pill { display: none; }
+      .top-btns { width: 100%; justify-content: center; }
+      .btn-lg { padding: 16px 28px; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+<div class="blob b3"></div>
+
+<div class="page">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="flag-pill">
+      <div class="flag-bar">
+        <span class="fb"></span>
+        <span class="fw"></span>
+        <span class="fg"></span>
+      </div>
+      Узбекистан &amp; за рубежом
+    </div>
+    <div class="top-btns">
+      <a class="btn-sm btg"
+         href="https://t.me/RABOTS365?text=%D0%94%D0%BE%D0%B1%D1%80%D1%8B%D0%B9%20%D0%B4%D0%B5%D0%BD%D1%8C!%20%D0%9C%D0%B5%D0%BD%D1%8F%20%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D0%B5%D1%81%D1%83%D1%8E%D1%82%20%D0%B2%D0%B0%D1%88%D0%B8%20%D0%B2%D0%B0%D0%BA%D0%B0%D0%BD%D1%81%D0%B8%D0%B8."
+         target="_blank" rel="noopener">
+        <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+        Написать в Telegram
+      </a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">Вакансии · Узбекистан 2025</div>
+    <h1>
+      Твоя работа<br>
+      <span class="teal-shine">с достойной</span><br>
+      <span class="sky-shine">зарплатой</span><br>
+      уже ждёт
+    </h1>
+    <p class="hero-sub">
+      Реальные вакансии внутри страны и за рубежом.<br>
+      <strong>Зарплата выше рынка</strong> — без опыта и связей.<br>
+      Отвечаем в Telegram в течение 15 минут.
+    </p>
+  </section>
+
+  <!-- CARDS -->
+  <div class="cards">
+    <div class="card card-teal">
+      <div class="chip chip-teal">С загранпаспортом</div>
+      <span class="card-icon">✈️</span>
+      <h2>Работа за рубежом</h2>
+      <div class="salary">$1 500 — $4 500</div>
+      <div class="salary-note">в месяц · в долларах США</div>
+      <div class="tags">
+        <span class="tag">🖥 Удалённо</span>
+        <span class="tag">🇰🇿 Казахстан</span>
+        <span class="tag">🇷🇺 Россия</span>
+        <span class="tag">🇪🇺 Европа</span>
+        <span class="tag">🌏 Азия</span>
+      </div>
+    </div>
+
+    <div class="card card-sky">
+      <div class="chip chip-sky">Без загранпаспорта</div>
+      <span class="card-icon">🇺🇿</span>
+      <h2>Работа в Узбекистане</h2>
+      <div class="salary">8 000 000 — 22 000 000</div>
+      <div class="salary-note">в месяц · в сумах (≈ $650 — $1 800)</div>
+      <div class="tags">
+        <span class="tag">🏠 Из дома</span>
+        <span class="tag">🏙 Ташкент</span>
+        <span class="tag">🌆 Самарканд</span>
+        <span class="tag">🗺 По всей стране</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERKS -->
+  <div class="perks">
+    <div class="perk">
+      <span class="perk-icon">⚡</span>
+      <div>
+        <strong>Ответ за 15 минут</strong>
+        <span>Пишем в Telegram сразу после вашего сообщения</span>
+      </div>
+    </div>
+    <div class="perk">
+      <span class="perk-icon">💰</span>
+      <div>
+        <strong>Выше рынка</strong>
+        <span>Только вакансии с зарплатой выше средней по региону</span>
+      </div>
+    </div>
+    <div class="perk">
+      <span class="perk-icon">🛡</span>
+      <div>
+        <strong>Проверенные работодатели</strong>
+        <span>Никаких серых схем — только официальные предложения</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- COUNTERS -->
+  <div class="counters">
+    <div class="counter">
+      <span class="num">+300</span>
+      <span class="lbl">Активных вакансий</span>
+    </div>
+    <div class="counter">
+      <span class="num">6+</span>
+      <span class="lbl">Стран</span>
+    </div>
+    <div class="counter">
+      <span class="num">15 мин</span>
+      <span class="lbl">Время ответа</span>
+    </div>
+  </div>
+
+  <!-- SEPARATOR -->
+  <div class="sep"><span>Напишите нам прямо сейчас</span></div>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h3>Готовы начать?</h3>
+    <p>Напишите в Telegram — через 15 минут пришлём подходящие вакансии именно для вас.</p>
+    <div class="btn-group">
+      <a class="btn-lg btn-tg-lg"
+         href="https://t.me/RABOTS365?text=%D0%94%D0%BE%D0%B1%D1%80%D1%8B%D0%B9%20%D0%B4%D0%B5%D0%BD%D1%8C!%20%D0%9C%D0%B5%D0%BD%D1%8F%20%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D0%B5%D1%81%D1%83%D1%8E%D1%82%20%D0%B2%D0%B0%D1%88%D0%B8%20%D0%B2%D0%B0%D0%BA%D0%B0%D0%BD%D1%81%D0%B8%D0%B8."
+         target="_blank" rel="noopener">
+        <svg width="22" height="22" fill="#fff" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+        Написать в Telegram
+      </a>
+    </div>
+  </section>
+
+  <footer>© 2025 · Работа в Узбекистане и за рубежом · Все права защищены</footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const COLORS = ['rgba(0,201,167,', 'rgba(41,182,246,', 'rgba(0,230,118,'];
+  const particles = Array.from({ length: 120 }, () => ({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    r: Math.random() * 1.5 + 0.3,
+    vx: (Math.random() - 0.5) * 0.26,
+    vy: (Math.random() - 0.5) * 0.26,
+    alpha: Math.random() * 0.5 + 0.1,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)]
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color + p.alpha + ')';
+      ctx.fill();
+    });
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 100) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = 'rgba(0,201,167,' + (0.06 * (1 - d/100)) + ')';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+</script>
+</body>
+</html>
