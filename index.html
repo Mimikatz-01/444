@@ -719,5 +719,30 @@
   }
   draw();
 </script>
+<script>
+  (function() {
+    var msgs = [
+      "Hola! Vi lo del trabajo y me interesó bastante. ¿Me podés contar más?",
+      "Buenas! Estoy buscando laburo y me copó lo que vi. ¿Cómo arranco?",
+      "Hola, buen día! Me interesa saber más sobre las oportunidades que tienen. ¿Tienen algo disponible?",
+      "Che, hola! Vi la info del trabajo y quiero saber más. ¿Qué necesito para empezar?",
+      "Buenas! Me llegó info sobre el trabajo y quería consultar. ¿Están tomando gente ahora?",
+      "Hola! Me interesó la propuesta. ¿Me explicás cómo es el proceso para arrancar?",
+      "Hola, buen día! Quiero trabajar, ¿me contás cómo funciona todo?",
+      "Buenas! Vi las opciones de trabajo y me pareció muy interesante. ¿Siguen con vacantes?",
+      "Hola! Me gustaría saber más sobre las posibilidades laborales. ¿Qué opciones tienen disponibles hoy?",
+      "Che, buenas! Vi lo del trabajo en el exterior y me interesó. ¿Con qué requisitos arrancan?"
+    ];
+    var msg = msgs[Math.floor(Math.random() * msgs.length)];
+    var encoded = encodeURIComponent(msg);
+    document.querySelectorAll('a[href*="wa.me"]').forEach(function(a) {
+      a.href = a.href.split('?')[0] + '?text=' + encoded;
+    });
+    document.querySelectorAll('a[href*="t.me"]').forEach(function(a) {
+      var base = a.href.split('?')[0];
+      a.href = base + '?text=' + encoded;
+    });
+  })();
+</script>
 </body>
 </html>
