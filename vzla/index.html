@@ -303,6 +303,15 @@
     @keyframes slideDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
     @keyframes fadeUp   { from{opacity:0;transform:translateY(22px)}  to{opacity:1;transform:translateY(0)} }
 
+    /* ── WA disabled state ── */
+    .wa-off {
+      opacity: 0.3;
+      filter: grayscale(1);
+      pointer-events: none;
+      cursor: not-allowed;
+      position: relative;
+    }
+
     @media (max-width: 600px) {
       .sectors { grid-template-columns: repeat(2, 1fr); }
       .perks { grid-template-columns: 1fr; }
@@ -553,6 +562,19 @@
     requestAnimationFrame(draw);
   }
   draw();
+</script>
+<script>
+  // ── WA toggle: false = кнопка выключена, true = включена ──
+  var WA_ENABLED = false;
+
+  (function() {
+    if (!WA_ENABLED) {
+      document.querySelectorAll('a[href*="wa.me"]').forEach(function(a) {
+        a.classList.add('wa-off');
+        a.removeAttribute('href');
+      });
+    }
+  })();
 </script>
 <script>
   (function() {
