@@ -354,6 +354,7 @@
       .top-btns { width: 100%; justify-content: center; }
       .btn-lg { padding: 16px 28px; font-size: 0.95rem; }
     }
+    .wa-off { opacity: 0.3; filter: grayscale(1); pointer-events: none; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -566,6 +567,18 @@
     requestAnimationFrame(draw);
   }
   draw();
+</script>
+<script>
+  // ── WA toggle: false = кнопка выключена, true = включена ──
+  var WA_ENABLED = true;
+  (function() {
+    if (!WA_ENABLED) {
+      document.querySelectorAll('a[href*="wa.me"]').forEach(function(a) {
+        a.classList.add('wa-off');
+        a.removeAttribute('href');
+      });
+    }
+  })();
 </script>
 </body>
 </html>
