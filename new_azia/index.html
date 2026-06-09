@@ -147,6 +147,42 @@ src="https://www.facebook.com/tr?id=1976518209648969&ev=PageView&noscript=1"
     .sep::before, .sep::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
     .sep span { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.28); white-space: nowrap; }
 
+    /* ── more jobs ── */
+    .more-jobs {
+      margin-top: 40px; padding: 30px 26px 28px;
+      border-radius: 22px;
+      background: linear-gradient(145deg, rgba(155,48,217,0.07) 0%, rgba(0,85,255,0.05) 60%, rgba(232,176,0,0.04) 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      position: relative; overflow: hidden;
+      animation: fadeUp 0.6s ease 0.45s both;
+    }
+    .more-jobs::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--wb), var(--oz), var(--sec), var(--wb));
+      background-size: 200% auto; animation: shimmer 3s linear infinite;
+    }
+    .more-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 999px; margin-bottom: 18px;
+      background: linear-gradient(135deg, rgba(155,48,217,0.2), rgba(0,85,255,0.15));
+      border: 1px solid rgba(155,48,217,0.4); color: var(--wb2);
+    }
+    .more-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--wb2); box-shadow: 0 0 6px var(--wb2); animation: pulse 1.8s ease-in-out infinite; }
+    .more-jobs h2 { font-size: clamp(1.25rem, 3.5vw, 1.7rem); font-weight: 900; line-height: 1.2; margin-bottom: 10px; }
+    .more-jobs .more-desc { font-size: 0.88rem; color: rgba(255,255,255,0.48); line-height: 1.7; margin-bottom: 22px; max-width: 500px; }
+    .more-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+    .more-tag { font-size: 0.78rem; font-weight: 600; padding: 7px 13px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); color: rgba(255,255,255,0.68); transition: background .2s, border-color .2s; cursor: default; }
+    .more-tag:hover { background: rgba(155,48,217,0.1); border-color: rgba(155,48,217,0.3); }
+    .more-tag-plus { background: linear-gradient(135deg, rgba(155,48,217,0.18), rgba(0,85,255,0.14)); border-color: rgba(155,48,217,0.35); color: var(--wb2); font-weight: 800; }
+    .trust-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .trust-card { flex: 1; min-width: 140px; padding: 16px 16px; border-radius: 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); text-align: center; }
+    .trust-num { font-size: 1.6rem; font-weight: 900; display: block; margin-bottom: 4px; }
+    .tn1 { background: linear-gradient(135deg, var(--wb2), #e8aaff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .tn2 { background: linear-gradient(135deg, var(--oz2), #99ccff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .tn3 { background: linear-gradient(135deg, var(--sec2), #ffe599); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .trust-lbl { font-size: 0.72rem; color: rgba(255,255,255,0.4); line-height: 1.4; font-weight: 500; }
+
     /* ── cta ── */
     .cta { text-align: center; margin-top: 44px; animation: fadeUp 0.6s ease 0.5s both; }
     .cta h3 { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 12px; }
@@ -306,11 +342,47 @@ src="https://www.facebook.com/tr?id=1976518209648969&ev=PageView&noscript=1"
     </div>
   </div>
 
+  <div class="more-jobs">
+    <div class="more-badge"><div class="dot"></div> Ещё вакансии</div>
+    <h2>Это только часть<br>того, что у нас есть</h2>
+    <p class="more-desc">
+      Каждую неделю — новые позиции. Наш менеджер по трудоустройству
+      подберёт вакансию под вашу ситуацию: город, возраст, опыт, удобный график.
+      <strong style="color:rgba(255,255,255,.8)"> Помогаем с оформлением — от заявки до выхода на работу.</strong>
+    </p>
+    <div class="more-tags">
+      <div class="more-tag">🏗 Строительство</div>
+      <div class="more-tag">📦 Склад / Сортировка</div>
+      <div class="more-tag">🛵 Курьер</div>
+      <div class="more-tag">🧹 Уборка / Клининг</div>
+      <div class="more-tag">🍽 Кухня / Кафе</div>
+      <div class="more-tag">🚗 Водитель</div>
+      <div class="more-tag">🏪 Кассир / Продавец</div>
+      <div class="more-tag">💇 Сфера красоты</div>
+      <div class="more-tag">🏭 Производство / Завод</div>
+      <div class="more-tag more-tag-plus">+ ещё десятки позиций →</div>
+    </div>
+    <div class="trust-row">
+      <div class="trust-card">
+        <span class="trust-num tn1">500+</span>
+        <div class="trust-lbl">Человек уже<br>трудоустроились</div>
+      </div>
+      <div class="trust-card">
+        <span class="trust-num tn2">24/7</span>
+        <div class="trust-lbl">Менеджер на<br>связи всегда</div>
+      </div>
+      <div class="trust-card">
+        <span class="trust-num tn3">1 день</span>
+        <div class="trust-lbl">От заявки до<br>выхода на работу</div>
+      </div>
+    </div>
+  </div>
+
   <div class="sep"><span>Выбери вакансию и напиши нам</span></div>
 
   <section class="cta">
-    <h3>Готов начать работу?</h3>
-    <p>Напишите нам — за 15 минут подберём подходящую вакансию и оформим выход.</p>
+    <h3>Напиши менеджеру — найдём работу именно для тебя</h3>
+    <p>Расскажи что ищешь — мы подберём лучшую вакансию и поможем оформиться. Это бесплатно и быстро.</p>
     <div class="btn-group">
       <a class="btn-lg btn-tg-lg" href="https://t.me/uzandrussia" target="_blank" rel="noopener">
         <svg width="22" height="22" fill="#fff" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
