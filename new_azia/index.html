@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1976518209648969');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1976518209648969&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+  <title>Вакансии · Wildberries · OZON · Охрана</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --wb:   #9B30D9;
+      --wb2:  #CC66FF;
+      --oz:   #0055FF;
+      --oz2:  #5599FF;
+      --sec:  #E8B000;
+      --sec2: #FFD95C;
+      --bg:   #060810;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; min-height: 100vh; overflow-x: hidden; }
+
+    #canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    .blob { position: fixed; border-radius: 50%; filter: blur(130px); pointer-events: none; z-index: 0; }
+    .b1 { width: 560px; height: 560px; background: radial-gradient(circle, rgba(155,48,217,0.2) 0%, transparent 70%); top: -180px; left: -160px; animation: b1a 18s ease-in-out infinite alternate; }
+    .b2 { width: 460px; height: 460px; background: radial-gradient(circle, rgba(0,85,255,0.16) 0%, transparent 70%); bottom: -140px; right: -120px; animation: b2a 14s ease-in-out infinite alternate; }
+    .b3 { width: 320px; height: 320px; background: radial-gradient(circle, rgba(232,176,0,0.12) 0%, transparent 70%); top: 45%; left: 55%; animation: b3a 20s ease-in-out infinite alternate; }
+    @keyframes b1a { to { transform: translate(60px, 50px) scale(1.07); } }
+    @keyframes b2a { to { transform: translate(-55px, -70px) scale(1.1); } }
+    @keyframes b3a { to { transform: translate(-40px, 45px) scale(1.15); } }
+
+    .page { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; padding: 0 18px 80px; }
+
+    /* ── topbar ── */
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 20px 0 0; gap: 12px; flex-wrap: wrap; animation: slideDown 0.5s ease both; }
+    .flag-pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 20px; border-radius: 999px; border: 1px solid rgba(155,48,217,0.35); background: rgba(155,48,217,0.08); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--wb2); text-transform: uppercase; }
+    .flag-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--wb2); box-shadow: 0 0 8px var(--wb2); animation: pulse 1.8s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+
+    .top-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-sm { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 12px; font-size: 0.83rem; font-weight: 700; text-decoration: none; color: #fff; transition: transform 0.2s, box-shadow 0.2s, filter 0.2s; position: relative; overflow: hidden; }
+    .btn-sm::after { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.1); opacity: 0; transition: opacity .2s; pointer-events: none; }
+    .btn-sm:hover::after { opacity: 1; }
+    .btn-sm:hover { transform: translateY(-2px); }
+    .btg { background: linear-gradient(135deg, #2aabee, #006aff); box-shadow: 0 4px 20px rgba(42,171,238,0.35); }
+    .btg:hover { box-shadow: 0 8px 28px rgba(42,171,238,0.55); filter: brightness(1.1); }
+    .bwa { background: linear-gradient(135deg, #25d366, #128c7e); box-shadow: 0 4px 20px rgba(37,211,102,0.3); }
+    .bwa:hover { box-shadow: 0 8px 28px rgba(37,211,102,0.5); filter: brightness(1.1); }
+
+    /* ── hero ── */
+    .hero { text-align: center; padding: 52px 0 0; animation: fadeUp 0.6s ease 0.1s both; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 24px; }
+    .hero h1 { font-size: clamp(2.6rem, 8.5vw, 5.2rem); font-weight: 900; line-height: 1.02; letter-spacing: -0.03em; text-transform: uppercase; }
+    .wb-shine { background: linear-gradient(90deg, var(--wb) 0%, var(--wb2) 40%, #e8aaff 70%, var(--wb) 100%); background-size: 220% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmer 4s linear infinite; }
+    .oz-shine { background: linear-gradient(90deg, var(--oz) 0%, var(--oz2) 40%, #99ccff 70%, var(--oz) 100%); background-size: 220% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmer 5s linear infinite reverse; }
+    .gold-shine { background: linear-gradient(90deg, var(--sec) 0%, var(--sec2) 40%, #fff6cc 70%, var(--sec) 100%); background-size: 220% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmer 4.5s linear infinite; }
+    @keyframes shimmer { to { background-position: 220% center; } }
+    .hero-sub { margin: 28px auto 0; max-width: 540px; font-size: clamp(0.95rem, 2.5vw, 1.08rem); color: rgba(255,255,255,0.52); line-height: 1.8; }
+    .hero-sub strong { color: rgba(255,255,255,0.88); font-weight: 600; }
+
+    /* ── job cards ── */
+    .jobs { display: flex; flex-direction: column; gap: 16px; margin-top: 36px; animation: fadeUp 0.6s ease 0.25s both; }
+
+    .job-card {
+      border-radius: 22px; padding: 24px 26px 28px;
+      position: relative; overflow: hidden;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .job-card:hover { transform: translateY(-4px); }
+    .job-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 22px 22px 0 0; }
+
+    .job-wb { border-color: rgba(155,48,217,0.3); background: linear-gradient(145deg, rgba(155,48,217,0.1) 0%, rgba(155,48,217,0.03) 100%); }
+    .job-wb:hover { box-shadow: 0 20px 60px rgba(155,48,217,0.2); }
+    .job-wb::before { background: linear-gradient(90deg, var(--wb), var(--wb2)); }
+
+    .job-oz { border-color: rgba(0,85,255,0.3); background: linear-gradient(145deg, rgba(0,85,255,0.1) 0%, rgba(0,85,255,0.03) 100%); }
+    .job-oz:hover { box-shadow: 0 20px 60px rgba(0,85,255,0.2); }
+    .job-oz::before { background: linear-gradient(90deg, var(--oz), var(--oz2)); }
+
+    .job-sec { border-color: rgba(232,176,0,0.3); background: linear-gradient(145deg, rgba(232,176,0,0.08) 0%, rgba(232,176,0,0.02) 100%); }
+    .job-sec:hover { box-shadow: 0 20px 60px rgba(232,176,0,0.15); }
+    .job-sec::before { background: linear-gradient(90deg, var(--sec), var(--sec2)); }
+
+    .job-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .job-brand { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; margin-bottom: 14px; }
+    .brand-wb  { background: rgba(155,48,217,0.2); color: var(--wb2); border: 1px solid rgba(155,48,217,0.4); }
+    .brand-oz  { background: rgba(0,85,255,0.2);   color: var(--oz2); border: 1px solid rgba(0,85,255,0.4); }
+    .brand-sec { background: rgba(232,176,0,0.15); color: var(--sec2); border: 1px solid rgba(232,176,0,0.35); }
+
+    .job-title { font-size: clamp(1.15rem, 3vw, 1.45rem); font-weight: 800; line-height: 1.25; margin-bottom: 6px; color: #fff; }
+    .job-sub { font-size: 0.83rem; color: rgba(255,255,255,0.45); margin-bottom: 18px; }
+
+    .job-salary { display: flex; align-items: baseline; gap: 6px; }
+    .salary-num { font-size: clamp(2.2rem, 6vw, 3rem); font-weight: 900; line-height: 1; }
+    .salary-wb  { color: var(--wb2); text-shadow: 0 0 28px rgba(155,48,217,0.5); }
+    .salary-oz  { color: var(--oz2); text-shadow: 0 0 28px rgba(0,85,255,0.5); }
+    .salary-sec { color: var(--sec2); text-shadow: 0 0 28px rgba(232,176,0,0.5); }
+    .salary-unit { font-size: 0.82rem; color: rgba(255,255,255,0.4); font-weight: 500; line-height: 1.4; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .tag { font-size: 0.72rem; font-weight: 600; padding: 5px 11px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.62); }
+
+    /* ── counter strip ── */
+    .strip { display: flex; gap: 0; margin-top: 32px; border-radius: 18px; overflow: hidden; animation: fadeUp 0.6s ease 0.35s both; }
+    .strip-item { flex: 1; padding: 18px 12px; text-align: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); }
+    .strip-item:not(:last-child) { border-right: none; }
+    .strip-item:first-child { border-radius: 18px 0 0 18px; }
+    .strip-item:last-child { border-radius: 0 18px 18px 0; }
+    .strip-num { font-size: 1.6rem; font-weight: 900; display: block; }
+    .strip-lbl { font-size: 0.7rem; color: rgba(255,255,255,0.38); font-weight: 500; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .sn1 { background: linear-gradient(135deg, var(--wb), var(--wb2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sn2 { background: linear-gradient(135deg, var(--oz), var(--oz2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sn3 { background: linear-gradient(135deg, var(--sec), var(--sec2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    /* ── perks ── */
+    .perks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 32px; animation: fadeUp 0.6s ease 0.4s both; }
+    .perk { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 18px 14px; text-align: center; }
+    .perk:hover { border-color: rgba(155,48,217,0.25); background: rgba(155,48,217,0.05); }
+    .perk .ico { font-size: 1.5rem; display: block; margin-bottom: 8px; }
+    .perk strong { display: block; font-size: 0.82rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
+    .perk span { font-size: 0.74rem; color: rgba(255,255,255,0.42); line-height: 1.5; }
+
+    /* ── sep ── */
+    .sep { display: flex; align-items: center; gap: 16px; margin: 36px 0 0; animation: fadeUp 0.6s ease 0.45s both; }
+    .sep::before, .sep::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
+    .sep span { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.28); white-space: nowrap; }
+
+    /* ── cta ── */
+    .cta { text-align: center; margin-top: 44px; animation: fadeUp 0.6s ease 0.5s both; }
+    .cta h3 { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .cta p { font-size: 0.95rem; color: rgba(255,255,255,0.48); line-height: 1.7; max-width: 460px; margin: 0 auto 36px; }
+    .btn-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-lg { display: inline-flex; align-items: center; gap: 12px; padding: 18px 40px; border-radius: 16px; font-size: 1.05rem; font-weight: 800; text-decoration: none; color: #fff; transition: transform 0.25s, box-shadow 0.25s, filter 0.25s; position: relative; overflow: hidden; }
+    .btn-lg::before { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0); transition: background .2s; pointer-events: none; }
+    .btn-lg:hover::before { background: rgba(255,255,255,0.08); }
+    .btn-lg:hover { transform: translateY(-4px); }
+    .btn-lg:active { transform: translateY(0); }
+    .btn-tg-lg { background: linear-gradient(135deg, #2aabee, #0055cc); box-shadow: 0 8px 36px rgba(42,171,238,0.42); }
+    .btn-tg-lg:hover { box-shadow: 0 18px 52px rgba(42,171,238,0.62); filter: brightness(1.08); }
+    .btn-wa-lg { background: linear-gradient(135deg, #25d366, #0ea855); box-shadow: 0 8px 36px rgba(37,211,102,0.4); }
+    .btn-wa-lg:hover { box-shadow: 0 18px 52px rgba(37,211,102,0.58); filter: brightness(1.08); }
+
+    footer { text-align: center; margin-top: 68px; font-size: 0.71rem; color: rgba(255,255,255,0.17); animation: fadeUp 0.6s ease 0.6s both; }
+
+    @keyframes slideDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(22px)}  to{opacity:1;transform:translateY(0)} }
+
+    @media (max-width: 520px) {
+      .perks { grid-template-columns: 1fr; }
+      .topbar { justify-content: center; }
+      .flag-pill { display: none; }
+      .top-btns { width: 100%; justify-content: center; }
+      .btn-lg { padding: 16px 28px; font-size: 0.95rem; }
+      .strip { flex-direction: column; border-radius: 18px; }
+      .strip-item { border-radius: 0 !important; border-right: 1px solid rgba(255,255,255,0.06) !important; }
+      .strip-item:first-child { border-radius: 18px 18px 0 0 !important; }
+      .strip-item:last-child  { border-radius: 0 0 18px 18px !important; }
+    }
+    .wa-off { opacity: 0.3; filter: grayscale(1); pointer-events: none; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+<div class="blob b3"></div>
+
+<div class="page">
+
+  <div class="topbar">
+    <div class="flag-pill">
+      <div class="dot"></div>
+      Актуальные вакансии
+    </div>
+    <div class="top-btns">
+      <a class="btn-sm btg" href="https://t.me/uzandrussia" target="_blank" rel="noopener">
+        <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+        Написать в Telegram
+      </a>
+      <a class="btn-sm bwa" href="https://wa.me/447351035387" target="_blank" rel="noopener">
+        <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.116 1.534 5.846L.057 23.877a.75.75 0 0 0 .918.918l6.085-1.476A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 0 1-5.028-1.383l-.36-.214-3.733.905.922-3.639-.236-.376A9.818 9.818 0 0 1 2.18 12C2.18 6.555 6.556 2.18 12 2.18c5.443 0 9.818 4.375 9.818 9.82 0 5.443-4.375 9.818-9.818 9.818z"/></svg>
+        WhatsApp
+      </a>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="eyebrow">Вакансии 2025</div>
+    <h1>
+      <span class="wb-shine">Wildberries</span><br>
+      <span class="oz-shine">OZON</span><br>
+      <span class="gold-shine">Охрана</span>
+    </h1>
+    <p class="hero-sub">
+      Реальные вакансии — <strong>70$ в день</strong>.<br>
+      Без опыта. Удобный график. Старт сегодня.
+    </p>
+  </section>
+
+  <div class="jobs">
+
+    <!-- Wildberries -->
+    <div class="job-card job-wb">
+      <div class="job-brand brand-wb">🟣 Wildberries</div>
+      <div class="job-title">Менеджер выдачи заказов</div>
+      <div class="job-sub">Работа с заказами клиентов · пункт выдачи</div>
+      <div class="job-salary">
+        <span class="salary-num salary-wb">70$</span>
+        <span class="salary-unit">в день<br>без опыта</span>
+      </div>
+      <div class="tags">
+        <span class="tag">📦 Выдача заказов</span>
+        <span class="tag">😊 Без опыта</span>
+        <span class="tag">🕐 Гибкий график</span>
+        <span class="tag">📍 Рядом с домом</span>
+      </div>
+    </div>
+
+    <!-- OZON -->
+    <div class="job-card job-oz">
+      <div class="job-brand brand-oz">🔵 OZON</div>
+      <div class="job-title">Менеджер выдачи заказов</div>
+      <div class="job-sub">Работа с заказами клиентов · пункт выдачи</div>
+      <div class="job-salary">
+        <span class="salary-num salary-oz">70$</span>
+        <span class="salary-unit">за рабочий день<br>без опыта</span>
+      </div>
+      <div class="tags">
+        <span class="tag">📦 Выдача заказов</span>
+        <span class="tag">😊 Без опыта</span>
+        <span class="tag">🕐 Гибкий график</span>
+        <span class="tag">📍 Рядом с домом</span>
+      </div>
+    </div>
+
+    <!-- Security -->
+    <div class="job-card job-sec">
+      <div class="job-brand brand-sec">🛡 Охрана</div>
+      <div class="job-title">Охранник в подземный паркинг</div>
+      <div class="job-sub">Охрана объекта · спокойная работа</div>
+      <div class="job-salary">
+        <span class="salary-num salary-sec">70$</span>
+        <span class="salary-unit">за смену<br>договорной график</span>
+      </div>
+      <div class="tags">
+        <span class="tag">🚗 Подземный паркинг</span>
+        <span class="tag">📋 График: договорной</span>
+        <span class="tag">💼 Официальное трудоустройство</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="strip">
+    <div class="strip-item">
+      <span class="strip-num sn1">3</span>
+      <div class="strip-lbl">Вакансии</div>
+    </div>
+    <div class="strip-item">
+      <span class="strip-num sn2">70$</span>
+      <div class="strip-lbl">В день / смену</div>
+    </div>
+    <div class="strip-item">
+      <span class="strip-num sn3">0</span>
+      <div class="strip-lbl">Опыта не нужно</div>
+    </div>
+  </div>
+
+  <div class="perks">
+    <div class="perk">
+      <span class="ico">⚡</span>
+      <strong>Старт сегодня</strong>
+      <span>Пишешь — выходишь в ту же смену</span>
+    </div>
+    <div class="perk">
+      <span class="ico">💵</span>
+      <strong>70$ каждый день</strong>
+      <span>Выплаты без задержек</span>
+    </div>
+    <div class="perk">
+      <span class="ico">🙌</span>
+      <strong>Без опыта</strong>
+      <span>Обучим всему на месте</span>
+    </div>
+  </div>
+
+  <div class="sep"><span>Выбери вакансию и напиши нам</span></div>
+
+  <section class="cta">
+    <h3>Готов начать работу?</h3>
+    <p>Напишите нам — за 15 минут подберём подходящую вакансию и оформим выход.</p>
+    <div class="btn-group">
+      <a class="btn-lg btn-tg-lg" href="https://t.me/uzandrussia" target="_blank" rel="noopener">
+        <svg width="22" height="22" fill="#fff" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+        Написать в Telegram
+      </a>
+      <a class="btn-lg btn-wa-lg" href="https://wa.me/447351035387" target="_blank" rel="noopener">
+        <svg width="22" height="22" fill="#fff" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.116 1.534 5.846L.057 23.877a.75.75 0 0 0 .918.918l6.085-1.476A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 0 1-5.028-1.383l-.36-.214-3.733.905.922-3.639-.236-.376A9.818 9.818 0 0 1 2.18 12C2.18 6.555 6.556 2.18 12 2.18c5.443 0 9.818 4.375 9.818 9.82 0 5.443-4.375 9.818-9.818 9.818z"/></svg>
+        Написать в WhatsApp
+      </a>
+    </div>
+  </section>
+
+  <footer>© 2025 · Вакансии · Wildberries · OZON · Охрана · Все права защищены</footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize); resize();
+  const COLS = [
+    'rgba(155,48,217,',
+    'rgba(0,85,255,',
+    'rgba(232,176,0,',
+    'rgba(204,102,255,'
+  ];
+  const pts = Array.from({length: 55}, () => ({
+    x: Math.random()*W, y: Math.random()*H,
+    vx: (Math.random()-.5)*.45, vy: (Math.random()-.5)*.45,
+    r: Math.random()*2+1,
+    c: COLS[Math.floor(Math.random()*COLS.length)]
+  }));
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0||p.x>W) p.vx*=-1;
+      if(p.y<0||p.y>H) p.vy*=-1;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = p.c+'0.7)'; ctx.fill();
+    });
+    for(let i=0;i<pts.length;i++) {
+      for(let j=i+1;j<pts.length;j++) {
+        const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<110) {
+          ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.strokeStyle=pts[i].c+(0.07*(1-dist/110))+')'; ctx.lineWidth=0.5; ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+</script>
+<script>
+  (function() {
+    var msgs = [
+      "Здравствуйте! Хочу узнать о вакансии в Wildberries. Расскажите подробнее.",
+      "Интересует работа в OZON — менеджер выдачи заказов. Что нужно?",
+      "Здравствуйте! Хочу работать охранником. Есть места?",
+      "Привет! Хочу устроиться на 70$ в день. Какие вакансии есть?",
+      "Здравствуйте! Интересует работа без опыта. Что предлагаете?"
+    ];
+    var msg = msgs[Math.floor(Math.random()*msgs.length)];
+    var encoded = encodeURIComponent(msg);
+    document.querySelectorAll('a[href*="t.me"]').forEach(function(a) {
+      a.href = a.href.split('?')[0] + '?text=' + encoded;
+    });
+    document.querySelectorAll('a[href*="wa.me"]').forEach(function(a) {
+      a.href = a.href.split('?')[0] + '?text=' + encoded;
+    });
+  })();
+</script>
+<script>
+  // ── WA toggle: false = кнопка выключена, true = включена ──
+  var WA_ENABLED = true;
+  (function() {
+    if (!WA_ENABLED) {
+      document.querySelectorAll('a[href*="wa.me"]').forEach(function(a) {
+        a.classList.add('wa-off');
+        a.removeAttribute('href');
+      });
+    }
+  })();
+</script>
+</body>
+</html>
