@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1976518209648969');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1976518209648969&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+  <title>Azərbaycanda iş · gündə 70$-a qədər · Wildberries · OZON · Mühafizə</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Inter:wght@400;500;600;700;800;900&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --wb:  #B14CF0; --wb2: #D78CFF;
+      --oz:  #2470FF; --oz2: #6EA4FF;
+      --sec: #F0B428; --sec2:#FFD970;
+      --tg:  #2AABEE; --wa:  #25D366;
+      --ink: #04050B;
+      --line: rgba(255,255,255,0.08);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif; background: var(--ink); color: #fff;
+      min-height: 100vh; overflow-x: hidden;
+    }
+    ::selection { background: rgba(177,76,240,0.4); }
+
+    /* ════ background: aurora + grid + stars ════ */
+    .aurora { position: fixed; inset: -20%; z-index: 0; pointer-events: none; filter: blur(90px); opacity: .55; }
+    .aurora::before, .aurora::after, .aurora i {
+      content: ''; position: absolute; border-radius: 50%;
+    }
+    .aurora::before { width: 55vw; height: 55vw; left: -10%; top: -5%; background: radial-gradient(circle, rgba(177,76,240,.5), transparent 65%); animation: au1 16s ease-in-out infinite alternate; }
+    .aurora::after  { width: 50vw; height: 50vw; right: -8%; top: 30%; background: radial-gradient(circle, rgba(36,112,255,.45), transparent 65%); animation: au2 19s ease-in-out infinite alternate; }
+    .aurora i { width: 40vw; height: 40vw; left: 30%; bottom: -10%; background: radial-gradient(circle, rgba(240,180,40,.3), transparent 65%); animation: au3 22s ease-in-out infinite alternate; }
+    @keyframes au1 { to { transform: translate(12vw, 10vh) scale(1.15) } }
+    @keyframes au2 { to { transform: translate(-10vw, -8vh) scale(1.2) } }
+    @keyframes au3 { to { transform: translate(-8vw, -12vh) scale(1.1) } }
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 30%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 30%, transparent 75%);
+    }
+    #stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    .page { position: relative; z-index: 2; max-width: 880px; margin: 0 auto; padding: 0 20px 120px; }
+
+    /* ════ reveal on scroll ════ */
+    .rv { opacity: 0; transform: translateY(34px); transition: opacity .8s cubic-bezier(.2,.7,.3,1), transform .8s cubic-bezier(.2,.7,.3,1); }
+    .rv.in { opacity: 1; transform: none; }
+
+    /* ════ topbar ════ */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+      padding: 22px 0 0; animation: drop .7s cubic-bezier(.2,.7,.3,1) both;
+    }
+    @keyframes drop { from { opacity: 0; transform: translateY(-16px) } to { opacity: 1; transform: none } }
+    .live-pill {
+      display: inline-flex; align-items: center; gap: 9px; padding: 9px 18px; border-radius: 999px;
+      background: rgba(37,211,102,0.08); border: 1px solid rgba(37,211,102,0.35);
+      font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #5ee896;
+    }
+    .live-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: #34e07a; box-shadow: 0 0 0 0 rgba(52,224,122,.6); animation: ping 1.6s ease-out infinite; }
+    @keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(52,224,122,.55) } 100% { box-shadow: 0 0 0 11px rgba(52,224,122,0) } }
+    .top-actions { display: flex; gap: 10px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 12px;
+      font-size: .82rem; font-weight: 700; color: #fff; text-decoration: none;
+      border: 1px solid var(--line); background: rgba(255,255,255,.04);
+      transition: transform .2s, background .2s, border-color .2s;
+    }
+    .chip:hover { transform: translateY(-2px); background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.2); }
+    .chip.tg:hover { border-color: rgba(42,171,238,.6); }
+    .chip.wa:hover { border-color: rgba(37,211,102,.6); }
+
+    /* ════ hero ════ */
+    .hero { text-align: center; padding: 72px 0 0; }
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 10px; margin-bottom: 26px;
+      font-size: .74rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.4);
+      animation: drop .7s .1s cubic-bezier(.2,.7,.3,1) both;
+    }
+    .hero-kicker::before, .hero-kicker::after { content: ''; width: 36px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.3)); }
+    .hero-kicker::after { background: linear-gradient(90deg, rgba(255,255,255,.3), transparent); }
+    .hero h1 {
+      font-family: 'Unbounded', sans-serif; font-weight: 900;
+      font-size: clamp(1.9rem, 6.4vw, 3.9rem); line-height: 1.12; letter-spacing: -0.01em;
+      animation: drop .8s .15s cubic-bezier(.2,.7,.3,1) both;
+    }
+    .h1-static { color: #fff; }
+    .h1-money {
+      background: linear-gradient(100deg, #fff 10%, var(--sec2) 35%, #fff 60%, var(--sec2) 90%);
+      background-size: 200% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      animation: sheen 5s linear infinite;
+    }
+    @keyframes sheen { to { background-position: 200% center } }
+    .type-wrap { display: inline-block; min-width: 1ch; }
+    #typed { border-right: 3px solid rgba(255,255,255,.7); padding-right: 4px; animation: caret 0.9s step-end infinite; }
+    #typed.c-wb { color: var(--wb2); text-shadow: 0 0 40px rgba(177,76,240,.6); }
+    #typed.c-oz { color: var(--oz2); text-shadow: 0 0 40px rgba(36,112,255,.6); }
+    #typed.c-sec { color: var(--sec2); text-shadow: 0 0 40px rgba(240,180,40,.6); }
+    @keyframes caret { 0%,100% { border-color: rgba(255,255,255,.7) } 50% { border-color: transparent } }
+    .hero-sub {
+      margin: 26px auto 0; max-width: 560px; font-size: clamp(.95rem, 2.4vw, 1.1rem);
+      color: rgba(255,255,255,.55); line-height: 1.85;
+      animation: drop .8s .25s cubic-bezier(.2,.7,.3,1) both;
+    }
+    .hero-sub b { color: #fff; font-weight: 700; }
+    .hero-cta { margin-top: 38px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; animation: drop .8s .35s cubic-bezier(.2,.7,.3,1) both; }
+
+    /* magnetic glow buttons */
+    .mbtn {
+      position: relative; display: inline-flex; align-items: center; gap: 11px;
+      padding: 17px 34px; border-radius: 16px; font-size: 1rem; font-weight: 800;
+      color: #fff; text-decoration: none; overflow: hidden; isolation: isolate;
+      transition: transform .25s cubic-bezier(.2,.7,.3,1), box-shadow .25s;
+      will-change: transform;
+    }
+    .mbtn::after {
+      content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .25s;
+      background: radial-gradient(120px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,.25), transparent 60%);
+    }
+    .mbtn:hover::after { opacity: 1; }
+    .mbtn:active { transform: scale(.97); }
+    .mbtn.tg { background: linear-gradient(135deg, #2aabee, #0a62d0); box-shadow: 0 10px 40px rgba(42,171,238,.4); }
+    .mbtn.tg:hover { box-shadow: 0 16px 56px rgba(42,171,238,.6); }
+    .mbtn.wa { background: linear-gradient(135deg, #2bd86c, #0c9a4e); box-shadow: 0 10px 40px rgba(37,211,102,.35); }
+    .mbtn.wa:hover { box-shadow: 0 16px 56px rgba(37,211,102,.55); }
+    .mbtn small { display: block; font-size: .68rem; font-weight: 600; opacity: .8; letter-spacing: .02em; }
+    .mbtn .lbl { text-align: left; line-height: 1.25; }
+
+    .hero-note { margin-top: 18px; font-size: .76rem; color: rgba(255,255,255,.35); animation: drop .8s .45s cubic-bezier(.2,.7,.3,1) both; }
+    .hero-note b { color: #5ee896; font-weight: 700; }
+
+    /* ════ marquee ticker ════ */
+    .ticker-wrap {
+      margin: 64px -20px 0; padding: 14px 0; overflow: hidden; position: relative;
+      border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.015);
+      mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    }
+    .ticker { display: flex; gap: 0; width: max-content; animation: tick 26s linear infinite; }
+    .ticker-wrap:hover .ticker { animation-play-state: paused; }
+    @keyframes tick { to { transform: translateX(-50%) } }
+    .tick-item { display: inline-flex; align-items: center; gap: 10px; padding: 0 26px; font-size: .82rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.55); white-space: nowrap; }
+    .tick-item .star { color: rgba(255,255,255,.25); }
+    .tick-item.wb { color: var(--wb2); } .tick-item.oz { color: var(--oz2); } .tick-item.sec { color: var(--sec2); }
+
+    /* ════ section heads ════ */
+    .sec-head { text-align: center; margin: 84px 0 36px; }
+    .sec-tag {
+      display: inline-block; font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase;
+      padding: 6px 16px; border-radius: 999px; border: 1px solid var(--line); color: rgba(255,255,255,.45);
+      background: rgba(255,255,255,.03); margin-bottom: 16px;
+    }
+    .sec-head h2 { font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: clamp(1.4rem, 4vw, 2.1rem); line-height: 1.25; }
+    .sec-head p { margin: 14px auto 0; max-width: 480px; font-size: .92rem; color: rgba(255,255,255,.5); line-height: 1.75; }
+
+    /* ════ 3D tilt job cards ════ */
+    .deck { display: grid; gap: 18px; perspective: 1200px; }
+    @media (min-width: 700px) { .deck { grid-template-columns: repeat(3, 1fr); } }
+    .tilt {
+      position: relative; border-radius: 24px; padding: 28px 24px 26px;
+      background: linear-gradient(165deg, rgba(255,255,255,.055), rgba(255,255,255,.015));
+      border: 1px solid var(--line);
+      transform-style: preserve-3d; transition: transform .15s ease-out, border-color .3s, box-shadow .3s;
+      overflow: hidden;
+    }
+    .tilt .glare {
+      position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s;
+      background: radial-gradient(420px circle at var(--gx,50%) var(--gy,50%), rgba(255,255,255,.12), transparent 55%);
+    }
+    .tilt:hover .glare { opacity: 1; }
+    .tilt::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .tilt.wb::before  { background: linear-gradient(90deg, var(--wb), var(--wb2)); }
+    .tilt.oz::before  { background: linear-gradient(90deg, var(--oz), var(--oz2)); }
+    .tilt.sec::before { background: linear-gradient(90deg, var(--sec), var(--sec2)); }
+    .tilt.wb:hover  { border-color: rgba(177,76,240,.5);  box-shadow: 0 24px 70px rgba(177,76,240,.22); }
+    .tilt.oz:hover  { border-color: rgba(36,112,255,.5);  box-shadow: 0 24px 70px rgba(36,112,255,.22); }
+    .tilt.sec:hover { border-color: rgba(240,180,40,.45); box-shadow: 0 24px 70px rgba(240,180,40,.18); }
+    .t-brand {
+      display: inline-flex; align-items: center; gap: 7px; font-size: 10.5px; font-weight: 800;
+      letter-spacing: .14em; text-transform: uppercase; padding: 6px 14px; border-radius: 999px; margin-bottom: 16px;
+      transform: translateZ(30px);
+    }
+    .t-brand.wb  { background: rgba(177,76,240,.16); color: var(--wb2);  border: 1px solid rgba(177,76,240,.4); }
+    .t-brand.oz  { background: rgba(36,112,255,.16); color: var(--oz2);  border: 1px solid rgba(36,112,255,.4); }
+    .t-brand.sec { background: rgba(240,180,40,.13); color: var(--sec2); border: 1px solid rgba(240,180,40,.35); }
+    .t-title { font-size: 1.12rem; font-weight: 800; line-height: 1.3; margin-bottom: 5px; transform: translateZ(26px); }
+    .t-sub { font-size: .8rem; color: rgba(255,255,255,.45); margin-bottom: 20px; transform: translateZ(20px); }
+    .t-pay { display: flex; align-items: baseline; gap: 7px; margin-bottom: 18px; transform: translateZ(34px); }
+    .t-pay .num { font-family: 'Unbounded', sans-serif; font-size: 2.3rem; font-weight: 900; line-height: 1; }
+    .tilt.wb  .num { color: var(--wb2);  text-shadow: 0 0 30px rgba(177,76,240,.55); }
+    .tilt.oz  .num { color: var(--oz2);  text-shadow: 0 0 30px rgba(36,112,255,.55); }
+    .tilt.sec .num { color: var(--sec2); text-shadow: 0 0 30px rgba(240,180,40,.5); }
+    .t-pay .per { font-size: .76rem; color: rgba(255,255,255,.42); line-height: 1.35; font-weight: 500; }
+    .t-feats { display: flex; flex-direction: column; gap: 9px; transform: translateZ(16px); }
+    .t-feat { display: flex; align-items: center; gap: 9px; font-size: .8rem; color: rgba(255,255,255,.62); font-weight: 500; }
+    .t-feat .ok { width: 17px; height: 17px; border-radius: 50%; flex: none; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; color: #04130a; background: #34e07a; }
+    .t-go {
+      margin-top: 22px; display: inline-flex; align-items: center; gap: 8px;
+      font-size: .82rem; font-weight: 800; color: #fff; text-decoration: none; transform: translateZ(30px);
+    }
+    .t-go .arr { transition: transform .25s; }
+    .t-go:hover .arr { transform: translateX(5px); }
+    .tilt.wb  .t-go { color: var(--wb2); } .tilt.oz .t-go { color: var(--oz2); } .tilt.sec .t-go { color: var(--sec2); }
+
+    /* ════ counters band ════ */
+    .band {
+      margin-top: 70px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      border-radius: 22px; overflow: hidden; border: 1px solid var(--line); background: var(--line);
+    }
+    .band-cell { background: #0a0c16; padding: 28px 14px; text-align: center; }
+    .band-num { font-family: 'Unbounded', sans-serif; font-size: clamp(1.5rem, 4.5vw, 2.2rem); font-weight: 900; display: block; }
+    .bn1 { color: var(--wb2); } .bn2 { color: var(--sec2); } .bn3 { color: var(--oz2); }
+    .band-lbl { margin-top: 7px; font-size: .72rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.4); }
+
+    /* ════ how it works ════ */
+    .steps { display: grid; gap: 16px; counter-reset: step; }
+    @media (min-width: 700px) { .steps { grid-template-columns: repeat(3, 1fr); } }
+    .step {
+      position: relative; padding: 26px 22px; border-radius: 20px;
+      background: rgba(255,255,255,.03); border: 1px solid var(--line);
+      transition: border-color .3s, background .3s;
+    }
+    .step:hover { border-color: rgba(255,255,255,.2); background: rgba(255,255,255,.05); }
+    .step-num {
+      font-family: 'Unbounded', sans-serif; font-size: 2.6rem; font-weight: 900; line-height: 1;
+      background: linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,255,255,.15));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 14px; display: block;
+    }
+    .step h3 { font-size: .98rem; font-weight: 800; margin-bottom: 8px; }
+    .step p { font-size: .82rem; color: rgba(255,255,255,.5); line-height: 1.7; }
+    .step .time { display: inline-block; margin-top: 14px; font-size: .7rem; font-weight: 800; padding: 5px 12px; border-radius: 999px; background: rgba(52,224,122,.1); border: 1px solid rgba(52,224,122,.3); color: #5ee896; letter-spacing: .06em; }
+
+    /* ════ chat preview ════ */
+    .chat-zone { display: grid; gap: 32px; align-items: center; }
+    @media (min-width: 760px) { .chat-zone { grid-template-columns: 1fr 1fr; } }
+    .chat-copy h2 { font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: clamp(1.3rem, 3.6vw, 1.8rem); line-height: 1.3; margin-bottom: 16px; }
+    .chat-copy p { font-size: .92rem; color: rgba(255,255,255,.52); line-height: 1.8; margin-bottom: 14px; }
+    .chat-copy p b { color: #fff; }
+    .ease-list { display: flex; flex-direction: column; gap: 11px; margin-top: 22px; }
+    .ease { display: flex; gap: 11px; align-items: flex-start; font-size: .85rem; color: rgba(255,255,255,.62); line-height: 1.55; }
+    .ease .ico { flex: none; width: 30px; height: 30px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; font-size: .95rem; background: rgba(255,255,255,.05); border: 1px solid var(--line); }
+    .phone {
+      border-radius: 28px; border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(170deg, #11131f, #0a0c15);
+      box-shadow: 0 30px 90px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.07);
+      padding: 18px 16px 20px; max-width: 380px; margin: 0 auto; width: 100%;
+    }
+    .phone-top { display: flex; align-items: center; gap: 11px; padding-bottom: 14px; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
+    .pp { width: 38px; height: 38px; border-radius: 50%; flex: none; background: linear-gradient(135deg, var(--tg), #0a62d0); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: .9rem; }
+    .pt-name { font-size: .88rem; font-weight: 800; }
+    .pt-status { font-size: .7rem; color: #5ee896; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+    .pt-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #34e07a; }
+    .msgs { display: flex; flex-direction: column; gap: 10px; min-height: 240px; }
+    .msg {
+      max-width: 82%; padding: 10px 14px; border-radius: 16px; font-size: .82rem; line-height: 1.55;
+      opacity: 0; transform: translateY(12px) scale(.96);
+      transition: opacity .45s cubic-bezier(.2,.7,.3,1), transform .45s cubic-bezier(.2,.7,.3,1);
+    }
+    .msg.show { opacity: 1; transform: none; }
+    .msg.in  { align-self: flex-start; background: rgba(255,255,255,.07); border: 1px solid var(--line); border-bottom-left-radius: 5px; }
+    .msg.out { align-self: flex-end; background: linear-gradient(135deg, #2aabee, #0a62d0); border-bottom-right-radius: 5px; }
+    .msg .t { display: block; margin-top: 4px; font-size: .62rem; opacity: .55; text-align: right; }
+    .typing { align-self: flex-start; display: none; gap: 4px; padding: 12px 16px; background: rgba(255,255,255,.07); border: 1px solid var(--line); border-radius: 16px; border-bottom-left-radius: 5px; }
+    .typing.show { display: inline-flex; }
+    .typing i { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.5); animation: tdot 1.2s ease-in-out infinite; }
+    .typing i:nth-child(2) { animation-delay: .15s } .typing i:nth-child(3) { animation-delay: .3s }
+    @keyframes tdot { 0%,60%,100% { transform: none; opacity: .4 } 30% { transform: translateY(-5px); opacity: 1 } }
+    .phone-cta { margin-top: 18px; }
+    .phone-cta a {
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      padding: 13px; border-radius: 13px; font-size: .88rem; font-weight: 800; color: #fff; text-decoration: none;
+      background: linear-gradient(135deg, #2aabee, #0a62d0); box-shadow: 0 8px 28px rgba(42,171,238,.35);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .phone-cta a:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(42,171,238,.5); }
+
+    /* ════ FAQ ════ */
+    .faq { display: flex; flex-direction: column; gap: 10px; max-width: 640px; margin: 0 auto; }
+    .qa { border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.025); overflow: hidden; transition: border-color .3s, background .3s; }
+    .qa.open { border-color: rgba(177,76,240,.4); background: rgba(177,76,240,.05); }
+    .qa-q {
+      width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      padding: 17px 20px; background: none; border: none; color: #fff; font-family: inherit;
+      font-size: .92rem; font-weight: 700; text-align: left; cursor: pointer;
+    }
+    .qa-q .pm { flex: none; width: 26px; height: 26px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; background: rgba(255,255,255,.06); border: 1px solid var(--line); font-size: 1rem; font-weight: 600; transition: transform .3s, background .3s; }
+    .qa.open .pm { transform: rotate(45deg); background: rgba(177,76,240,.25); }
+    .qa-a { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.2,.7,.3,1); }
+    .qa-a p { padding: 0 20px 18px; font-size: .85rem; color: rgba(255,255,255,.55); line-height: 1.8; }
+    .qa-a b { color: #fff; }
+
+    /* ════ final cta ════ */
+    .final {
+      margin-top: 90px; padding: 54px 28px; border-radius: 28px; text-align: center; position: relative; overflow: hidden;
+      background: linear-gradient(160deg, rgba(177,76,240,.12), rgba(36,112,255,.1) 50%, rgba(240,180,40,.07));
+      border: 1px solid rgba(177,76,240,.25);
+    }
+    .final::before {
+      content: ''; position: absolute; inset: -2px; border-radius: 28px; padding: 1px; pointer-events: none;
+      background: conic-gradient(from var(--ang,0deg), transparent 70%, rgba(215,140,255,.8), transparent 85%);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+      animation: spin 5s linear infinite;
+    }
+    @property --ang { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+    @keyframes spin { to { --ang: 360deg } }
+    .final h2 { font-family: 'Unbounded', sans-serif; font-weight: 900; font-size: clamp(1.4rem, 4.4vw, 2.2rem); line-height: 1.25; margin-bottom: 14px; }
+    .final > p { font-size: .95rem; color: rgba(255,255,255,.55); line-height: 1.8; max-width: 480px; margin: 0 auto 34px; }
+    .final .row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .final .micro { margin-top: 20px; font-size: .74rem; color: rgba(255,255,255,.35); }
+
+    footer { text-align: center; margin-top: 70px; font-size: .71rem; color: rgba(255,255,255,.18); }
+
+    /* ════ sticky mobile bar ════ */
+    .sticky-bar {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+      display: flex; gap: 10px; padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
+      background: rgba(6,7,14,.85); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border-top: 1px solid var(--line);
+      transform: translateY(110%); transition: transform .45s cubic-bezier(.2,.7,.3,1);
+    }
+    .sticky-bar.show { transform: none; }
+    .sticky-bar a {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 13px; border-radius: 13px; font-size: .88rem; font-weight: 800; color: #fff; text-decoration: none;
+    }
+    .sticky-bar .tg { background: linear-gradient(135deg, #2aabee, #0a62d0); }
+    .sticky-bar .wa { background: linear-gradient(135deg, #2bd86c, #0c9a4e); }
+    @media (min-width: 761px) { .sticky-bar { display: none; } }
+
+    .wa-off { opacity: 0.3; filter: grayscale(1); pointer-events: none; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+<div class="aurora"><i></i></div>
+<div class="grid-bg"></div>
+<canvas id="stars"></canvas>
+
+<div class="page">
+
+  <!-- ── topbar ── -->
+  <div class="topbar">
+    <div class="live-pill"><span class="dot"></span> Qəbul davam edir · indi onlaynıq</div>
+    <div class="top-actions">
+      <a class="chip tg" href="https://t.me/uzandrussia" target="_blank" rel="noopener">✈️ Telegram</a>
+      <a class="chip wa" href="https://wa.me/447351035387" target="_blank" rel="noopener">💬 WhatsApp</a>
+    </div>
+  </div>
+
+  <!-- ── hero ── -->
+  <section class="hero">
+    <div class="hero-kicker">Azərbaycanda iş · 2026 · təcrübəsiz olar</div>
+    <h1>
+      <span class="h1-money">Gündə 70$-a qədər</span><br>
+      <span class="h1-static">qazanc —</span> <span class="type-wrap"><span id="typed" class="c-wb"></span></span>
+    </h1>
+    <p class="hero-sub">
+      Müsahibə, CV və gözləmə yoxdur. Menecerə yazırsınız — o, sizə uyğun vakansiya
+      seçir və sənədləşməyə kömək edir. İş Azərbaycandadır — Bakı və digər
+      şəhərlərdə. <b>Sabah siz artıq işləyirsiniz.</b>
+    </p>
+    <div class="hero-cta">
+      <a class="mbtn tg" href="https://t.me/uzandrussia" target="_blank" rel="noopener">
+        <svg width="22" height="22" fill="#fff" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+        <span class="lbl">Telegrama yazın<small>bir neçə dəqiqəyə cavab</small></span>
+      </a>
+      <a class="mbtn wa" href="https://wa.me/447351035387" target="_blank" rel="noopener">
+        <svg width="22" height="22" fill="#fff" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.116 1.534 5.846L.057 23.877a.75.75 0 0 0 .918.918l6.085-1.476A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 0 1-5.028-1.383l-.36-.214-3.733.905.922-3.639-.236-.376A9.818 9.818 0 0 1 2.18 12C2.18 6.555 6.556 2.18 12 2.18c5.443 0 9.818 4.375 9.818 9.82 0 5.443-4.375 9.818-9.818 9.818z"/></svg>
+        <span class="lbl">WhatsApp-a yazın<small>mesaj artıq hazırdır</small></span>
+      </a>
+    </div>
+    <div class="hero-note">🔒 Pulsuz · öhdəliksiz · sadəcə şərtləri öyrənin — <b>bu sizi heç nəyə məcbur etmir</b></div>
+  </section>
+
+  <!-- ── ticker ── -->
+  <div class="ticker-wrap">
+    <div class="ticker" id="ticker">
+      <span class="tick-item wb">🟣 Wildberries — gündə 70$</span><span class="tick-item"><span class="star">✦</span> təcrübə tələb olunmur</span>
+      <span class="tick-item oz">🔵 OZON — gündə 65$</span><span class="tick-item"><span class="star">✦</span> rahat qrafik</span>
+      <span class="tick-item sec">🛡 Mühafizə — növbəyə 60$</span><span class="tick-item"><span class="star">✦</span> bu gün başlayın</span>
+      <span class="tick-item"><span class="star">✦</span> ödənişlər gecikmir</span>
+    </div>
+  </div>
+
+  <!-- ── jobs ── -->
+  <div class="sec-head rv">
+    <div class="sec-tag">Açıq vakansiyalar</div>
+    <h2>Seçin — gündə<br>60–70$ ödənilir</h2>
+    <p>Özünüzə uyğununu tapmadınız? Aşağı baxın — menecerdə daha onlarla vəzifə var, Azərbaycanın müxtəlif şəhərlərində.</p>
+  </div>
+
+  <div class="deck rv">
+    <div class="tilt wb">
+      <div class="glare"></div>
+      <div class="t-brand wb">🟣 Wildberries</div>
+      <div class="t-title">Sifariş təhvili meneceri</div>
+      <div class="t-sub">Təhvil məntəqəsi · müştərilərlə iş</div>
+      <div class="t-pay"><span class="num">70$</span><span class="per">gündə<br>əlinizə</span></div>
+      <div class="t-feats">
+        <div class="t-feat"><span class="ok">✓</span> Təcrübə lazım deyil — öyrədəcəyik</div>
+        <div class="t-feat"><span class="ok">✓</span> Çevik qrafik</div>
+        <div class="t-feat"><span class="ok">✓</span> Məntəqə evinizə yaxın</div>
+      </div>
+      <a class="t-go" href="https://t.me/uzandrussia" target="_blank" rel="noopener">Bura mənə uyğundur <span class="arr">→</span></a>
+    </div>
+    <div class="tilt oz">
+      <div class="glare"></div>
+      <div class="t-brand oz">🔵 OZON</div>
+      <div class="t-title">Sifariş təhvili meneceri</div>
+      <div class="t-sub">Təhvil məntəqəsi · müştərilərlə iş</div>
+      <div class="t-pay"><span class="num">65$</span><span class="per">iş gününə<br>sabit</span></div>
+      <div class="t-feats">
+        <div class="t-feat"><span class="ok">✓</span> CV və təcrübəsiz</div>
+        <div class="t-feat"><span class="ok">✓</span> Rahat növbələr</div>
+        <div class="t-feat"><span class="ok">✓</span> Mehriban komanda</div>
+      </div>
+      <a class="t-go" href="https://t.me/uzandrussia" target="_blank" rel="noopener">Bura mənə uyğundur <span class="arr">→</span></a>
+    </div>
+    <div class="tilt sec">
+      <div class="glare"></div>
+      <div class="t-brand sec">🛡 Mühafizə</div>
+      <div class="t-title">Yeraltı parkinqdə mühafizəçi</div>
+      <div class="t-sub">Sakit iş · obyektin qorunması</div>
+      <div class="t-pay"><span class="num">60$</span><span class="per">növbəyə<br>sabit</span></div>
+      <div class="t-feats">
+        <div class="t-feat"><span class="ok">✓</span> Razılaşdırılmış qrafik</div>
+        <div class="t-feat"><span class="ok">✓</span> Rəsmi sənədləşmə</div>
+        <div class="t-feat"><span class="ok">✓</span> Sakit və rahat yer</div>
+      </div>
+      <a class="t-go" href="https://t.me/uzandrussia" target="_blank" rel="noopener">Bura mənə uyğundur <span class="arr">→</span></a>
+    </div>
+  </div>
+
+  <!-- ── counters ── -->
+  <div class="band rv">
+    <div class="band-cell"><span class="band-num bn1" data-count="500" data-suffix="+">0</span><span class="band-lbl">artıq işə düzəlib</span></div>
+    <div class="band-cell"><span class="band-num bn2" data-count="70" data-suffix="$">0</span><span class="band-lbl">gündəlik qazanc</span></div>
+    <div class="band-cell"><span class="band-num bn3" data-count="1" data-suffix=" gün">0</span><span class="band-lbl">müraciətdən işə qədər</span></div>
+  </div>
+
+  <!-- ── how it works ── -->
+  <div class="sec-head rv">
+    <div class="sec-tag">Bu necə işləyir</div>
+    <h2>Üç addım — və siz növbədəsiniz</h2>
+    <p>Bütün proses bir gündən az çəkir. Çoxları elə ertəsi gün işə çıxır.</p>
+  </div>
+
+  <div class="steps rv">
+    <div class="step">
+      <span class="step-num">01</span>
+      <h3>Menecerə yazın</h3>
+      <p>Düyməni basırsınız — mesaj artıq sizin üçün yazılıb. Sadəcə göndərin. Nə deyəcəyinizi fikirləşmək lazım deyil.</p>
+      <span class="time">⏱ 30 saniyə</span>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <h3>Menecer vakansiya seçir</h3>
+      <p>Hansı şəhər və qrafikin rahat olduğunu deyirsiniz — menecer variantlar təklif edir və bütün suallara cavab verir.</p>
+      <span class="time">⏱ 10–15 dəqiqə</span>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <h3>İşə çıxırsınız</h3>
+      <p>Sənədləşmədə əvvəldən axıra qədər kömək edirik. İlk iş günü — elə sabah, çox vaxt isə həmin gün.</p>
+      <span class="time">⏱ elə sabah</span>
+    </div>
+  </div>
+
+  <!-- ── chat preview ── -->
+  <div class="sec-head rv">
+    <div class="sec-tag">Bu düşündüyünüzdən asandır</div>
+    <h2>Dialoq belə görünür</h2>
+  </div>
+
+  <div class="chat-zone rv">
+    <div class="chat-copy">
+      <h2>Heç bir stress yoxdur.<br>Adi yazışma.</h2>
+      <p>Çoxları <b>nədən başlayacağını bilmədiyi</b> üçün yazmır. Biz bunu həll etdik: düyməni basırsınız — mesaj artıq hazırdır. Yalnız «göndər»i basmaq qalır.</p>
+      <div class="ease-list">
+        <div class="ease"><span class="ico">✍️</span> Mesaj artıq yazılıb — heç nə fikirləşmək lazım deyil</div>
+        <div class="ease"><span class="ico">🤝</span> Menecer insan kimi davranır — anket və sorğu-sual yoxdur</div>
+        <div class="ease"><span class="ico">🚪</span> Fikrinizi dəyişdiniz — sadəcə cavab verməyin. Heç kim israr etməyəcək</div>
+        <div class="ease"><span class="ico">💸</span> Vakansiya seçimi tamamilə pulsuzdur</div>
+      </div>
+    </div>
+    <div class="phone" id="phone">
+      <div class="phone-top">
+        <div class="pp">M</div>
+        <div>
+          <div class="pt-name">Vakansiyalar üzrə menecer</div>
+          <div class="pt-status">onlayn</div>
+        </div>
+      </div>
+      <div class="msgs" id="msgs">
+        <div class="msg out">Salam! Gündə 70$-a qədər iş haqqında öyrənmək istəyirəm 👋<span class="t">14:02 ✓✓</span></div>
+        <div class="typing" id="typing"><i></i><i></i><i></i></div>
+        <div class="msg in">Salam! Əlbəttə 😊 Deyin görək, hansı şəhərdəsiniz və hansı qrafik sizə rahatdır?<span class="t">14:02</span></div>
+        <div class="msg out">İstənilən qrafik olar, əsas odur ki, tez başlayım<span class="t">14:03 ✓✓</span></div>
+        <div class="msg in">Əla! Sizdən 15 dəqiqəlik məsafədə təhvil məntəqəsi var — sabah çıxa bilərsiniz. Şərtləri danışım?<span class="t">14:03</span></div>
+      </div>
+      <div class="phone-cta">
+        <a href="https://t.me/uzandrussia" target="_blank" rel="noopener">Eyni dialoqu başlatmaq →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FAQ ── -->
+  <div class="sec-head rv">
+    <div class="sec-tag">Tez-tez verilən suallar</div>
+    <h2>Tərəddüd edirsiniz? Bu normaldır</h2>
+    <p>Yazmazdan əvvəl adətən bunları soruşurlar.</p>
+  </div>
+
+  <div class="faq rv">
+    <div class="qa">
+      <button class="qa-q">Bu pulsuzdur? Burada tələ yoxdur ki?<span class="pm">+</span></button>
+      <div class="qa-a"><p>Bəli, <b>tamamilə pulsuz</b>. Biz şirkətlərə işçi tapmağa kömək edirik — bizə onlar ödəyir, siz yox. Sizdən heç bir ödəniş, «sənədləşmə haqqı» və bu kimi şeylər alınmır.</p></div>
+    </div>
+    <div class="qa">
+      <button class="qa-q">Təcrübəm yoxdur. Məni götürərlər?<span class="pm">+</span></button>
+      <div class="qa-a"><p>Bəli. Səhifədəki bütün vakansiyalar <b>təcrübə tələb etmir</b>. Təlim elə ilk gün iş yerində keçirilir və ona görə də pul ödənilir.</p></div>
+    </div>
+    <div class="qa">
+      <button class="qa-q">Menecerə nə yazım? Nədən başlayacağımı bilmirəm<span class="pm">+</span></button>
+      <div class="qa-a"><p>Heç nə fikirləşmək lazım deyil: düyməni basanda <b>mesaj artıq yazılmış olacaq</b>. Sadəcə göndərin — qalanını menecer özü soruşacaq.</p></div>
+    </div>
+    <div class="qa">
+      <button class="qa-q">Nə qədər tez cavab verirlər?<span class="pm">+</span></button>
+      <div class="qa-a"><p>Menecer <b>24/7</b> əlaqədədir. Adətən cavab bir neçə dəqiqəyə gəlir.</p></div>
+    </div>
+    <div class="qa">
+      <button class="qa-q">Hansı şəhərlərdə iş var?<span class="pm">+</span></button>
+      <div class="qa-a"><p>Azərbaycanın bir çox şəhərində: <b>Bakı, Sumqayıt, Gəncə</b> və başqaları. Menecerə şəhərinizi deyin — evinizə yaxın variant tapaq.</p></div>
+    </div>
+    <div class="qa">
+      <button class="qa-q">Bəs bu vakansiyalar mənə uyğun gəlməsə?<span class="pm">+</span></button>
+      <div class="qa-a"><p>Səhifədə yalnız üç vəzifə var, amma menecerdə onlar <b>onlarladır</b>: anbar, kuryer, mətbəx, tikinti, istehsalat və s. Sizə nə rahatdırsa deyin — sizin üçün seçək.</p></div>
+    </div>
+    <div class="qa">
+      <button class="qa-q">Sadəcə soruşmaq istəyirəm, heç bir öhdəlik götürmədən<span class="pm">+</span></button>
+      <div class="qa-a"><p>Elə belə də nəzərdə tutulub. <b>Sual heç nəyə məcbur etmir</b> — şərtləri öyrənin, düşünün, qərarı sonra verin. Heç kim təzyiq etməyəcək.</p></div>
+    </div>
+  </div>
+
+  <!-- ── final CTA ── -->
+  <div class="final rv">
+    <h2>Sabah artıq işiniz<br>ola bilər</h2>
+    <p>Sizi gündə 70$-a qədər qazanclı ilk növbədən bircə klik ayırır. Mesaj hazırdır — sadəcə göndərin.</p>
+    <div class="row">
+      <a class="mbtn tg" href="https://t.me/uzandrussia" target="_blank" rel="noopener">
+        <svg width="22" height="22" fill="#fff" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+        <span class="lbl">Telegrama yazın<small>pulsuz · öhdəliksiz</small></span>
+      </a>
+      <a class="mbtn wa" href="https://wa.me/447351035387" target="_blank" rel="noopener">
+        <svg width="22" height="22" fill="#fff" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.116 1.534 5.846L.057 23.877a.75.75 0 0 0 .918.918l6.085-1.476A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 0 1-5.028-1.383l-.36-.214-3.733.905.922-3.639-.236-.376A9.818 9.818 0 0 1 2.18 12C2.18 6.555 6.556 2.18 12 2.18c5.443 0 9.818 4.375 9.818 9.82 0 5.443-4.375 9.818-9.818 9.818z"/></svg>
+        <span class="lbl">WhatsApp-a yazın<small>mesaj artıq hazırdır</small></span>
+      </a>
+    </div>
+    <div class="micro">Menecer 24/7 əlaqədədir · bir neçə dəqiqəyə cavab veririk</div>
+  </div>
+
+  <footer>© 2026 · Azərbaycan · Vakansiyalar · Wildberries · OZON · Mühafizə · Bütün hüquqlar qorunur</footer>
+</div>
+
+<!-- ── sticky mobile bar ── -->
+<div class="sticky-bar" id="stickyBar">
+  <a class="tg" href="https://t.me/uzandrussia" target="_blank" rel="noopener">✈️ Telegram</a>
+  <a class="wa" href="https://wa.me/447351035387" target="_blank" rel="noopener">💬 WhatsApp</a>
+</div>
+
+<script>
+/* ── stars canvas ── */
+(function(){
+  var c = document.getElementById('stars'), x = c.getContext('2d'), W, H, stars;
+  function rs(){ W = c.width = innerWidth; H = c.height = innerHeight; }
+  addEventListener('resize', rs); rs();
+  stars = Array.from({length: 90}, function(){ return {
+    x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.3 + .3,
+    s: Math.random()*0.25 + .05, p: Math.random()*Math.PI*2
+  };});
+  (function draw(t){
+    x.clearRect(0,0,W,H);
+    stars.forEach(function(st){
+      st.y -= st.s; if (st.y < -4) { st.y = H + 4; st.x = Math.random()*W; }
+      var a = .25 + Math.abs(Math.sin(t/1400 + st.p)) * .45;
+      x.beginPath(); x.arc(st.x, st.y, st.r, 0, Math.PI*2);
+      x.fillStyle = 'rgba(255,255,255,' + a + ')'; x.fill();
+    });
+    requestAnimationFrame(draw);
+  })(0);
+})();
+
+/* ── typewriter ── */
+(function(){
+  var words = [
+    { t: "Wildberries", c: "c-wb" },
+    { t: "OZON", c: "c-oz" },
+    { t: "Mühafizə", c: "c-sec" }
+  ];
+  var el = document.getElementById('typed'), wi = 0, ci = 0, del = false;
+  function tick(){
+    var w = words[wi];
+    el.className = w.c;
+    if (!del) {
+      el.textContent = w.t.slice(0, ++ci);
+      if (ci === w.t.length) { del = true; return setTimeout(tick, 1700); }
+      return setTimeout(tick, 75);
+    }
+    el.textContent = w.t.slice(0, --ci);
+    if (ci === 0) { del = false; wi = (wi+1) % words.length; return setTimeout(tick, 350); }
+    setTimeout(tick, 40);
+  }
+  tick();
+})();
+
+/* ── reveal on scroll ── */
+var io = new IntersectionObserver(function(es){
+  es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: .12 });
+document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+
+/* ── animated counters ── */
+var cio = new IntersectionObserver(function(es){
+  es.forEach(function(e){
+    if (!e.isIntersecting) return; cio.unobserve(e.target);
+    var el = e.target, end = +el.dataset.count, suf = el.dataset.suffix || '', t0 = null;
+    function f(t){
+      if (!t0) t0 = t;
+      var p = Math.min((t - t0) / 1400, 1), ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(end * ease) + suf;
+      if (p < 1) requestAnimationFrame(f);
+    }
+    requestAnimationFrame(f);
+  });
+}, { threshold: .6 });
+document.querySelectorAll('.band-num').forEach(function(el){ cio.observe(el); });
+
+/* ── 3D tilt cards ── */
+document.querySelectorAll('.tilt').forEach(function(card){
+  card.addEventListener('mousemove', function(e){
+    var r = card.getBoundingClientRect();
+    var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+    card.style.transform = 'rotateY(' + ((px - .5) * 14) + 'deg) rotateX(' + ((.5 - py) * 10) + 'deg) translateZ(0)';
+    card.style.setProperty('--gx', (px*100) + '%');
+    card.style.setProperty('--gy', (py*100) + '%');
+  });
+  card.addEventListener('mouseleave', function(){ card.style.transform = ''; });
+});
+
+/* ── magnetic button highlight ── */
+document.querySelectorAll('.mbtn').forEach(function(b){
+  b.addEventListener('mousemove', function(e){
+    var r = b.getBoundingClientRect();
+    b.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    b.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    var dx = (e.clientX - r.left - r.width/2) * .12, dy = (e.clientY - r.top - r.height/2) * .18;
+    b.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+  });
+  b.addEventListener('mouseleave', function(){ b.style.transform = ''; });
+});
+
+/* ── chat replay ── */
+(function(){
+  var msgs = Array.prototype.slice.call(document.querySelectorAll('#msgs .msg'));
+  var typing = document.getElementById('typing');
+  var phone = document.getElementById('phone'), played = false;
+  function play(){
+    var delay = 300;
+    msgs.forEach(function(m){
+      if (m.classList.contains('in')) {
+        setTimeout(function(){ m.parentNode.insertBefore(typing, m); typing.classList.add('show'); }, delay);
+        delay += 1100;
+      }
+      setTimeout(function(){ typing.classList.remove('show'); m.classList.add('show'); }, delay);
+      delay += 900;
+    });
+  }
+  new IntersectionObserver(function(es, o){
+    es.forEach(function(e){ if (e.isIntersecting && !played) { played = true; play(); o.unobserve(phone); } });
+  }, { threshold: .4 }).observe(phone);
+})();
+
+/* ── FAQ accordion ── */
+document.querySelectorAll('.qa').forEach(function(qa){
+  qa.querySelector('.qa-q').addEventListener('click', function(){
+    var a = qa.querySelector('.qa-a'), open = qa.classList.contains('open');
+    document.querySelectorAll('.qa.open').forEach(function(o){
+      o.classList.remove('open'); o.querySelector('.qa-a').style.maxHeight = 0;
+    });
+    if (!open) { qa.classList.add('open'); a.style.maxHeight = a.scrollHeight + 'px'; }
+  });
+});
+
+/* ── sticky mobile bar after hero ── */
+(function(){
+  var bar = document.getElementById('stickyBar');
+  addEventListener('scroll', function(){
+    bar.classList.toggle('show', scrollY > innerHeight * .85);
+  }, { passive: true });
+})();
+
+/* ── rotating pre-filled messages ── */
+(function(){
+  var msgs = [
+    "Salam! Gündə 70$-a qədər iş haqqında öyrənmək istəyirəm. Nə etməliyəm?",
+    "Salam! Wildberries-dəki vakansiya maraqlandırır. Ətraflı deyə bilərsiniz?",
+    "Salam! OZON-da sifariş təhvili meneceri işləmək istəyirəm. Şərtlər necədir?",
+    "Salam! Mühafizəçi işi maraqlandırır. Şərtlər necədir?",
+    "Salam! Təcrübəsiz, rahat qrafikli iş axtarıram. Hazırda nə var?"
+  ];
+  var msg = msgs[Math.floor(Math.random()*msgs.length)], encoded = encodeURIComponent(msg);
+  document.querySelectorAll('a[href*="t.me"]').forEach(function(a){ a.href = a.href.split('?')[0] + '?text=' + encoded; });
+  document.querySelectorAll('a[href*="wa.me"]').forEach(function(a){ a.href = a.href.split('?')[0] + '?text=' + encoded; });
+})();
+
+/* ── WA toggle: false = кнопка выключена, true = включена ── */
+var WA_ENABLED = true;
+(function(){
+  if (!WA_ENABLED) {
+    document.querySelectorAll('a[href*="wa.me"]').forEach(function(a){
+      a.classList.add('wa-off'); a.removeAttribute('href');
+    });
+  }
+})();
+</script>
+</body>
+</html>
