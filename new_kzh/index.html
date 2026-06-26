@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1009310294828671');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1009310294828671&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+  <title>Ищем курьеров · от 1000$ · день и ночь</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #05060f;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── aurora background ── */
+    .aurora {
+      position: fixed; inset: -30%; z-index: 0;
+      pointer-events: none; filter: blur(100px); opacity: .6;
+    }
+    .aurora::before {
+      content: ''; position: absolute; border-radius: 50%;
+      width: 60vw; height: 60vw; left: -10%; top: -10%;
+      background: radial-gradient(circle, rgba(42,171,238,.45), transparent 65%);
+      animation: a1 14s ease-in-out infinite alternate;
+    }
+    .aurora::after {
+      content: ''; position: absolute; border-radius: 50%;
+      width: 55vw; height: 55vw; right: -10%; bottom: -10%;
+      background: radial-gradient(circle, rgba(36,112,255,.4), transparent 65%);
+      animation: a2 18s ease-in-out infinite alternate;
+    }
+    .aurora i {
+      content: ''; position: absolute; border-radius: 50%;
+      width: 45vw; height: 45vw; left: 25%; top: 30%;
+      background: radial-gradient(circle, rgba(100,60,240,.3), transparent 65%);
+      animation: a3 22s ease-in-out infinite alternate;
+    }
+    @keyframes a1 { to { transform: translate(8vw, 12vh) scale(1.2) } }
+    @keyframes a2 { to { transform: translate(-10vw, -8vh) scale(1.15) } }
+    @keyframes a3 { to { transform: translate(-6vw, 10vh) scale(1.1) } }
+
+    /* ── grid overlay ── */
+    .grid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 52px 52px;
+    }
+
+    /* ── stars ── */
+    #stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    /* ── content ── */
+    .card {
+      position: relative; z-index: 2;
+      text-align: center;
+      padding: 0 24px;
+      max-width: 680px;
+      width: 100%;
+      animation: rise .9s cubic-bezier(.2,.7,.3,1) both;
+    }
+    @keyframes rise { from { opacity: 0; transform: translateY(28px) } to { opacity: 1; transform: none } }
+
+    .tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 18px; border-radius: 999px; margin-bottom: 36px;
+      background: rgba(42,171,238,.1); border: 1px solid rgba(42,171,238,.3);
+      font-size: .75rem; font-weight: 800; letter-spacing: .18em;
+      text-transform: uppercase; color: rgba(42,171,238,.9);
+      animation: rise .9s .1s cubic-bezier(.2,.7,.3,1) both;
+    }
+    .tag .dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #2aabee;
+      animation: ping 1.6s ease-out infinite;
+    }
+    @keyframes ping {
+      0%   { box-shadow: 0 0 0 0 rgba(42,171,238,.6) }
+      100% { box-shadow: 0 0 0 10px rgba(42,171,238,0) }
+    }
+
+    h1 {
+      font-size: clamp(2.6rem, 9vw, 5.2rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+      animation: rise .9s .15s cubic-bezier(.2,.7,.3,1) both;
+    }
+    h1 .accent {
+      background: linear-gradient(120deg, #2aabee 0%, #6ea4ff 40%, #a78bfa 80%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .perks {
+      display: flex; flex-direction: column; gap: 12px;
+      margin-bottom: 44px;
+      animation: rise .9s .25s cubic-bezier(.2,.7,.3,1) both;
+    }
+    .perk {
+      font-size: clamp(.95rem, 2.6vw, 1.15rem);
+      color: rgba(255,255,255,.65);
+      line-height: 1.5;
+    }
+    .perk b { color: #fff; font-weight: 700; }
+    .perk .hi {
+      color: #2aabee; font-weight: 800;
+    }
+
+    .divider {
+      width: 48px; height: 2px; margin: 0 auto 30px;
+      background: linear-gradient(90deg, transparent, rgba(42,171,238,.6), transparent);
+    }
+
+    .cta {
+      animation: rise .9s .35s cubic-bezier(.2,.7,.3,1) both;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+      padding: 20px 48px; border-radius: 18px;
+      font-size: 1.05rem; font-weight: 800; color: #fff; text-decoration: none;
+      background: linear-gradient(135deg, #2aabee, #0a62d0);
+      box-shadow: 0 12px 50px rgba(42,171,238,.45);
+      transition: transform .25s cubic-bezier(.2,.7,.3,1), box-shadow .25s;
+      position: relative; overflow: hidden;
+    }
+    .btn::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(140px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,.2), transparent 55%);
+      opacity: 0; transition: opacity .2s;
+    }
+    .btn:hover::after { opacity: 1; }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 20px 60px rgba(42,171,238,.6); }
+    .btn:active { transform: scale(.97); }
+    .btn svg { flex: none; }
+
+    .note {
+      margin-top: 16px;
+      font-size: .74rem;
+      color: rgba(255,255,255,.3);
+      animation: rise .9s .45s cubic-bezier(.2,.7,.3,1) both;
+    }
+  </style>
+</head>
+<body>
+<div class="aurora"><i></i></div>
+<div class="grid"></div>
+<canvas id="stars"></canvas>
+
+<div class="card">
+
+  <div class="tag"><span class="dot"></span> Набор открыт · отвечаем сейчас</div>
+
+  <h1>Ищем<br><span class="accent">курьеров</span></h1>
+
+  <div class="perks">
+    <div class="perk">Зарплата <b class="hi">от 1 000 $</b> в месяц — без потолка</div>
+    <div class="divider"></div>
+    <div class="perk"><b>Дневные и ночные смены</b> — выбираете сами.<br>Ночные оплачиваются выше.</div>
+    <div class="perk">Без опыта. Официальное оформление.<br>Первая выплата уже после первой смены.</div>
+  </div>
+
+  <div class="cta">
+    <a class="btn" href="https://t.me/kzandrussia" target="_blank" rel="noopener">
+      <svg width="22" height="22" fill="#fff" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+      Написать в Telegram
+    </a>
+  </div>
+  <div class="note">Бесплатно · без обязательств · просто узнайте условия</div>
+
+</div>
+
+<script>
+/* ── stars ── */
+(function(){
+  var c=document.getElementById('stars'),x=c.getContext('2d'),W,H,S;
+  function rs(){W=c.width=innerWidth;H=c.height=innerHeight;}
+  addEventListener('resize',rs);rs();
+  S=Array.from({length:80},function(){return{
+    x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.2,
+    s:Math.random()*.2+.04,p:Math.random()*Math.PI*2};});
+  (function draw(t){
+    x.clearRect(0,0,W,H);
+    S.forEach(function(s){
+      s.y-=s.s;if(s.y<-4){s.y=H+4;s.x=Math.random()*W;}
+      var a=.2+Math.abs(Math.sin(t/1500+s.p))*.4;
+      x.beginPath();x.arc(s.x,s.y,s.r,0,Math.PI*2);
+      x.fillStyle='rgba(255,255,255,'+a+')';x.fill();
+    });
+    requestAnimationFrame(draw);
+  })(0);
+})();
+
+/* ── magnetic button ── */
+(function(){
+  var b=document.querySelector('.btn');
+  b.addEventListener('mousemove',function(e){
+    var r=b.getBoundingClientRect();
+    b.style.setProperty('--mx',(e.clientX-r.left)+'px');
+    b.style.setProperty('--my',(e.clientY-r.top)+'px');
+  });
+})();
+
+/* ── rotating pre-filled messages ── */
+(function(){
+  var msgs=[
+    "Здравствуйте! Интересует вакансия курьера. Расскажите подробнее.",
+    "Привет! Хочу устроиться курьером. Какие условия и зарплата?",
+    "Здравствуйте! Видел вакансию курьера от 1000$. Как устроиться?",
+    "Привет! Интересует ночная смена курьера. Что нужно?",
+    "Здравствуйте! Хочу работать курьером, дневная смена. Есть места?"
+  ];
+  var msg=msgs[Math.floor(Math.random()*msgs.length)];
+  var encoded=encodeURIComponent(msg);
+  document.querySelectorAll('a[href*="t.me"]').forEach(function(a){
+    a.href=a.href.split('?')[0]+'?text='+encoded;
+  });
+})();
+</script>
+</body>
+</html>
