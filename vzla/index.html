@@ -3,7 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trabajo en el Exterior · Venezuela</title>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ═══  CONTACTOS — МЕНЯТЬ ТОЛЬКО ЗДЕСЬ, В ОДНОМ МЕСТЕ  ═══ -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<script>
+var WA_LINK = "https://wa.me/40755656701";
+var TG_LINK = "https://t.me/jobs_russion";
+</script>
+<!-- ═══════════════════════════════════════════════════════ -->
+
 <!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
@@ -21,585 +30,836 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=2092696671680810&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
+  <title>Trabaja en el Exterior · Gana en Dólares · Venezuela</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Inter:wght@400;500;600;700;800;900&display=swap');
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --gold:  #f5c400;
-      --red:   #ff3d3d;
-      --blue:  #1a6fff;
-      --bg:    #07060e;
+      --gold: #f5c400; --gold2: #ffe066;
+      --red:  #ff3d3d;
+      --blue: #1a6fff; --blue2: #6ea4ff;
+      --wa:   #25d366; --tg: #2aabee;
+      --ink:  #06050d;
+      --line: rgba(255,255,255,.08);
     }
-
     html { scroll-behavior: smooth; }
-
     body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: #fff;
-      min-height: 100vh;
-      overflow-x: hidden;
+      font-family: 'Inter', sans-serif; background: var(--ink); color: #fff;
+      min-height: 100vh; overflow-x: hidden;
+    }
+    ::selection { background: rgba(245,196,0,.35); }
+
+    /* ════ fondo: aurora + estrellas ════ */
+    .aurora { position: fixed; inset: -20%; z-index: 0; pointer-events: none; filter: blur(95px); opacity: .5; }
+    .aurora::before, .aurora::after, .aurora i { content: ''; position: absolute; border-radius: 50%; }
+    .aurora::before { width: 55vw; height: 55vw; left: -12%; top: -8%; background: radial-gradient(circle, rgba(245,196,0,.4), transparent 65%); animation: au1 17s ease-in-out infinite alternate; }
+    .aurora::after  { width: 50vw; height: 50vw; right: -10%; top: 32%; background: radial-gradient(circle, rgba(26,111,255,.38), transparent 65%); animation: au2 20s ease-in-out infinite alternate; }
+    .aurora i { width: 40vw; height: 40vw; left: 28%; bottom: -12%; background: radial-gradient(circle, rgba(255,61,61,.24), transparent 65%); animation: au3 23s ease-in-out infinite alternate; }
+    @keyframes au1 { to { transform: translate(11vw, 9vh) scale(1.15) } }
+    @keyframes au2 { to { transform: translate(-9vw, -7vh) scale(1.2) } }
+    @keyframes au3 { to { transform: translate(-7vw, -11vh) scale(1.1) } }
+    #stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    #progress {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 60;
+      background: linear-gradient(90deg, var(--gold), var(--blue), var(--red));
+      box-shadow: 0 0 12px rgba(245,196,0,.55);
     }
 
-    #canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .page { position: relative; z-index: 2; max-width: 860px; margin: 0 auto; padding: 0 20px 130px; }
 
-    .blob { position: fixed; border-radius: 50%; filter: blur(130px); pointer-events: none; z-index: 0; }
-    .b1 {
-      width: 550px; height: 550px;
-      background: radial-gradient(circle, rgba(245,196,0,0.16) 0%, transparent 70%);
-      top: -180px; left: -180px;
-      animation: b1a 16s ease-in-out infinite alternate;
-    }
-    .b2 {
-      width: 480px; height: 480px;
-      background: radial-gradient(circle, rgba(255,61,61,0.16) 0%, transparent 70%);
-      bottom: -140px; right: -140px;
-      animation: b2a 13s ease-in-out infinite alternate;
-    }
-    .b3 {
-      width: 320px; height: 320px;
-      background: radial-gradient(circle, rgba(26,111,255,0.14) 0%, transparent 70%);
-      top: 38%; left: 58%;
-      animation: b3a 19s ease-in-out infinite alternate;
-    }
-    @keyframes b1a { to { transform: translate(70px, 50px) scale(1.08); } }
-    @keyframes b2a { to { transform: translate(-55px, -70px) scale(1.1); } }
-    @keyframes b3a { to { transform: translate(-35px, 45px) scale(1.12); } }
+    .rv { opacity: 0; transform: translateY(32px); transition: opacity .8s cubic-bezier(.2,.7,.3,1), transform .8s cubic-bezier(.2,.7,.3,1); }
+    .rv.in { opacity: 1; transform: none; }
 
-    .page {
-      position: relative; z-index: 1;
-      max-width: 840px; margin: 0 auto; padding: 0 18px 80px;
+    /* ════ passport top strip ════ */
+    .pass-strip {
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      margin: 14px -20px 0; padding: 10px 16px;
+      background: rgba(255,193,7,.08); border-top: 1px solid rgba(255,193,7,.3); border-bottom: 1px solid rgba(255,193,7,.3);
+      font-size: .78rem; font-weight: 700; color: #ffd54f; text-align: center; line-height: 1.4;
+      animation: drop .7s .05s cubic-bezier(.2,.7,.3,1) both;
     }
+    .pass-strip .ic { font-size: 1rem; animation: flick 1.8s ease-in-out infinite; }
 
-    /* ── topbar ── */
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 20px 0 0; gap: 12px; flex-wrap: wrap;
-      animation: slideDown 0.5s ease both;
-    }
-    .flag-pill {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 9px 20px; border-radius: 999px;
-      border: 1px solid rgba(245,196,0,0.25);
-      background: rgba(245,196,0,0.06);
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.1em; color: var(--gold); text-transform: uppercase;
-    }
-    .flag-bar { display: flex; gap: 3px; align-items: center; }
-    .flag-bar span { width: 5px; height: 14px; border-radius: 2px; }
-    .flag-bar .fy { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
-    .flag-bar .fb { background: var(--blue); }
-    .flag-bar .fr { background: var(--red); }
-
-    .top-btns { display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn-sm {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 10px 18px; border-radius: 12px;
-      font-size: 0.82rem; font-weight: 700; text-decoration: none; color: #fff;
-      transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
-      position: relative; overflow: hidden;
-    }
-    .btn-sm::after { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.1); opacity: 0; transition: opacity .2s; pointer-events: none; }
-    .btn-sm:hover::after { opacity: 1; }
-    .btn-sm:hover { transform: translateY(-2px); }
-    .bwa { background: linear-gradient(135deg,#25d366,#128c7e); box-shadow: 0 4px 20px rgba(37,211,102,0.3); }
-    .bwa:hover { box-shadow: 0 8px 28px rgba(37,211,102,0.5); filter: brightness(1.1); }
-    .btg { background: linear-gradient(135deg,#2aabee,#006aff); box-shadow: 0 4px 20px rgba(42,171,238,0.3); }
-    .btg:hover { box-shadow: 0 8px 28px rgba(42,171,238,0.5); filter: brightness(1.1); }
-
-    /* ── hero ── */
-    .hero { text-align: center; padding: 60px 0 0; animation: fadeUp 0.6s ease 0.1s both; }
-    .eyebrow {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 0.76rem; font-weight: 700;
-      letter-spacing: 0.16em; text-transform: uppercase;
-      color: rgba(255,255,255,0.38); margin-bottom: 22px;
-    }
-    .eyebrow::before, .eyebrow::after {
-      content: ''; display: inline-block; width: 24px; height: 1px;
-      background: rgba(255,255,255,0.18);
-    }
-    h1 {
-      font-size: clamp(2.9rem, 9.5vw, 6rem); font-weight: 900;
-      line-height: 1.02; letter-spacing: -0.03em; text-transform: uppercase;
-    }
-    .gold-shine {
-      background: linear-gradient(90deg, var(--gold) 0%, #ffec80 35%, var(--red) 65%, var(--gold) 100%);
-      background-size: 220% auto;
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      animation: shimmer 4s linear infinite;
-    }
-    .blue-red {
-      background: linear-gradient(90deg, var(--blue) 0%, #60aaff 40%, var(--red) 80%, var(--blue) 100%);
-      background-size: 220% auto;
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      animation: shimmer 5s linear infinite reverse;
-    }
-    @keyframes shimmer { to { background-position: 220% center; } }
-
-    .hero-sub {
-      margin: 28px auto 0; max-width: 540px;
-      font-size: clamp(0.95rem, 2.5vw, 1.08rem);
-      color: rgba(255,255,255,0.52); line-height: 1.8;
-    }
-    .hero-sub strong { color: rgba(255,255,255,0.88); font-weight: 600; }
-
-    /* ── passport banner ── */
+    /* ════ passport banner ════ */
     .passport-banner {
       display: flex; align-items: flex-start; gap: 14px;
-      margin: 32px 0 0; padding: 18px 22px; border-radius: 16px;
-      background: rgba(255,193,7,0.07);
-      border: 1px solid rgba(255,193,7,0.35);
-      animation: fadeUp 0.6s ease 0.15s both;
+      margin-top: 22px; padding: 18px 22px; border-radius: 16px;
+      background: rgba(255,193,7,.07); border: 1px solid rgba(255,193,7,.35);
     }
-    .pb-icon { font-size: 1.6rem; flex-shrink: 0; margin-top: 2px; }
-    .passport-banner strong {
-      display: block; font-size: 0.95rem; font-weight: 800;
-      color: #ffd54f; margin-bottom: 4px;
-    }
-    .passport-banner span { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+    .passport-banner .pb-icon { font-size: 1.6rem; flex: none; margin-top: 2px; }
+    .passport-banner strong { display: block; font-size: .95rem; font-weight: 800; color: #ffd54f; margin-bottom: 4px; }
+    .passport-banner span { font-size: .8rem; color: rgba(255,255,255,.52); line-height: 1.6; }
 
-    /* ── card ── */
-    .card-wrap { margin-top: 36px; animation: fadeUp 0.6s ease 0.2s both; }
-    .card {
-      border-radius: 24px; padding: 32px 28px 36px;
-      position: relative; overflow: hidden;
-      background: linear-gradient(150deg, rgba(245,196,0,0.09) 0%, rgba(255,61,61,0.05) 100%);
-      transition: transform 0.3s ease;
+    /* ════ topbar ════ */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+      padding: 20px 0 0; animation: drop .7s cubic-bezier(.2,.7,.3,1) both;
     }
-    .card:hover { transform: translateY(-4px); box-shadow: 0 24px 64px rgba(245,196,0,0.1); }
-    .card-inner-border {
-      position: absolute; inset: 0; border-radius: 24px; padding: 1px;
-      background: linear-gradient(135deg, rgba(245,196,0,0.5), rgba(255,61,61,0.2));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude;
-      pointer-events: none;
+    @keyframes drop { from { opacity: 0; transform: translateY(-16px) } to { opacity: 1; transform: none } }
+    .flag-pill {
+      display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px; border-radius: 999px;
+      border: 1px solid rgba(245,196,0,.3); background: rgba(245,196,0,.06);
+      font-size: 11px; font-weight: 800; letter-spacing: .1em; color: var(--gold); text-transform: uppercase;
     }
+    .flag-bar { display: flex; gap: 3px; }
+    .flag-bar span { width: 5px; height: 14px; border-radius: 2px; }
+    .fy { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+    .fb { background: var(--blue); } .fr { background: var(--red); }
+    .top-actions { display: flex; gap: 10px; }
     .chip {
-      display: inline-block; font-size: 9px; font-weight: 800;
-      letter-spacing: 0.2em; text-transform: uppercase;
-      padding: 4px 12px; border-radius: 999px; margin-bottom: 16px;
-      background: rgba(245,196,0,0.12); color: var(--gold);
+      display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 12px;
+      font-size: .82rem; font-weight: 700; color: #fff; text-decoration: none;
+      transition: transform .2s, box-shadow .2s;
     }
-    .card-icon { font-size: 2.2rem; margin-bottom: 12px; display: block; }
-    .card h2 {
-      font-size: 1.1rem; font-weight: 800; text-transform: uppercase;
-      letter-spacing: 0.04em; margin-bottom: 20px;
-    }
-    .salary {
-      font-size: clamp(1.6rem, 4.5vw, 2.2rem); font-weight: 900;
-      line-height: 1.1; margin-bottom: 5px;
-      color: var(--gold); text-shadow: 0 0 28px rgba(245,196,0,0.4);
-    }
-    .salary-note { font-size: 0.75rem; color: rgba(255,255,255,0.36); margin-bottom: 20px; font-weight: 500; }
-    .tags { display: flex; flex-wrap: wrap; gap: 7px; }
-    .tag {
-      font-size: 0.72rem; font-weight: 600; padding: 5px 11px; border-radius: 8px;
-      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.07);
-      color: rgba(255,255,255,0.62);
-    }
+    .chip:hover { transform: translateY(-2px); }
+    .chip.wa { background: linear-gradient(135deg, #25d366, #128c7e); box-shadow: 0 4px 20px rgba(37,211,102,.3); }
+    .chip.tg { background: linear-gradient(135deg, #2aabee, #006aff); box-shadow: 0 4px 20px rgba(42,171,238,.3); }
 
-    /* ── sectors ── */
-    .sectors-title {
-      font-size: 0.68rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase;
-      color: rgba(255,255,255,0.25); text-align: center; margin: 40px 0 16px;
-      animation: fadeUp 0.6s ease 0.25s both;
+    /* ════ hero ════ */
+    .hero { text-align: center; padding: 64px 0 0; }
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 10px; margin-bottom: 24px;
+      font-size: .74rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.4);
+      animation: drop .7s .1s cubic-bezier(.2,.7,.3,1) both;
     }
-    .sectors {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 10px; animation: fadeUp 0.6s ease 0.28s both;
+    .hero-kicker::before, .hero-kicker::after { content: ''; width: 32px; height: 1px; background: rgba(255,255,255,.2); }
+    .hero h1 {
+      font-family: 'Montserrat', sans-serif; font-weight: 900; text-transform: uppercase;
+      font-size: clamp(2.1rem, 7.6vw, 4.2rem); line-height: 1.05; letter-spacing: -0.02em;
+      animation: drop .8s .15s cubic-bezier(.2,.7,.3,1) both;
     }
-    .sector {
-      display: flex; align-items: center; gap: 10px;
-      padding: 14px 14px; border-radius: 14px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
-      transition: border-color 0.2s, background 0.2s;
+    .gold-shine {
+      background: linear-gradient(90deg, var(--gold) 0%, #ffec80 30%, var(--gold) 55%, #ffec80 80%, var(--gold) 100%);
+      background-size: 220% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      animation: shimmer 4s linear infinite;
     }
-    .sector:hover { border-color: rgba(245,196,0,0.25); background: rgba(245,196,0,0.05); }
-    .sector-icon { font-size: 1.3rem; flex-shrink: 0; }
-    .sector-text strong { display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 2px; }
-    .sector-text span { font-size: 0.68rem; color: rgba(255,255,255,0.38); line-height: 1.4; display: block; }
+    @keyframes shimmer { to { background-position: 220% center } }
+    .hero-sub {
+      margin: 24px auto 0; max-width: 540px; font-size: clamp(.95rem, 2.4vw, 1.08rem);
+      color: rgba(255,255,255,.55); line-height: 1.85;
+      animation: drop .8s .25s cubic-bezier(.2,.7,.3,1) both;
+    }
+    .hero-sub b { color: #fff; font-weight: 700; }
+    .hero-cta { margin-top: 34px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; animation: drop .8s .35s cubic-bezier(.2,.7,.3,1) both; }
 
-    /* ── perks ── */
-    .perks {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 14px; margin-top: 18px;
-      animation: fadeUp 0.6s ease 0.3s both;
+    .mbtn {
+      position: relative; display: inline-flex; align-items: center; gap: 11px;
+      padding: 17px 32px; border-radius: 16px; font-size: 1rem; font-weight: 800;
+      color: #fff; text-decoration: none; overflow: hidden; isolation: isolate;
+      transition: transform .25s cubic-bezier(.2,.7,.3,1), box-shadow .25s;
     }
+    .mbtn::after {
+      content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .25s;
+      background: radial-gradient(120px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,.25), transparent 60%);
+    }
+    .mbtn:hover::after { opacity: 1; }
+    .mbtn:active { transform: scale(.97); }
+    .mbtn.wa { background: linear-gradient(135deg, #25d366, #0ea855); box-shadow: 0 10px 40px rgba(37,211,102,.4); }
+    .mbtn.wa:hover { box-shadow: 0 16px 56px rgba(37,211,102,.6); }
+    .mbtn.tg { background: linear-gradient(135deg, #2aabee, #0055cc); box-shadow: 0 10px 40px rgba(42,171,238,.35); }
+    .mbtn.tg:hover { box-shadow: 0 16px 56px rgba(42,171,238,.55); }
+    .mbtn small { display: block; font-size: .68rem; font-weight: 600; opacity: .85; }
+    .mbtn .lbl { text-align: left; line-height: 1.25; }
+    .hero-note { margin-top: 16px; font-size: .78rem; color: rgba(255,255,255,.38); animation: drop .8s .45s cubic-bezier(.2,.7,.3,1) both; }
+    .hero-note b { color: #5ee896; font-weight: 700; }
+
+    /* ════ ticker ════ */
+    .ticker-wrap {
+      margin: 56px -20px 0; padding: 13px 0; overflow: hidden;
+      border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.015);
+      mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    }
+    .ticker { display: flex; width: max-content; animation: tick 28s linear infinite; }
+    .ticker-wrap:hover .ticker { animation-play-state: paused; }
+    @keyframes tick { to { transform: translateX(-50%) } }
+    .tick-item { display: inline-flex; align-items: center; gap: 10px; padding: 0 24px; font-size: .8rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: rgba(255,255,255,.55); white-space: nowrap; }
+    .tick-item .star { color: rgba(245,196,0,.4); }
+    .tick-item.g { color: var(--gold2); }
+
+    /* ════ perks row ════ */
+    .perks { display: grid; gap: 14px; margin-top: 54px; }
+    @media (min-width: 640px) { .perks { grid-template-columns: repeat(3, 1fr); } }
     .perk {
-      display: flex; align-items: flex-start; gap: 11px;
-      padding: 18px 15px; border-radius: 16px;
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-      transition: border-color 0.25s, background 0.25s;
+      display: flex; gap: 12px; align-items: flex-start; padding: 20px 18px; border-radius: 18px;
+      background: rgba(255,255,255,.03); border: 1px solid var(--line);
+      transition: border-color .25s, background .25s, transform .25s;
     }
-    .perk:hover { border-color: rgba(245,196,0,0.2); background: rgba(245,196,0,0.04); }
-    .perk-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
-    .perk strong { display: block; font-size: 0.83rem; font-weight: 700; margin-bottom: 3px; }
-    .perk span { font-size: 0.73rem; color: rgba(255,255,255,0.4); line-height: 1.5; display: block; }
+    .perk:hover { border-color: rgba(245,196,0,.3); background: rgba(245,196,0,.05); transform: translateY(-3px); }
+    .perk .ico { font-size: 1.5rem; flex: none; }
+    .perk strong { display: block; font-size: .88rem; font-weight: 800; margin-bottom: 4px; }
+    .perk span { font-size: .76rem; color: rgba(255,255,255,.45); line-height: 1.55; display: block; }
 
-    /* ── counters ── */
-    .counters {
-      display: flex; justify-content: center; gap: 44px;
-      margin-top: 54px; flex-wrap: wrap;
-      animation: fadeUp 0.6s ease 0.35s both;
+    /* ════ section heads ════ */
+    .sec-head { text-align: center; margin: 80px 0 32px; }
+    .sec-tag {
+      display: inline-block; font-size: .68rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase;
+      padding: 6px 16px; border-radius: 999px; border: 1px solid var(--line); color: rgba(255,255,255,.45);
+      background: rgba(255,255,255,.03); margin-bottom: 14px;
     }
-    .counter { text-align: center; }
-    .counter .num {
-      font-size: 2rem; font-weight: 900;
-      background: linear-gradient(135deg, var(--gold), var(--red));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      display: block;
-    }
-    .counter .lbl {
-      font-size: 0.7rem; font-weight: 600; color: rgba(255,255,255,0.32);
-      letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-top: 3px;
-    }
+    .sec-head h2 { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: clamp(1.4rem, 4.2vw, 2.1rem); line-height: 1.2; text-transform: uppercase; }
+    .sec-head p { margin: 12px auto 0; max-width: 480px; font-size: .92rem; color: rgba(255,255,255,.5); line-height: 1.75; }
 
-    /* ── sep ── */
-    .sep {
-      display: flex; align-items: center; gap: 16px;
-      margin: 56px 0 0; animation: fadeUp 0.6s ease 0.4s both;
+    /* ════ DREAM CALCULATOR ════ */
+    .calc {
+      padding: 34px 28px 30px; border-radius: 26px; position: relative; overflow: hidden;
+      background: linear-gradient(160deg, rgba(245,196,0,.09), rgba(26,111,255,.06) 60%, rgba(255,61,61,.05));
+      border: 1px solid rgba(245,196,0,.3);
     }
-    .sep::before, .sep::after {
-      content: ''; flex: 1; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.09), transparent);
+    .calc::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--blue), var(--red));
     }
-    .sep span {
-      font-size: 0.74rem; font-weight: 600; letter-spacing: 0.12em;
-      text-transform: uppercase; color: rgba(255,255,255,0.28); white-space: nowrap;
+    .calc-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+    .calc-lbl { font-size: .85rem; font-weight: 600; color: rgba(255,255,255,.6); }
+    .calc-months { font-size: 1.05rem; font-weight: 900; color: #fff; }
+    input[type=range] {
+      -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue), var(--gold)); outline: none; cursor: pointer;
     }
-
-    /* ── CTA ── */
-    .cta { text-align: center; margin-top: 44px; animation: fadeUp 0.6s ease 0.5s both; }
-    .cta h3 { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 12px; }
-    .cta p { font-size: 0.95rem; color: rgba(255,255,255,0.48); line-height: 1.7; max-width: 460px; margin: 0 auto 36px; }
-
-    .btn-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-    .btn-lg {
-      display: inline-flex; align-items: center; gap: 12px;
-      padding: 18px 36px; border-radius: 16px;
-      font-size: 1.05rem; font-weight: 800; text-decoration: none; color: #fff;
-      transition: transform 0.25s, box-shadow 0.25s, filter 0.25s;
-      position: relative; overflow: hidden;
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none; width: 28px; height: 28px; border-radius: 50%;
+      background: #fff; border: none;
+      box-shadow: 0 0 0 5px rgba(245,196,0,.4), 0 4px 16px rgba(0,0,0,.5);
+      transition: box-shadow .2s;
     }
-    .btn-lg::before { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0); transition: background .2s; pointer-events: none; }
-    .btn-lg:hover::before { background: rgba(255,255,255,0.08); }
-    .btn-lg:hover { transform: translateY(-4px); }
-    .btn-lg:active { transform: translateY(0); }
-    .btn-wa-lg { background: linear-gradient(135deg,#25d366,#0ea855); box-shadow: 0 8px 32px rgba(37,211,102,0.38); }
-    .btn-wa-lg:hover { box-shadow: 0 16px 48px rgba(37,211,102,0.58); filter: brightness(1.08); }
-    .btn-tg-lg { background: linear-gradient(135deg,#2aabee,#0055cc); box-shadow: 0 8px 32px rgba(42,171,238,0.38); }
-    .btn-tg-lg:hover { box-shadow: 0 16px 48px rgba(42,171,238,0.58); filter: brightness(1.08); }
-
-    footer {
-      text-align: center; margin-top: 68px;
-      font-size: 0.71rem; color: rgba(255,255,255,0.17);
-      animation: fadeUp 0.6s ease 0.65s both;
+    input[type=range]::-webkit-slider-thumb:hover { box-shadow: 0 0 0 9px rgba(245,196,0,.5), 0 4px 16px rgba(0,0,0,.5); }
+    input[type=range]::-moz-range-thumb {
+      width: 28px; height: 28px; border-radius: 50%; background: #fff; border: none;
+      box-shadow: 0 0 0 5px rgba(245,196,0,.4), 0 4px 16px rgba(0,0,0,.5);
     }
+    .calc-out { text-align: center; margin: 26px 0 8px; }
+    .calc-usd {
+      font-family: 'Montserrat', sans-serif; font-weight: 900;
+      font-size: clamp(2.6rem, 9vw, 4rem); line-height: 1;
+      color: var(--gold); text-shadow: 0 0 40px rgba(245,196,0,.45);
+    }
+    .calc-usd small { display: block; font-family: 'Inter', sans-serif; font-size: .78rem; font-weight: 600; color: rgba(255,255,255,.45); margin-top: 8px; text-shadow: none; letter-spacing: .04em; }
 
-    @keyframes slideDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes fadeUp   { from{opacity:0;transform:translateY(22px)}  to{opacity:1;transform:translateY(0)} }
+    .dreams { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 26px; }
+    @media (max-width: 560px) { .dreams { grid-template-columns: repeat(2, 1fr); } }
+    .dream {
+      text-align: center; padding: 16px 10px 14px; border-radius: 16px;
+      background: rgba(255,255,255,.03); border: 1px solid var(--line);
+      filter: grayscale(1); opacity: .38;
+      transition: filter .5s, opacity .5s, border-color .5s, background .5s, transform .5s;
+    }
+    .dream .di { font-size: 1.7rem; display: block; margin-bottom: 7px; }
+    .dream strong { display: block; font-size: .74rem; font-weight: 800; line-height: 1.3; margin-bottom: 3px; }
+    .dream span { font-size: .66rem; color: rgba(255,255,255,.4); font-weight: 600; }
+    .dream.on {
+      filter: none; opacity: 1;
+      border-color: rgba(245,196,0,.45); background: rgba(245,196,0,.08);
+      transform: translateY(-3px);
+    }
+    .dream.on .di { animation: pop .5s cubic-bezier(.2,1.4,.4,1); }
+    @keyframes pop { 0% { transform: scale(.6) } 70% { transform: scale(1.25) } 100% { transform: scale(1) } }
+    .dream.on span { color: var(--gold2); }
+    .calc-note { margin-top: 18px; text-align: center; font-size: .74rem; color: rgba(255,255,255,.38); line-height: 1.6; }
+    .calc-cta {
+      display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px;
+      padding: 16px; border-radius: 14px; font-size: .95rem; font-weight: 800; color: #fff; text-decoration: none;
+      background: linear-gradient(135deg, #25d366, #0ea855); box-shadow: 0 8px 30px rgba(37,211,102,.35);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .calc-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(37,211,102,.5); }
 
-    /* ── WA disabled state ── */
-    .wa-off {
-      opacity: 0.3;
-      filter: grayscale(1);
+    /* ════ remesas band ════ */
+    .remesa {
+      margin-top: 60px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+      padding: 24px 26px; border-radius: 20px;
+      background: rgba(37,211,102,.06); border: 1px solid rgba(37,211,102,.3);
+    }
+    .remesa .ri { font-size: 2.2rem; flex: none; }
+    .remesa .rt { flex: 1; min-width: 220px; }
+    .remesa .rt strong { display: block; font-size: 1rem; font-weight: 800; margin-bottom: 5px; color: #7df0a7; }
+    .remesa .rt span { font-size: .82rem; color: rgba(255,255,255,.55); line-height: 1.65; }
+    .remesa a {
+      flex: none; padding: 12px 22px; border-radius: 12px; font-size: .85rem; font-weight: 800;
+      color: #fff; text-decoration: none; background: linear-gradient(135deg, #25d366, #0ea855);
+      box-shadow: 0 6px 24px rgba(37,211,102,.35); transition: transform .2s;
+    }
+    .remesa a:hover { transform: translateY(-2px); }
+
+    /* ════ steps ════ */
+    .steps { display: grid; gap: 16px; }
+    @media (min-width: 700px) { .steps { grid-template-columns: repeat(3, 1fr); } }
+    .step {
+      padding: 26px 22px; border-radius: 20px;
+      background: rgba(255,255,255,.03); border: 1px solid var(--line);
+      transition: border-color .3s, background .3s;
+    }
+    .step:hover { border-color: rgba(245,196,0,.3); background: rgba(245,196,0,.04); }
+    .step-num {
+      font-family: 'Montserrat', sans-serif; font-size: 2.6rem; font-weight: 900; line-height: 1;
+      background: linear-gradient(135deg, var(--gold), rgba(255,255,255,.2));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 12px; display: block;
+    }
+    .step h3 { font-size: .98rem; font-weight: 800; margin-bottom: 8px; }
+    .step p { font-size: .82rem; color: rgba(255,255,255,.5); line-height: 1.7; }
+    .step .time { display: inline-block; margin-top: 14px; font-size: .7rem; font-weight: 800; padding: 5px 12px; border-radius: 999px; background: rgba(52,224,122,.1); border: 1px solid rgba(52,224,122,.3); color: #5ee896; }
+
+    /* ════ testimonials ════ */
+    .testis { display: grid; gap: 14px; }
+    @media (min-width: 700px) { .testis { grid-template-columns: repeat(3, 1fr); } }
+    .testi {
+      padding: 22px 20px; border-radius: 18px;
+      background: rgba(255,255,255,.03); border: 1px solid var(--line);
+      transition: border-color .3s, transform .3s;
+    }
+    .testi:hover { border-color: rgba(245,196,0,.3); transform: translateY(-3px); }
+    .testi .stars { color: var(--gold); font-size: .8rem; letter-spacing: 2px; margin-bottom: 10px; }
+    .testi p { font-size: .82rem; color: rgba(255,255,255,.65); line-height: 1.7; margin-bottom: 14px; }
+    .testi .who { display: flex; align-items: center; gap: 10px; }
+    .testi .tav {
+      width: 34px; height: 34px; border-radius: 50%; flex: none;
+      display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: .85rem;
+    }
+    .testi .who strong { display: block; font-size: .8rem; font-weight: 800; }
+    .testi .who span { font-size: .68rem; color: rgba(255,255,255,.4); }
+
+    /* ════ FAQ compacto ════ */
+    .faq { display: flex; flex-direction: column; gap: 10px; max-width: 620px; margin: 0 auto; }
+    .qa { border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.025); overflow: hidden; transition: border-color .3s, background .3s; }
+    .qa.open { border-color: rgba(245,196,0,.4); background: rgba(245,196,0,.05); }
+    .qa-q {
+      width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      padding: 16px 20px; background: none; border: none; color: #fff; font-family: inherit;
+      font-size: .9rem; font-weight: 700; text-align: left; cursor: pointer;
+    }
+    .qa-q .pm { flex: none; width: 26px; height: 26px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; background: rgba(255,255,255,.06); border: 1px solid var(--line); font-size: 1rem; transition: transform .3s, background .3s; }
+    .qa.open .pm { transform: rotate(45deg); background: rgba(245,196,0,.25); }
+    .qa-a { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.2,.7,.3,1); }
+    .qa-a p { padding: 0 20px 16px; font-size: .84rem; color: rgba(255,255,255,.55); line-height: 1.75; }
+    .qa-a b { color: #fff; }
+
+    /* ════ final CTA ════ */
+    .final {
+      margin-top: 84px; padding: 50px 26px; border-radius: 28px; text-align: center; position: relative; overflow: hidden;
+      background: linear-gradient(160deg, rgba(245,196,0,.12), rgba(26,111,255,.08) 55%, rgba(255,61,61,.06));
+      border: 1px solid rgba(245,196,0,.3);
+    }
+    .final::before {
+      content: ''; position: absolute; inset: -2px; border-radius: 28px; padding: 1px; pointer-events: none;
+      background: conic-gradient(from var(--ang,0deg), transparent 70%, rgba(255,224,102,.9), transparent 85%);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+      animation: spin 5s linear infinite;
+    }
+    @property --ang { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+    @keyframes spin { to { --ang: 360deg } }
+    .final h2 { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: clamp(1.4rem, 4.4vw, 2.2rem); line-height: 1.2; margin-bottom: 12px; text-transform: uppercase; }
+    .final > p { font-size: .95rem; color: rgba(255,255,255,.55); line-height: 1.8; max-width: 470px; margin: 0 auto 16px; }
+    .cupos {
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 26px;
+      padding: 8px 18px; border-radius: 999px; font-size: .8rem; font-weight: 700;
+      color: var(--gold2); background: rgba(245,196,0,.08); border: 1px solid rgba(245,196,0,.35);
+    }
+    .cupos .flame { animation: flick 1.4s ease-in-out infinite; display: inline-block; }
+    @keyframes flick { 0%,100% { transform: scale(1) } 50% { transform: scale(1.2) rotate(-4deg) } }
+    .final .row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .final .micro { margin-top: 18px; font-size: .74rem; color: rgba(255,255,255,.35); }
+
+    footer { text-align: center; margin-top: 64px; font-size: .71rem; color: rgba(255,255,255,.18); }
+
+    /* ════ sticky mobile bar ════ */
+    .sticky-bar {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+      display: flex; gap: 10px; padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
+      background: rgba(6,5,13,.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border-top: 1px solid var(--line);
+      transform: translateY(110%); transition: transform .45s cubic-bezier(.2,.7,.3,1);
+    }
+    .sticky-bar.show { transform: none; }
+    .sticky-bar a {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 13px; border-radius: 13px; font-size: .88rem; font-weight: 800; color: #fff; text-decoration: none;
+    }
+    .sticky-bar .wa { background: linear-gradient(135deg, #25d366, #0ea855); }
+    .sticky-bar .tg { background: linear-gradient(135deg, #2aabee, #0055cc); }
+
+    /* ════ floating WA bubble (desktop) ════ */
+    .fab {
+      position: fixed; right: 22px; bottom: 22px; z-index: 52;
+      width: 62px; height: 62px; border-radius: 50%;
+      display: none; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #25d366, #0ea855);
+      box-shadow: 0 10px 34px rgba(37,211,102,.5);
+      transition: transform .25s;
+    }
+    .fab:hover { transform: scale(1.1); }
+    .fab::before {
+      content: ''; position: absolute; inset: -6px; border-radius: 50%;
+      border: 2px solid rgba(37,211,102,.5); animation: fabping 1.8s ease-out infinite;
+    }
+    @keyframes fabping { 0% { transform: scale(.85); opacity: 1 } 100% { transform: scale(1.35); opacity: 0 } }
+    @media (min-width: 761px) { .fab { display: flex; } .sticky-bar { display: none; } }
+
+    /* ════ social proof toast ════ */
+    .toast {
+      position: fixed; left: 16px; bottom: 16px; z-index: 55;
+      display: flex; align-items: center; gap: 11px;
+      max-width: 300px; padding: 12px 16px 12px 12px; border-radius: 16px;
+      background: rgba(13,12,22,.93); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 16px 50px rgba(0,0,0,.55);
+      transform: translateX(-120%); opacity: 0;
+      transition: transform .55s cubic-bezier(.2,.9,.3,1.15), opacity .45s;
       pointer-events: none;
-      cursor: not-allowed;
-      position: relative;
     }
+    .toast.show { transform: none; opacity: 1; }
+    .toast .tav2 {
+      width: 38px; height: 38px; border-radius: 50%; flex: none;
+      display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: .95rem; color: #fff;
+    }
+    .toast .tx { font-size: .78rem; line-height: 1.45; color: rgba(255,255,255,.75); }
+    .toast .tx b { color: #fff; }
+    .toast .tt { display: block; font-size: .68rem; color: rgba(255,255,255,.38); margin-top: 2px; }
+    .toast .tt .on { color: #5ee896; }
+    @media (max-width: 760px) { .toast { bottom: 86px; } }
 
-    @media (max-width: 600px) {
-      .sectors { grid-template-columns: repeat(2, 1fr); }
-      .perks { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 520px) {
-      .topbar { justify-content: center; }
-      .flag-pill { display: none; }
-      .top-btns { width: 100%; justify-content: center; }
-      .btn-lg { padding: 16px 24px; font-size: 0.93rem; }
-    }
+    .wa-off { opacity: 0.3; filter: grayscale(1); pointer-events: none; cursor: not-allowed; }
   </style>
 </head>
 <body>
-
-<canvas id="canvas"></canvas>
-<div class="blob b1"></div>
-<div class="blob b2"></div>
-<div class="blob b3"></div>
+<div id="progress"></div>
+<div class="aurora"><i></i></div>
+<canvas id="stars"></canvas>
 
 <div class="page">
 
-  <!-- TOPBAR -->
+  <!-- ── topbar ── -->
   <div class="topbar">
     <div class="flag-pill">
-      <div class="flag-bar">
-        <span class="fy"></span>
-        <span class="fb"></span>
-        <span class="fr"></span>
-      </div>
-      Trabajo en el Exterior · Venezuela
+      <div class="flag-bar"><span class="fy"></span><span class="fb"></span><span class="fr"></span></div>
+      Venezuela · 2026
     </div>
-    <div class="top-btns">
-      <a class="btn-sm bwa"
-         href="https://wa.me/40755656701"
-         target="_blank" rel="noopener">
-        <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.116 1.534 5.846L.057 23.877a.75.75 0 0 0 .918.918l6.085-1.476A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 0 1-5.028-1.383l-.36-.214-3.733.905.922-3.639-.236-.376A9.818 9.818 0 0 1 2.18 12C2.18 6.555 6.556 2.18 12 2.18c5.443 0 9.818 4.375 9.818 9.82 0 5.443-4.375 9.818-9.818 9.818z"/></svg>
-        WhatsApp
-      </a>
-      <a class="btn-sm btg"
-         href="https://t.me/jobs_russion"
-         target="_blank" rel="noopener">
-        <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
-        Telegram
-      </a>
+    <div class="top-actions">
+      <a class="chip wa js-wa" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <a class="chip tg js-tg" href="#" target="_blank" rel="noopener">✈️ Telegram</a>
     </div>
   </div>
 
-  <!-- HERO -->
+  <!-- ── passport strip ── -->
+  <div class="pass-strip"><span class="ic">🛂</span> Requisito obligatorio: pasaporte venezolano vigente</div>
+
+  <!-- ── hero ── -->
   <section class="hero">
-    <div class="eyebrow">Empleos reales · Venezuela 2025</div>
+    <div class="hero-kicker">Empleos reales en el exterior · sin experiencia</div>
     <h1>
-      Salí a trabajar<br>
-      <span class="gold-shine">al exterior</span><br>
-      y cobrá en<br>
-      <span class="blue-red">dólares</span>
+      Trabaja afuera.<br>
+      <span class="gold-shine">Gana en dólares.</span><br>
+      Cambia tu vida.
     </h1>
     <p class="hero-sub">
-      Empleos reales afuera para venezolanos con pasaporte vigente.<br>
-      <strong>Vuelo, alojamiento y comida incluidos.</strong><br>
-      Sin experiencia previa — te capacitamos en el lugar.
+      Vuelo, alojamiento y comida <b>incluidos</b> — tu sueldo queda casi completo para ti
+      y tu familia. Sin experiencia: te capacitamos en el lugar.
+      <b>Escríbenos y en 15 minutos tienes opciones reales.</b>
     </p>
+    <div class="hero-cta">
+      <a class="mbtn wa js-wa" href="#" target="_blank" rel="noopener">
+        <svg width="22" height="22" fill="#fff" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.116 1.534 5.846L.057 23.877a.75.75 0 0 0 .918.918l6.085-1.476A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 0 1-5.028-1.383l-.36-.214-3.733.905.922-3.639-.236-.376A9.818 9.818 0 0 1 2.18 12C2.18 6.555 6.556 2.18 12 2.18c5.443 0 9.818 4.375 9.818 9.82 0 5.443-4.375 9.818-9.818 9.818z"/></svg>
+        <span class="lbl">Escribir por WhatsApp<small>respuesta en minutos · gratis</small></span>
+      </a>
+      <a class="mbtn tg js-tg" href="#" target="_blank" rel="noopener">
+        <svg width="22" height="22" fill="#fff" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+        <span class="lbl">Abrir en Telegram<small>el mensaje ya está listo</small></span>
+      </a>
+    </div>
+    <div class="hero-note">🔒 100% gratis · <b>sin pagos por adelantado</b> · preguntar no te compromete a nada</div>
   </section>
 
-  <!-- PASSPORT BANNER -->
-  <div class="passport-banner">
+  <!-- ── ticker ── -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span class="tick-item g">💵 Sueldos de $600 a $2.000/mes</span><span class="tick-item"><span class="star">✦</span> 🇪🇸 España</span>
+      <span class="tick-item">🇵🇹 Portugal</span><span class="tick-item"><span class="star">✦</span> 🇮🇹 Italia</span>
+      <span class="tick-item">🇨🇱 Chile</span><span class="tick-item"><span class="star">✦</span> 🇺🇸 EE.UU.</span>
+      <span class="tick-item g">✈️ Vuelo + alojamiento incluidos</span><span class="tick-item"><span class="star">✦</span> sin experiencia</span>
+      <span class="tick-item g">💵 Sueldos de $600 a $2.000/mes</span><span class="tick-item"><span class="star">✦</span> 🇪🇸 España</span>
+      <span class="tick-item">🇵🇹 Portugal</span><span class="tick-item"><span class="star">✦</span> 🇮🇹 Italia</span>
+      <span class="tick-item">🇨🇱 Chile</span><span class="tick-item"><span class="star">✦</span> 🇺🇸 EE.UU.</span>
+      <span class="tick-item g">✈️ Vuelo + alojamiento incluidos</span><span class="tick-item"><span class="star">✦</span> sin experiencia</span>
+    </div>
+  </div>
+
+  <!-- ── perks ── -->
+  <div class="perks rv">
+    <div class="perk"><span class="ico">✈️</span><div><strong>Todo incluido</strong><span>Vuelo, alojamiento y comida — sin costo inicial para ti</span></div></div>
+    <div class="perk"><span class="ico">💵</span><div><strong>Sueldo en dólares</strong><span>De $600 a $2.000 al mes, pago directo y puntual</span></div></div>
+    <div class="perk"><span class="ico">🙌</span><div><strong>Sin experiencia</strong><span>Seguridad, fábricas, limpieza, reparto — te capacitamos</span></div></div>
+  </div>
+
+  <!-- ── passport banner ── -->
+  <div class="passport-banner rv">
     <span class="pb-icon">🛂</span>
     <div>
       <strong>Pasaporte venezolano vigente — requisito obligatorio</strong>
-      <span>Para trabajar en el exterior necesitás el pasaporte al día. Si está vencido o en trámite, escribinos igual — te asesoramos sobre cómo avanzar con los documentos.</span>
+      <span>Para viajar y trabajar en el exterior necesitas tu pasaporte al día. ¿Lo tienes vencido o en trámite? Escríbenos igual — te orientamos con los documentos para que no pierdas tu cupo.</span>
     </div>
   </div>
 
-  <!-- CARD -->
-  <div class="card-wrap">
-    <div class="card">
-      <div class="card-inner-border"></div>
-      <div class="chip">🌐 Posiciones disponibles ahora</div>
-      <span class="card-icon">✈️</span>
-      <h2>Trabajo en el Exterior</h2>
-      <div class="salary">$600 — $2.000</div>
-      <div class="salary-note">por mes · en dólares · vuelo + alojamiento + comida incluidos</div>
-      <div class="tags">
-        <span class="tag">🇪🇸 España</span>
-        <span class="tag">🇵🇹 Portugal</span>
-        <span class="tag">🇮🇹 Italia</span>
-        <span class="tag">🇨🇱 Chile</span>
-        <span class="tag">🇺🇸 Estados Unidos</span>
-        <span class="tag">🌎 Latinoamérica</span>
+  <!-- ── DREAM CALCULATOR ── -->
+  <div class="sec-head rv">
+    <div class="sec-tag">Calculadora de sueños</div>
+    <h2>¿Qué lograrías<br>trabajando afuera?</h2>
+    <p>Mueve la barra y mira lo que puedes conseguir. Con alojamiento y comida incluidos, <b>casi todo tu sueldo se ahorra</b>.</p>
+  </div>
+
+  <div class="calc rv">
+    <div class="calc-row">
+      <span class="calc-lbl">Meses trabajando en el exterior</span>
+      <span class="calc-months"><span id="calcM">4</span> meses</span>
+    </div>
+    <input type="range" min="1" max="12" step="1" value="4" id="calcRange" aria-label="Meses trabajando">
+    <div class="calc-out">
+      <div class="calc-usd">$<span id="calcUsd">8 000</span><small>ahorrados aprox. · con sueldo de $2.000/mes</small></div>
+    </div>
+    <div class="dreams" id="dreams">
+      <div class="dream" data-need="1"><span class="di">📱</span><strong>Teléfono nuevo</strong><span>1 mes</span></div>
+      <div class="dream" data-need="2"><span class="di">🏍️</span><strong>Tu propia moto</strong><span>2 meses</span></div>
+      <div class="dream" data-need="4"><span class="di">🚗</span><strong>Un carro</strong><span>4 meses</span></div>
+      <div class="dream" data-need="6"><span class="di">🏠</span><strong>Arreglar la casa de tu familia</strong><span>6 meses</span></div>
+      <div class="dream" data-need="9"><span class="di">🏡</span><strong>Inicial de tu casa propia</strong><span>9 meses</span></div>
+      <div class="dream" data-need="12"><span class="di">💼</span><strong>Tu propio negocio</strong><span>12 meses</span></div>
+    </div>
+    <div class="calc-note">Cálculo estimado con sueldo de $2.000/mes. Con alojamiento y comida incluidos, casi todo se ahorra.</div>
+    <a class="calc-cta js-smart" href="#" target="_blank" rel="noopener">Quiero empezar a ahorrar así →</a>
+  </div>
+
+  <!-- ── remesas ── -->
+  <div class="remesa rv">
+    <span class="ri">👨‍👩‍👧</span>
+    <div class="rt">
+      <strong>Tu familia lo va a sentir desde el primer mes</strong>
+      <span>Enviando solo una parte de tu sueldo, en Venezuela tu familia vive tranquila: mercado completo, medicinas, colegio. Tú decides cuánto mandas.</span>
+    </div>
+    <a class="js-smart" href="#" target="_blank" rel="noopener">Quiero ayudar a mi familia</a>
+  </div>
+
+  <!-- ── steps ── -->
+  <div class="sec-head rv">
+    <div class="sec-tag">Así de simple</div>
+    <h2>3 pasos y estás volando</h2>
+    <p>Todo el proceso es acompañado. Nunca estás solo — te guiamos desde el primer mensaje hasta tu primer día de trabajo.</p>
+  </div>
+
+  <div class="steps rv">
+    <div class="step">
+      <span class="step-num">01</span>
+      <h3>Escríbenos ahora</h3>
+      <p>Toca el botón — el mensaje ya está escrito. Solo envíalo. Te respondemos en minutos con opciones según tu perfil.</p>
+      <span class="time">⏱ 30 segundos</span>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <h3>Elegimos tu vacante</h3>
+      <p>Nos dices qué país te interesa y qué sabes hacer. Te confirmamos la vacante, el sueldo y las fechas — todo claro, sin letra pequeña.</p>
+      <span class="time">⏱ mismo día</span>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <h3>Viajas y trabajas</h3>
+      <p>Te ayudamos con los documentos y el pasaje. Llegas con alojamiento resuelto y empiezas a ganar en dólares desde la primera semana.</p>
+      <span class="time">⏱ en semanas</span>
+    </div>
+  </div>
+
+  <!-- ── testimonials ── -->
+  <div class="sec-head rv">
+    <div class="sec-tag">Historias reales</div>
+    <h2>Ellos ya lo hicieron</h2>
+  </div>
+
+  <div class="testis rv">
+    <div class="testi">
+      <div class="stars">★★★★★</div>
+      <p>«Llegué a España sin un dólar, pana. Hoy mando plata a mi mamá todos los meses y ya estoy ahorrando para mi carro.»</p>
+      <div class="who">
+        <div class="tav" style="background:linear-gradient(135deg,#f5c400,#b38f00)">L</div>
+        <div><strong>Luis, 28</strong><span>Maracaibo → 🇪🇸 España</span></div>
+      </div>
+    </div>
+    <div class="testi">
+      <div class="stars">★★★★★</div>
+      <p>«Tenía miedo de que fuera mentira. Pero me acompañaron en todo: documentos, vuelo, llegada. En 3 semanas estaba trabajando.»</p>
+      <div class="who">
+        <div class="tav" style="background:linear-gradient(135deg,#1a6fff,#0044aa)">M</div>
+        <div><strong>María, 34</strong><span>Valencia → 🇵🇹 Portugal</span></div>
+      </div>
+    </div>
+    <div class="testi">
+      <div class="stars">★★★★★</div>
+      <p>«Trabajo en una fábrica, tranquilo. Comida y cuarto incluidos, así que casi todo el sueldo lo guardo. Mi meta: mi negocio propio.»</p>
+      <div class="who">
+        <div class="tav" style="background:linear-gradient(135deg,#ff3d3d,#aa1111)">J</div>
+        <div><strong>Jesús, 25</strong><span>Caracas → 🇮🇹 Italia</span></div>
       </div>
     </div>
   </div>
 
-  <!-- SECTORS -->
-  <div class="sectors-title">Rubros disponibles · sin experiencia necesaria</div>
-  <div class="sectors">
-    <div class="sector">
-      <span class="sector-icon">🛡</span>
-      <div class="sector-text">
-        <strong>Seguridad</strong>
-        <span>Vigilancia, portería, control de acceso</span>
-      </div>
+  <!-- ── FAQ ── -->
+  <div class="sec-head rv">
+    <div class="sec-tag">Dudas frecuentes</div>
+    <h2>Es normal dudar</h2>
+    <p>Esto es lo que todos preguntan antes de escribir.</p>
+  </div>
+
+  <div class="faq rv">
+    <div class="qa">
+      <button class="qa-q">¿Es gratis? ¿Dónde está la trampa?<span class="pm">+</span></button>
+      <div class="qa-a"><p>Es <b>100% gratis y sin pagos por adelantado</b>. Las empresas nos pagan a nosotros por encontrar trabajadores — tú no pagas nada por la asesoría ni por la vacante. Si alguien te pide dinero por adelantado, es estafa: nosotros nunca lo hacemos.</p></div>
     </div>
-    <div class="sector">
-      <span class="sector-icon">🏗</span>
-      <div class="sector-text">
-        <strong>Construcción</strong>
-        <span>Obra, mantenimiento, ayudante</span>
-      </div>
+    <div class="qa">
+      <button class="qa-q">No tengo experiencia. ¿Igual puedo?<span class="pm">+</span></button>
+      <div class="qa-a"><p>Sí. La mayoría de las vacantes <b>no piden experiencia</b>: seguridad, fábricas, limpieza, reparto, construcción. Te capacitan en el mismo lugar de trabajo y ese tiempo también se paga.</p></div>
     </div>
-    <div class="sector">
-      <span class="sector-icon">🏭</span>
-      <div class="sector-text">
-        <strong>Fábricas</strong>
-        <span>Producción, línea de montaje, almacén</span>
-      </div>
+    <div class="qa">
+      <button class="qa-q">¿Necesito pasaporte?<span class="pm">+</span></button>
+      <div class="qa-a"><p>Sí, el <b>pasaporte vigente es requisito</b> para viajar. ¿Lo tienes vencido o en trámite? Escríbenos igual — te orientamos sobre cómo avanzar con los documentos mientras tanto.</p></div>
     </div>
-    <div class="sector">
-      <span class="sector-icon">🛵</span>
-      <div class="sector-text">
-        <strong>Reparto</strong>
-        <span>Delivery, logística, mensajería</span>
-      </div>
+    <div class="qa">
+      <button class="qa-q">¿En cuánto tiempo estaría viajando?<span class="pm">+</span></button>
+      <div class="qa-a"><p>Depende del país y tus documentos, pero en general <b>entre 2 y 6 semanas</b> desde el primer mensaje. Hay vacantes urgentes que salen antes.</p></div>
     </div>
-    <div class="sector">
-      <span class="sector-icon">🧹</span>
-      <div class="sector-text">
-        <strong>Limpieza</strong>
-        <span>Hoteles, oficinas, residencias</span>
-      </div>
-    </div>
-    <div class="sector">
-      <span class="sector-icon">🍽</span>
-      <div class="sector-text">
-        <strong>Gastronomía</strong>
-        <span>Cocina, salón, catering</span>
-      </div>
+    <div class="qa">
+      <button class="qa-q">Solo quiero preguntar, sin comprometerme<span class="pm">+</span></button>
+      <div class="qa-a"><p>Perfecto — así funciona. <b>Preguntar no te compromete a nada</b>. Te contamos las condiciones, lo piensas con calma y decides cuando quieras. Nadie te va a presionar.</p></div>
     </div>
   </div>
 
-  <!-- PERKS -->
-  <div class="perks">
-    <div class="perk">
-      <span class="perk-icon">✈️</span>
-      <div>
-        <strong>Vuelo + alojamiento + comida</strong>
-        <span>Todo incluido — sin costo inicial para ti</span>
-      </div>
-    </div>
-    <div class="perk">
-      <span class="perk-icon">💵</span>
-      <div>
-        <strong>Sueldo en dólares</strong>
-        <span>Transferencia directa, sin retenciones ocultas</span>
-      </div>
-    </div>
-    <div class="perk">
-      <span class="perk-icon">🙌</span>
-      <div>
-        <strong>Sin experiencia previa</strong>
-        <span>Trabajo en distintos rubros — capacitamos en el lugar</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- COUNTERS -->
-  <div class="counters">
-    <div class="counter">
-      <span class="num">+150</span>
-      <span class="lbl">Vacantes activas</span>
-    </div>
-    <div class="counter">
-      <span class="num">6+</span>
-      <span class="lbl">Países</span>
-    </div>
-    <div class="counter">
-      <span class="num">15min</span>
-      <span class="lbl">Primera respuesta</span>
-    </div>
-  </div>
-
-  <!-- SEP -->
-  <div class="sep"><span>Contactanos ahora</span></div>
-
-  <!-- CTA -->
-  <section class="cta">
-    <h3>¿Tienes el pasaporte al día?</h3>
-    <p>Escríbenos y en menos de 15 minutos te mandamos opciones reales según tu perfil. El primer paso es tuyo, pana.</p>
-    <div class="btn-group">
-      <a class="btn-lg btn-wa-lg"
-         href="https://wa.me/40755656701"
-         target="_blank" rel="noopener">
+  <!-- ── final CTA ── -->
+  <div class="final rv">
+    <h2>Tu nueva vida está<br>a un mensaje</h2>
+    <p>Cada día que pasa es un día menos ganando en dólares. El mensaje ya está escrito — solo tienes que enviarlo.</p>
+    <div class="cupos"><span class="flame">⚡</span> Quedan <b>&nbsp;<span id="spotsLeft">8</span> cupos&nbsp;</b> esta semana</div>
+    <div class="row">
+      <a class="mbtn wa js-wa" href="#" target="_blank" rel="noopener">
         <svg width="22" height="22" fill="#fff" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.116 1.534 5.846L.057 23.877a.75.75 0 0 0 .918.918l6.085-1.476A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 0 1-5.028-1.383l-.36-.214-3.733.905.922-3.639-.236-.376A9.818 9.818 0 0 1 2.18 12C2.18 6.555 6.556 2.18 12 2.18c5.443 0 9.818 4.375 9.818 9.82 0 5.443-4.375 9.818-9.818 9.818z"/></svg>
-        Escribir por WhatsApp
+        <span class="lbl">Escribir por WhatsApp<small>gratis · sin compromiso</small></span>
       </a>
-      <a class="btn-lg btn-tg-lg"
-         href="https://t.me/jobs_russion"
-         target="_blank" rel="noopener">
+      <a class="mbtn tg js-tg" href="#" target="_blank" rel="noopener">
         <svg width="22" height="22" fill="#fff" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
-        Abrir en Telegram
+        <span class="lbl">Abrir en Telegram<small>el mensaje ya está listo</small></span>
       </a>
     </div>
-  </section>
+    <div class="micro">Respondemos 24/7 · primera respuesta en menos de 15 minutos</div>
+  </div>
 
-  <footer>© 2025 · Trabajo en el Exterior · Venezuela · Todos los derechos reservados</footer>
+  <footer>© 2026 · Trabajo en el Exterior · Venezuela · Todos los derechos reservados</footer>
+</div>
 
+<!-- ── social proof toast ── -->
+<div class="toast" id="toast">
+  <div class="tav2" id="toastAv">L</div>
+  <div class="tx"><b id="toastName">Luis, Maracaibo</b> <span id="toastAct">escribió por WhatsApp</span><span class="tt"><span class="on">●</span> <span id="toastTime">hace un momento</span></span></div>
+</div>
+
+<!-- ── floating WA bubble (desktop) ── -->
+<a class="fab js-wa" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg width="30" height="30" fill="#fff" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.116 1.534 5.846L.057 23.877a.75.75 0 0 0 .918.918l6.085-1.476A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 0 1-5.028-1.383l-.36-.214-3.733.905.922-3.639-.236-.376A9.818 9.818 0 0 1 2.18 12C2.18 6.555 6.556 2.18 12 2.18c5.443 0 9.818 4.375 9.818 9.82 0 5.443-4.375 9.818-9.818 9.818z"/></svg>
+</a>
+
+<!-- ── sticky mobile bar ── -->
+<div class="sticky-bar" id="stickyBar">
+  <a class="wa js-wa" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+  <a class="tg js-tg" href="#" target="_blank" rel="noopener">✈️ Telegram</a>
 </div>
 
 <script>
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
-  let W, H;
-  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-  window.addEventListener('resize', resize);
-  resize();
-  const COLORS = ['rgba(245,196,0,','rgba(255,61,61,','rgba(26,111,255,'];
-  const particles = Array.from({ length: 110 }, () => ({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-    r: Math.random() * 1.5 + 0.3,
-    vx: (Math.random() - 0.5) * 0.28,
-    vy: (Math.random() - 0.5) * 0.28,
-    alpha: Math.random() * 0.5 + 0.1,
-    color: COLORS[Math.floor(Math.random() * COLORS.length)]
-  }));
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
-      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = p.color + p.alpha + ')'; ctx.fill();
-    });
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const d = Math.sqrt(dx*dx + dy*dy);
-        if (d < 95) {
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = 'rgba(245,196,0,' + (0.055 * (1 - d/95)) + ')';
-          ctx.lineWidth = 0.5; ctx.stroke();
-        }
-      }
-    }
-    requestAnimationFrame(draw);
-  }
-  draw();
-</script>
-<script>
-  // ── WA toggle: false = кнопка выключена, true = включена ──
-  var WA_ENABLED = true;
+/* ── aplicar contactos desde WA_LINK / TG_LINK (definidos arriba) ── */
+document.querySelectorAll('.js-wa').forEach(function(a){ a.href = WA_LINK; });
+document.querySelectorAll('.js-tg').forEach(function(a){ a.href = TG_LINK; });
+/* умные кнопки (js-smart): по умолчанию WhatsApp; если WA выключен — внизу переключатся на Telegram */
+document.querySelectorAll('.js-smart').forEach(function(a){ a.href = WA_LINK; });
 
-  (function() {
-    if (!WA_ENABLED) {
-      document.querySelectorAll('a[href*="wa.me"]').forEach(function(a) {
-        a.classList.add('wa-off');
-        a.removeAttribute('href');
+/* ── estrellas + cometas ── */
+(function(){
+  var c = document.getElementById('stars'), x = c.getContext('2d'), W, H, stars, comets = [];
+  function rs(){ W = c.width = innerWidth; H = c.height = innerHeight; }
+  addEventListener('resize', rs); rs();
+  stars = Array.from({length: 85}, function(){ return {
+    x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.3 + .3,
+    s: Math.random()*0.22 + .04, p: Math.random()*Math.PI*2
+  };});
+  var nextComet = 350 + Math.random()*400, frame = 0;
+  function spawnComet(){
+    var fromLeft = Math.random() < .5;
+    comets.push({
+      x: fromLeft ? -60 : W + 60, y: Math.random() * H * .4,
+      vx: (fromLeft ? 1 : -1) * (7 + Math.random()*5), vy: 2.2 + Math.random()*1.5,
+      life: 1, trail: []
+    });
+  }
+  (function draw(t){
+    frame++;
+    if (frame > nextComet) { spawnComet(); nextComet = frame + 550 + Math.random()*700; }
+    x.clearRect(0,0,W,H);
+    stars.forEach(function(st){
+      st.y -= st.s; if (st.y < -4) { st.y = H + 4; st.x = Math.random()*W; }
+      var a = .22 + Math.abs(Math.sin(t/1500 + st.p)) * .42;
+      x.beginPath(); x.arc(st.x, st.y, st.r, 0, Math.PI*2);
+      x.fillStyle = 'rgba(255,244,200,' + a + ')'; x.fill();
+    });
+    comets = comets.filter(function(cm){
+      cm.x += cm.vx; cm.y += cm.vy; cm.life -= .006;
+      cm.trail.unshift({x: cm.x, y: cm.y});
+      if (cm.trail.length > 22) cm.trail.pop();
+      cm.trail.forEach(function(p, i){
+        var a = cm.life * (1 - i/22) * .8;
+        x.beginPath(); x.arc(p.x, p.y, Math.max(.4, 2.2 - i*.1), 0, Math.PI*2);
+        x.fillStyle = 'rgba(255,230,140,' + a + ')'; x.fill();
       });
-    }
-  })();
-</script>
-<script>
-  (function() {
-    var msgs = [
-      "Hola! Vi lo del trabajo en el exterior y me interesó. ¿Me puedes contar más detalles?",
-      "Buenas! Tengo el pasaporte vigente y quiero trabajar afuera. ¿Cómo inicio?",
-      "Hola, buenos días! Quiero saber más sobre las oportunidades en el exterior que ofrecen.",
-      "Chamo, hola! Vi lo del trabajo afuera y quiero saber más. ¿Qué necesito para comenzar?",
-      "Buenas! Me llegó info sobre el trabajo en Europa y quería consultar. ¿Están contratando?",
-      "Hola! Me interesó la propuesta de trabajo en el exterior. ¿Me explicas cómo es el proceso?",
-      "Buenas, buen día! Quiero trabajar afuera, ¿me cuentas cómo funciona todo esto?",
-      "Hola pana! Vi las opciones de trabajo en Europa y me pareció chévere. ¿Siguen con vacantes?",
-      "Hola! Me gustaría saber más sobre las posibilidades en el exterior. ¿Qué países tienen disponibles?",
-      "Buenas! Vi lo del trabajo afuera y me interesó bastante. ¿Cuáles son los requisitos del pasaporte?"
-    ];
-    var msg = msgs[Math.floor(Math.random() * msgs.length)];
-    var encoded = encodeURIComponent(msg);
-    document.querySelectorAll('a[href*="wa.me"]').forEach(function(a) {
-      a.href = a.href.split('?')[0] + '?text=' + encoded;
+      return cm.life > 0 && cm.x > -100 && cm.x < W + 100 && cm.y < H + 100;
     });
-    document.querySelectorAll('a[href*="t.me"]').forEach(function(a) {
-      var base = a.href.split('?')[0];
-      a.href = base + '?text=' + encoded;
+    requestAnimationFrame(draw);
+  })(0);
+})();
+
+/* ── barra de progreso ── */
+(function(){
+  var bar = document.getElementById('progress');
+  addEventListener('scroll', function(){
+    var h = document.documentElement.scrollHeight - innerHeight;
+    bar.style.width = (h > 0 ? (scrollY / h * 100) : 0) + '%';
+  }, { passive: true });
+})();
+
+/* ── reveal on scroll ── */
+var io = new IntersectionObserver(function(es){
+  es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: .12 });
+document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+
+/* ── cupos restantes (6–11, aleatorio por visita) ── */
+document.getElementById('spotsLeft').textContent = 6 + Math.floor(Math.random()*6);
+
+/* ── calculadora de sueños ── */
+(function(){
+  var MONTHLY = 2000; /* ahorro mensual estimado en USD */
+  var range = document.getElementById('calcRange');
+  var elM = document.getElementById('calcM'), elU = document.getElementById('calcUsd');
+  var dreams = Array.prototype.slice.call(document.querySelectorAll('.dream'));
+  var cur = 0, tgt = 0, anim = null;
+  function fmt(n){ return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  function step(){
+    cur += (tgt - cur) * .18;
+    elU.textContent = fmt(cur);
+    if (Math.abs(tgt - cur) > .8) { anim = requestAnimationFrame(step); }
+    else { elU.textContent = fmt(tgt); anim = null; }
+  }
+  function update(){
+    var m = +range.value;
+    elM.textContent = m;
+    tgt = m * MONTHLY;
+    if (!anim) anim = requestAnimationFrame(step);
+    dreams.forEach(function(d){
+      d.classList.toggle('on', m >= +d.dataset.need);
     });
-  })();
+  }
+  range.addEventListener('input', update);
+  update();
+})();
+
+/* ── magnetic highlight en botones ── */
+document.querySelectorAll('.mbtn').forEach(function(b){
+  b.addEventListener('mousemove', function(e){
+    var r = b.getBoundingClientRect();
+    b.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    b.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    var dx = (e.clientX - r.left - r.width/2) * .1, dy = (e.clientY - r.top - r.height/2) * .16;
+    b.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+  });
+  b.addEventListener('mouseleave', function(){ b.style.transform = ''; });
+});
+
+/* ── FAQ acordeón ── */
+document.querySelectorAll('.qa').forEach(function(qa){
+  qa.querySelector('.qa-q').addEventListener('click', function(){
+    var a = qa.querySelector('.qa-a'), open = qa.classList.contains('open');
+    document.querySelectorAll('.qa.open').forEach(function(o){
+      o.classList.remove('open'); o.querySelector('.qa-a').style.maxHeight = 0;
+    });
+    if (!open) { qa.classList.add('open'); a.style.maxHeight = a.scrollHeight + 'px'; }
+  });
+});
+
+/* ── sticky mobile bar tras el hero ── */
+(function(){
+  var bar = document.getElementById('stickyBar');
+  addEventListener('scroll', function(){
+    bar.classList.toggle('show', scrollY > innerHeight * .7);
+  }, { passive: true });
+})();
+
+/* ── toasts de prueba social ── */
+(function(){
+  var people = [
+    { n: "Luis", c: "Maracaibo",     g: "#f5c400" },
+    { n: "María", c: "Valencia",     g: "#1a6fff" },
+    { n: "Jesús", c: "Caracas",      g: "#ff3d3d" },
+    { n: "Andreína", c: "Barquisimeto", g: "#25d366" },
+    { n: "Carlos", c: "Maracay",     g: "#2aabee" },
+    { n: "Yulimar", c: "Caracas",    g: "#f5c400" },
+    { n: "José", c: "Ciudad Guayana", g: "#1a6fff" },
+    { n: "Daniela", c: "Barinas",    g: "#ff3d3d" }
+  ];
+  var acts = ["escribió por WhatsApp", "escribió por WhatsApp", "pidió información", "consiguió su vacante 🎉"];
+  var times = ["hace un momento", "hace 2 minutos", "hace 5 minutos", "hace 9 minutos"];
+  var toast = document.getElementById('toast');
+  var av = document.getElementById('toastAv'), nm = document.getElementById('toastName'),
+      ac = document.getElementById('toastAct'), tm = document.getElementById('toastTime');
+  var pool = people.slice().sort(function(){ return Math.random() - .5; }), idx = 0;
+  function show(){
+    var p = pool[idx % pool.length]; idx++;
+    av.textContent = p.n[0];
+    av.style.background = 'linear-gradient(135deg, ' + p.g + ', rgba(255,255,255,.15))';
+    nm.textContent = p.n + ', ' + p.c;
+    ac.textContent = acts[Math.floor(Math.random()*acts.length)];
+    tm.textContent = times[Math.floor(Math.random()*times.length)];
+    toast.classList.add('show');
+    setTimeout(function(){ toast.classList.remove('show'); }, 4600);
+    setTimeout(show, 14000 + Math.random()*9000);
+  }
+  setTimeout(show, 7000);
+})();
+
+/* ── mensajes prellenados rotativos ── */
+(function(){
+  var msgs = [
+    "Hola! Vi lo del trabajo en el exterior y me interesó. ¿Me puedes contar más detalles?",
+    "Buenas! Tengo el pasaporte vigente y quiero trabajar afuera. ¿Cómo inicio?",
+    "Hola, buenos días! Quiero saber más sobre las oportunidades en el exterior que ofrecen.",
+    "Chamo, hola! Vi lo del trabajo afuera y quiero saber más. ¿Qué necesito para comenzar?",
+    "Buenas! Me llegó info sobre el trabajo en Europa y quería consultar. ¿Están contratando?",
+    "Hola! Me interesó la propuesta de trabajo en el exterior. ¿Me explicas cómo es el proceso?",
+    "Buenas, buen día! Quiero trabajar afuera, ¿me cuentas cómo funciona todo esto?",
+    "Hola pana! Vi las opciones de trabajo en Europa y me pareció chévere. ¿Siguen con vacantes?",
+    "Hola! Me gustaría saber más sobre las posibilidades en el exterior. ¿Qué países tienen disponibles?",
+    "Buenas! Vi lo del trabajo afuera y me interesó bastante. ¿Cuáles son los requisitos del pasaporte?"
+  ];
+  var msg = msgs[Math.floor(Math.random()*msgs.length)], encoded = encodeURIComponent(msg);
+  window.PREFILL_ENC = encoded;
+  document.querySelectorAll('a[href*="wa.me"]').forEach(function(a){ a.href = a.href.split('?')[0] + '?text=' + encoded; });
+  document.querySelectorAll('a[href*="t.me"]').forEach(function(a){ a.href = a.href.split('?')[0] + '?text=' + encoded; });
+})();
+
+/* ── WA toggle: false = кнопка выключена, true = включена ── */
+var WA_ENABLED = false;
+(function(){
+  if (!WA_ENABLED) {
+    /* умные кнопки не отключаем — переводим на Telegram (с готовым сообщением) */
+    document.querySelectorAll('.js-smart').forEach(function(a){
+      a.href = TG_LINK + '?text=' + (window.PREFILL_ENC || '');
+    });
+    document.querySelectorAll('a[href*="wa.me"]').forEach(function(a){
+      a.classList.add('wa-off'); a.removeAttribute('href');
+    });
+  }
+})();
 </script>
 </body>
 </html>
