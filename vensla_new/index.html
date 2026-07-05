@@ -71,6 +71,26 @@ src="https://www.facebook.com/tr?id=2092696671680810&ev=PageView&noscript=1"
     .rv { opacity: 0; transform: translateY(32px); transition: opacity .8s cubic-bezier(.2,.7,.3,1), transform .8s cubic-bezier(.2,.7,.3,1); }
     .rv.in { opacity: 1; transform: none; }
 
+    /* ════ passport top strip ════ */
+    .pass-strip {
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      margin: 14px -20px 0; padding: 10px 16px;
+      background: rgba(255,193,7,.08); border-top: 1px solid rgba(255,193,7,.3); border-bottom: 1px solid rgba(255,193,7,.3);
+      font-size: .78rem; font-weight: 700; color: #ffd54f; text-align: center; line-height: 1.4;
+      animation: drop .7s .05s cubic-bezier(.2,.7,.3,1) both;
+    }
+    .pass-strip .ic { font-size: 1rem; animation: flick 1.8s ease-in-out infinite; }
+
+    /* ════ passport banner ════ */
+    .passport-banner {
+      display: flex; align-items: flex-start; gap: 14px;
+      margin-top: 22px; padding: 18px 22px; border-radius: 16px;
+      background: rgba(255,193,7,.07); border: 1px solid rgba(255,193,7,.35);
+    }
+    .passport-banner .pb-icon { font-size: 1.6rem; flex: none; margin-top: 2px; }
+    .passport-banner strong { display: block; font-size: .95rem; font-weight: 800; color: #ffd54f; margin-bottom: 4px; }
+    .passport-banner span { font-size: .8rem; color: rgba(255,255,255,.52); line-height: 1.6; }
+
     /* ════ topbar ════ */
     .topbar {
       display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
@@ -423,6 +443,9 @@ src="https://www.facebook.com/tr?id=2092696671680810&ev=PageView&noscript=1"
     </div>
   </div>
 
+  <!-- ── passport strip ── -->
+  <div class="pass-strip"><span class="ic">🛂</span> Requisito obligatorio: pasaporte venezolano vigente</div>
+
   <!-- ── hero ── -->
   <section class="hero">
     <div class="hero-kicker">Empleos reales en el exterior · sin experiencia</div>
@@ -468,6 +491,15 @@ src="https://www.facebook.com/tr?id=2092696671680810&ev=PageView&noscript=1"
     <div class="perk"><span class="ico">✈️</span><div><strong>Todo incluido</strong><span>Vuelo, alojamiento y comida — sin costo inicial para ti</span></div></div>
     <div class="perk"><span class="ico">💵</span><div><strong>Sueldo en dólares</strong><span>De $600 a $2.000 al mes, pago directo y puntual</span></div></div>
     <div class="perk"><span class="ico">🙌</span><div><strong>Sin experiencia</strong><span>Seguridad, fábricas, limpieza, reparto — te capacitamos</span></div></div>
+  </div>
+
+  <!-- ── passport banner ── -->
+  <div class="passport-banner rv">
+    <span class="pb-icon">🛂</span>
+    <div>
+      <strong>Pasaporte venezolano vigente — requisito obligatorio</strong>
+      <span>Para viajar y trabajar en el exterior necesitas tu pasaporte al día. ¿Lo tienes vencido o en trámite? Escríbenos igual — te orientamos con los documentos para que no pierdas tu cupo.</span>
+    </div>
   </div>
 
   <!-- ── DREAM CALCULATOR ── -->
