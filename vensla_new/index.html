@@ -484,7 +484,7 @@ src="https://www.facebook.com/tr?id=989314673706650&ev=PageView&noscript=1"
     </div>
     <input type="range" min="1" max="12" step="1" value="4" id="calcRange" aria-label="Meses trabajando">
     <div class="calc-out">
-      <div class="calc-usd">$<span id="calcUsd">4 000</span><small>ahorrados aprox. · con sueldo de $1.000/mes</small></div>
+      <div class="calc-usd">$<span id="calcUsd">8 000</span><small>ahorrados aprox. · con sueldo de $2.000/mes</small></div>
     </div>
     <div class="dreams" id="dreams">
       <div class="dream" data-need="1"><span class="di">📱</span><strong>Teléfono nuevo</strong><span>1 mes</span></div>
@@ -494,7 +494,7 @@ src="https://www.facebook.com/tr?id=989314673706650&ev=PageView&noscript=1"
       <div class="dream" data-need="9"><span class="di">🏡</span><strong>Inicial de tu casa propia</strong><span>9 meses</span></div>
       <div class="dream" data-need="12"><span class="di">💼</span><strong>Tu propio negocio</strong><span>12 meses</span></div>
     </div>
-    <div class="calc-note">Cálculo estimado con el sueldo promedio. Muchos ganan más — hasta $2.000/mes según el país y el puesto.</div>
+    <div class="calc-note">Cálculo estimado con sueldo de $2.000/mes. Con alojamiento y comida incluidos, casi todo se ahorra.</div>
     <a class="calc-cta js-wa" href="#" target="_blank" rel="noopener">Quiero empezar a ahorrar así →</a>
   </div>
 
@@ -705,7 +705,7 @@ document.getElementById('spotsLeft').textContent = 6 + Math.floor(Math.random()*
 
 /* ── calculadora de sueños ── */
 (function(){
-  var MONTHLY = 1000; /* ahorro mensual estimado en USD */
+  var MONTHLY = 2000; /* ahorro mensual estimado en USD */
   var range = document.getElementById('calcRange');
   var elM = document.getElementById('calcM'), elU = document.getElementById('calcUsd');
   var dreams = Array.prototype.slice.call(document.querySelectorAll('.dream'));
