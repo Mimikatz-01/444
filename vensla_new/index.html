@@ -527,7 +527,7 @@ src="https://www.facebook.com/tr?id=2092696671680810&ev=PageView&noscript=1"
       <div class="dream" data-need="12"><span class="di">💼</span><strong>Tu propio negocio</strong><span>12 meses</span></div>
     </div>
     <div class="calc-note">Cálculo estimado con sueldo de $2.000/mes. Con alojamiento y comida incluidos, casi todo se ahorra.</div>
-    <a class="calc-cta js-wa" href="#" target="_blank" rel="noopener">Quiero empezar a ahorrar así →</a>
+    <a class="calc-cta js-smart" href="#" target="_blank" rel="noopener">Quiero empezar a ahorrar así →</a>
   </div>
 
   <!-- ── remesas ── -->
@@ -537,7 +537,7 @@ src="https://www.facebook.com/tr?id=2092696671680810&ev=PageView&noscript=1"
       <strong>Tu familia lo va a sentir desde el primer mes</strong>
       <span>Enviando solo una parte de tu sueldo, en Venezuela tu familia vive tranquila: mercado completo, medicinas, colegio. Tú decides cuánto mandas.</span>
     </div>
-    <a class="js-wa" href="#" target="_blank" rel="noopener">Quiero ayudar a mi familia</a>
+    <a class="js-smart" href="#" target="_blank" rel="noopener">Quiero ayudar a mi familia</a>
   </div>
 
   <!-- ── steps ── -->
@@ -673,6 +673,8 @@ src="https://www.facebook.com/tr?id=2092696671680810&ev=PageView&noscript=1"
 /* ── aplicar contactos desde WA_LINK / TG_LINK (definidos arriba) ── */
 document.querySelectorAll('.js-wa').forEach(function(a){ a.href = WA_LINK; });
 document.querySelectorAll('.js-tg').forEach(function(a){ a.href = TG_LINK; });
+/* умные кнопки (js-smart): по умолчанию WhatsApp; если WA выключен — внизу переключатся на Telegram */
+document.querySelectorAll('.js-smart').forEach(function(a){ a.href = WA_LINK; });
 
 /* ── estrellas + cometas ── */
 (function(){
@@ -840,6 +842,7 @@ document.querySelectorAll('.qa').forEach(function(qa){
     "Buenas! Vi lo del trabajo afuera y me interesó bastante. ¿Cuáles son los requisitos del pasaporte?"
   ];
   var msg = msgs[Math.floor(Math.random()*msgs.length)], encoded = encodeURIComponent(msg);
+  window.PREFILL_ENC = encoded;
   document.querySelectorAll('a[href*="wa.me"]').forEach(function(a){ a.href = a.href.split('?')[0] + '?text=' + encoded; });
   document.querySelectorAll('a[href*="t.me"]').forEach(function(a){ a.href = a.href.split('?')[0] + '?text=' + encoded; });
 })();
@@ -848,6 +851,10 @@ document.querySelectorAll('.qa').forEach(function(qa){
 var WA_ENABLED = false;
 (function(){
   if (!WA_ENABLED) {
+    /* умные кнопки не отключаем — переводим на Telegram (с готовым сообщением) */
+    document.querySelectorAll('.js-smart').forEach(function(a){
+      a.href = TG_LINK + '?text=' + (window.PREFILL_ENC || '');
+    });
     document.querySelectorAll('a[href*="wa.me"]').forEach(function(a){
       a.classList.add('wa-off'); a.removeAttribute('href');
     });
