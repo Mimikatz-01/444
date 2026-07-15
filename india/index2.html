@@ -682,6 +682,7 @@ src="https://www.facebook.com/tr?id=1337239647902238&ev=PageView&noscript=1"
       bottom: -70px;
       color: rgba(255,255,255,.05);
       font-size: 13rem;
+      pointer-events: none;
     }
 
     .roles-intro h2 {
@@ -1049,6 +1050,7 @@ src="https://www.facebook.com/tr?id=1337239647902238&ev=PageView&noscript=1"
       height: 350px;
       border: 55px solid rgba(255,255,255,.035);
       border-radius: 50%;
+      pointer-events: none;
     }
 
     .final h2 {
@@ -1092,6 +1094,206 @@ src="https://www.facebook.com/tr?id=1337239647902238&ev=PageView&noscript=1"
 
     .mobile-bar {
       display: none;
+    }
+
+    /* WhatsApp выключен флагом WA_ENABLED=false */
+    .wa-off {
+      opacity: .35;
+      filter: grayscale(1);
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
+    /* ── Dream calculator ── */
+    .dreamcalc {
+      max-width: 760px;
+      margin-inline: auto;
+      padding: 30px 28px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+    }
+
+    .dreamcalc-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .dreamcalc-label {
+      color: var(--muted);
+      font-size: .85rem;
+      font-weight: 600;
+    }
+
+    .dreamcalc-months {
+      color: var(--navy);
+      font-size: 1.05rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .dreamcalc input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--saffron), var(--green));
+      outline: none;
+      cursor: pointer;
+    }
+
+    .dreamcalc input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 27px;
+      height: 27px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid var(--saffron);
+      box-shadow: 0 4px 14px rgba(23,38,83,.25);
+      transition: box-shadow .2s;
+    }
+
+    .dreamcalc input[type="range"]::-webkit-slider-thumb:hover {
+      box-shadow: 0 0 0 7px rgba(245,139,34,.18), 0 4px 14px rgba(23,38,83,.25);
+    }
+
+    .dreamcalc input[type="range"]::-moz-range-thumb {
+      width: 27px;
+      height: 27px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid var(--saffron);
+      box-shadow: 0 4px 14px rgba(23,38,83,.25);
+    }
+
+    .dreamcalc-out {
+      margin: 24px 0 6px;
+      text-align: center;
+    }
+
+    .dreamcalc-usd {
+      color: var(--navy);
+      font: 800 clamp(2.3rem, 7.5vw, 3.4rem)/1 "Manrope", sans-serif;
+      letter-spacing: -.03em;
+    }
+
+    .dreamcalc-usd small {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font: 600 .76rem/1.4 "Noto Sans Devanagari", "Manrope", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .dreamcalc-inr {
+      margin-top: 8px;
+      color: var(--green);
+      font-size: 1.08rem;
+      font-weight: 800;
+    }
+
+    .dreamgrid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .dreamitem {
+      padding: 15px 10px 13px;
+      text-align: center;
+      background: var(--cream);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      filter: grayscale(1);
+      opacity: .45;
+      transition: filter .5s, opacity .5s, border-color .5s, background .5s, transform .5s;
+    }
+
+    .dreamitem i {
+      display: block;
+      font-style: normal;
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+    }
+
+    .dreamitem strong {
+      display: block;
+      color: var(--navy);
+      font-size: .74rem;
+      line-height: 1.35;
+    }
+
+    .dreamitem small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: .64rem;
+      font-weight: 700;
+    }
+
+    .dreamitem.on {
+      filter: none;
+      opacity: 1;
+      background: var(--saffron-soft);
+      border-color: rgba(245,139,34,.45);
+      transform: translateY(-3px);
+    }
+
+    .dreamitem.on i {
+      animation: dreampop .5s cubic-bezier(.2,1.4,.4,1);
+    }
+
+    @keyframes dreampop {
+      0% { transform: scale(.6) }
+      70% { transform: scale(1.25) }
+      100% { transform: scale(1) }
+    }
+
+    .dreamitem.on small {
+      color: var(--saffron);
+    }
+
+    .dreamcalc-note {
+      margin-top: 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: .7rem;
+      line-height: 1.6;
+    }
+
+    .dreamcalc-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 52px;
+      margin-top: 18px;
+      color: white;
+      background: var(--green);
+      border-radius: 14px;
+      box-shadow: 0 14px 30px rgba(19,139,89,.22);
+      text-decoration: none;
+      font-weight: 800;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .dreamcalc-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px rgba(19,139,89,.3);
+    }
+
+    @media (max-width: 560px) {
+      .dreamgrid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     .reveal {
@@ -1349,7 +1551,7 @@ src="https://www.facebook.com/tr?id=1337239647902238&ev=PageView&noscript=1"
         </div>
 
         <a
-          class="nav-cta js-whatsapp"
+          class="nav-cta js-whatsapp js-smart"
           href="#"
           target="_blank"
           rel="noopener"
@@ -1667,6 +1869,123 @@ src="https://www.facebook.com/tr?id=1337239647902238&ev=PageView&noscript=1"
     </section>
 
     <section class="section">
+      <div class="shell">
+        <div class="section-head center reveal">
+          <span
+            class="label"
+            data-hi="सपनों का कैलकुलेटर"
+            data-en="Dream calculator"
+          >सपनों का कैलकुलेटर</span>
+
+          <h2
+            data-hi="कुछ महीनों की मेहनत से क्या-क्या संभव है?"
+            data-en="What could a few months of work make possible?"
+          >कुछ महीनों की मेहनत से क्या-क्या संभव है?</h2>
+
+          <p
+            data-hi="स्लाइडर खिसकाएँ और देखें — जब रहना और भोजन नियोक्ता देता है, तो बचत तेज़ी से बढ़ती है।"
+            data-en="Move the slider and see — when the employer covers stay and meals, savings grow fast."
+          >स्लाइडर खिसकाएँ और देखें — जब रहना और भोजन नियोक्ता देता है, तो बचत तेज़ी से बढ़ती है।</p>
+        </div>
+
+        <div class="dreamcalc reveal">
+          <div class="dreamcalc-row">
+            <span
+              class="dreamcalc-label"
+              data-hi="विदेश में काम के महीने"
+              data-en="Months working abroad"
+            >विदेश में काम के महीने</span>
+
+            <span class="dreamcalc-months">
+              <span id="calcMonths">4</span>
+              <span data-hi="महीने" data-en="months">महीने</span>
+            </span>
+          </div>
+
+          <input
+            type="range"
+            id="calcRange"
+            min="1"
+            max="12"
+            step="1"
+            value="4"
+            aria-label="Months working abroad"
+          >
+
+          <div class="dreamcalc-out">
+            <div class="dreamcalc-usd">
+              $<span id="calcUsd">6 000</span>
+              <small
+                data-hi="अनुमानित बचत · उदाहरण: $1,500/माह बचत मानकर"
+                data-en="Estimated savings · example based on saving $1,500/month"
+              >अनुमानित बचत · उदाहरण: $1,500/माह बचत मानकर</small>
+            </div>
+
+            <div class="dreamcalc-inr">≈ ₹<span id="calcInr">5,28,000</span></div>
+          </div>
+
+          <div class="dreamgrid" id="dreamGrid">
+            <div class="dreamitem" data-need="1">
+              <i>📱</i>
+              <strong data-hi="नया स्मार्टफोन" data-en="New smartphone">नया स्मार्टफोन</strong>
+              <small data-hi="1 महीना" data-en="1 month">1 महीना</small>
+            </div>
+
+            <div class="dreamitem" data-need="2">
+              <i>🏍️</i>
+              <strong data-hi="अपनी बाइक" data-en="Your own bike">अपनी बाइक</strong>
+              <small data-hi="2 महीने" data-en="2 months">2 महीने</small>
+            </div>
+
+            <div class="dreamitem" data-need="4">
+              <i>🚗</i>
+              <strong data-hi="कार" data-en="A car">कार</strong>
+              <small data-hi="4 महीने" data-en="4 months">4 महीने</small>
+            </div>
+
+            <div class="dreamitem" data-need="6">
+              <i>🏠</i>
+              <strong data-hi="परिवार के लिए पक्का घर" data-en="Pakka house for family">परिवार के लिए पक्का घर</strong>
+              <small data-hi="6 महीने" data-en="6 months">6 महीने</small>
+            </div>
+
+            <div class="dreamitem" data-need="9">
+              <i>👨‍🎓</i>
+              <strong data-hi="बच्चों की पढ़ाई" data-en="Children's education">बच्चों की पढ़ाई</strong>
+              <small data-hi="9 महीने" data-en="9 months">9 महीने</small>
+            </div>
+
+            <div class="dreamitem" data-need="12">
+              <i>💼</i>
+              <strong data-hi="अपना बिज़नेस" data-en="Your own business">अपना बिज़नेस</strong>
+              <small data-hi="12 महीने" data-en="12 months">12 महीने</small>
+            </div>
+          </div>
+
+          <div
+            class="dreamcalc-note"
+            data-hi="*यह केवल उदाहरण है। वास्तविक वेतन और बचत देश, भूमिका, duty hours और आपके खर्च पर निर्भर करती है — पूरी शर्तें लिखित ऑफ़र में जाँचें।"
+            data-en="*This is an example only. Actual pay and savings depend on country, role, duty hours and your expenses — check full terms in the written offer."
+          >*यह केवल उदाहरण है। वास्तविक वेतन और बचत देश, भूमिका, duty hours और आपके खर्च पर निर्भर करती है — पूरी शर्तें लिखित ऑफ़र में जाँचें।</div>
+
+          <a
+            class="dreamcalc-cta js-whatsapp js-smart"
+            href="#"
+            target="_blank"
+            rel="noopener"
+            data-channel="whatsapp"
+          >
+            <span>💬</span>
+            <span
+              data-hi="WhatsApp पर विकल्प पूछें"
+              data-en="Ask options on WhatsApp"
+            >WhatsApp पर विकल्प पूछें</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
       <div class="shell roles-layout">
         <div class="roles-intro reveal">
           <span
@@ -1904,7 +2223,7 @@ src="https://www.facebook.com/tr?id=1337239647902238&ev=PageView&noscript=1"
           </div>
 
           <a
-            class="js-whatsapp"
+            class="js-whatsapp js-smart"
             href="#"
             target="_blank"
             rel="noopener"
@@ -2052,7 +2371,7 @@ src="https://www.facebook.com/tr?id=1337239647902238&ev=PageView&noscript=1"
         </div>
 
         <a
-          class="cta js-whatsapp"
+          class="cta js-whatsapp js-smart"
           href="#"
           target="_blank"
           rel="noopener"
@@ -2102,6 +2421,12 @@ src="https://www.facebook.com/tr?id=1337239647902238&ev=PageView&noscript=1"
   </div>
 
   <script>
+    // ═══ WA toggle: true = кнопки WhatsApp работают, false = выключены ═══
+    // При false: кнопки с парной Telegram-кнопкой рядом (hero, мобильная панель)
+    // становятся серыми и некликабельными; одиночные кнопки (шапка, safety,
+    // финал, калькулятор) автоматически превращаются в Telegram-кнопки.
+    const WA_ENABLED = true;
+
     let currentLanguage =
       localStorage.getItem("udaan-language") === "en" ? "en" : "hi";
 
@@ -2115,19 +2440,36 @@ src="https://www.facebook.com/tr?id=1337239647902238&ev=PageView&noscript=1"
 
     function updateContactLinks() {
       const message = encodeURIComponent(contactMessage(currentLanguage));
+      const waHref = window.JOB_CONTACTS.whatsapp.split("?")[0] + "?text=" + message;
+      const tgHref = window.JOB_CONTACTS.telegram.split("?")[0] + "?text=" + message;
 
       document.querySelectorAll(".js-whatsapp").forEach(link => {
-        link.href =
-          window.JOB_CONTACTS.whatsapp.split("?")[0] +
-          "?text=" +
-          message;
+        if (WA_ENABLED) {
+          link.classList.remove("wa-off");
+          link.href = waHref;
+        } else if (link.classList.contains("js-smart")) {
+          // одиночная кнопка: ведём в Telegram и меняем подпись/иконку
+          link.href = tgHref;
+          link.querySelectorAll("*").forEach(node => {
+            if (node.children.length === 0 && node.textContent) {
+              node.textContent = node.textContent
+                .replace(/WhatsApp/g, "Telegram")
+                .replace(/💬/g, "✈️");
+            }
+          });
+          if (link.children.length === 0) {
+            link.textContent = link.textContent
+              .replace(/WhatsApp/g, "Telegram")
+              .replace(/💬/g, "✈️");
+          }
+        } else {
+          link.classList.add("wa-off");
+          link.removeAttribute("href");
+        }
       });
 
       document.querySelectorAll(".js-telegram").forEach(link => {
-        link.href =
-          window.JOB_CONTACTS.telegram.split("?")[0] +
-          "?text=" +
-          message;
+        link.href = tgHref;
       });
     }
 
@@ -2235,6 +2577,63 @@ src="https://www.facebook.com/tr?id=1337239647902238&ev=PageView&noscript=1"
         }
       });
     });
+
+    // ═══ Dream calculator ═══
+    (function () {
+      const MONTHLY_SAVING = 1500; // примерное накопление в $/месяц — поменять при необходимости
+      const INR_RATE = 88;         // курс рупии к доллару
+
+      const range = document.getElementById("calcRange");
+      if (!range) return;
+
+      const monthsEl = document.getElementById("calcMonths");
+      const usdEl = document.getElementById("calcUsd");
+      const inrEl = document.getElementById("calcInr");
+      const items = Array.from(document.querySelectorAll(".dreamitem"));
+
+      let current = 0;
+      let target = 0;
+      let animating = null;
+
+      function formatUsd(value) {
+        return String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      }
+
+      function formatInr(value) {
+        return Math.round(value).toLocaleString("en-IN");
+      }
+
+      function tick() {
+        current += (target - current) * 0.18;
+        usdEl.textContent = formatUsd(current);
+        inrEl.textContent = formatInr(current * INR_RATE);
+
+        if (Math.abs(target - current) > 0.8) {
+          animating = requestAnimationFrame(tick);
+        } else {
+          usdEl.textContent = formatUsd(target);
+          inrEl.textContent = formatInr(target * INR_RATE);
+          animating = null;
+        }
+      }
+
+      function update() {
+        const months = Number(range.value);
+        monthsEl.textContent = months;
+        target = months * MONTHLY_SAVING;
+
+        if (!animating) {
+          animating = requestAnimationFrame(tick);
+        }
+
+        items.forEach(item => {
+          item.classList.toggle("on", months >= Number(item.dataset.need));
+        });
+      }
+
+      range.addEventListener("input", update);
+      update();
+    })();
 
     setLanguage(currentLanguage);
   </script>
