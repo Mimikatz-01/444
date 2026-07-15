@@ -1,0 +1,2242 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#172653">
+  <meta name="description" content="विदेश में नौकरी — चयनित नौकरियों में उड़ान, रहना और भोजन शामिल।">
+
+  <title>विदेश में नौकरी | भारत से दुनिया तक</title>
+
+  <!-- Контакты -->
+  <script>
+    window.JOB_CONTACTS = {
+      whatsapp: "https://wa.me/15488764427",
+      telegram: "https://t.me/russo_job"
+    };
+  </script>
+
+ <!-- Meta Pixelфф Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1337239647902238');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1337239647902238&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+  <style>
+    @import url(
+      'https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap'
+    );
+
+    :root {
+      --ink: #162038;
+      --navy: #172653;
+      --navy-light: #294b91;
+      --saffron: #f58b22;
+      --saffron-soft: #fff0da;
+      --green: #138b59;
+      --green-soft: #e6f5ee;
+      --cream: #fffaf1;
+      --white: #ffffff;
+      --muted: #677087;
+      --line: #e8e2d7;
+      --shadow: 0 22px 70px rgba(23, 38, 83, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 5% 8%, rgba(245,139,34,.14), transparent 30rem),
+        radial-gradient(circle at 95% 20%, rgba(19,139,89,.09), transparent 28rem),
+        var(--cream);
+      font-family: "Noto Sans Devanagari", "Manrope", sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    html[lang="en"] body {
+      font-family: "Manrope", sans-serif;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .shell {
+      width: min(1140px, calc(100% - 36px));
+      margin-inline: auto;
+    }
+
+    .progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      width: 0;
+      height: 3px;
+      background: linear-gradient(
+        90deg,
+        var(--saffron),
+        white,
+        var(--green)
+      );
+    }
+
+    /* Header */
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255,250,241,.89);
+      border-bottom: 1px solid rgba(23,38,83,.08);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      overflow: hidden;
+      border-radius: 14px;
+      background: var(--navy);
+      box-shadow: 0 10px 25px rgba(23,38,83,.22);
+    }
+
+    .brand-mark::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 11px;
+      width: 34px;
+      height: 34px;
+      border: 5px solid var(--saffron);
+      border-right-color: var(--green);
+      border-radius: 50%;
+    }
+
+    .brand-mark::after {
+      content: "✦";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: white;
+    }
+
+    .brand strong {
+      display: block;
+      color: var(--navy);
+      font: 800 .92rem/1.1 "Manrope", sans-serif;
+      letter-spacing: .06em;
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: .68rem;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .language-switch {
+      display: flex;
+      padding: 4px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+    }
+
+    .language-button {
+      padding: 7px 12px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--muted);
+      background: transparent;
+      font-size: .75rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .language-button[aria-pressed="true"] {
+      color: white;
+      background: var(--navy);
+    }
+
+    .nav-cta {
+      padding: 10px 15px;
+      border-radius: 13px;
+      color: white;
+      background: var(--green);
+      text-decoration: none;
+      font-size: .77rem;
+      font-weight: 800;
+    }
+
+    /* Hero */
+
+    .hero {
+      position: relative;
+      padding: 70px 0 52px;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -170px;
+      right: -300px;
+      width: 520px;
+      height: 520px;
+      border: 1px solid rgba(245,139,34,.16);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 58px rgba(245,139,34,.035),
+        0 0 0 116px rgba(19,139,89,.025);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 13px;
+      color: var(--navy);
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: 0 8px 24px rgba(23,38,83,.06);
+      font-size: .74rem;
+      font-weight: 800;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(19,139,89,.12);
+    }
+
+    h1 {
+      margin: 25px 0 20px;
+      color: var(--navy);
+      font-size: clamp(2.7rem, 6vw, 5.4rem);
+      line-height: 1.04;
+      letter-spacing: -.045em;
+    }
+
+    .accent {
+      position: relative;
+      color: var(--saffron);
+      white-space: nowrap;
+    }
+
+    .accent::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: -.08em;
+      left: 0;
+      height: 9px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12'%3E%3Cpath d='M3 9C55 2 130 2 197 7' fill='none' stroke='%23f58b22' stroke-width='5' stroke-linecap='round' opacity='.35'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+    }
+
+    .lead {
+      max-width: 650px;
+      margin: 0;
+      color: #59647b;
+      font-size: clamp(1rem, 1.8vw, 1.16rem);
+    }
+
+    .lead strong {
+      color: var(--ink);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .cta {
+      min-height: 56px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      padding: 0 22px;
+      color: white;
+      background: var(--green);
+      border-radius: 16px;
+      box-shadow: 0 16px 34px rgba(19,139,89,.25);
+      text-decoration: none;
+      font-weight: 800;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 45px rgba(19,139,89,.3);
+    }
+
+    .cta.secondary {
+      color: var(--navy);
+      background: white;
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 30px rgba(23,38,83,.08);
+    }
+
+    .cta-icon {
+      width: 27px;
+      height: 27px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: rgba(255,255,255,.16);
+    }
+
+    .cta-copy {
+      line-height: 1.1;
+    }
+
+    .cta-copy small {
+      display: block;
+      margin-top: 5px;
+      font-size: .65rem;
+      font-weight: 600;
+      opacity: .76;
+    }
+
+    .trust {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 21px;
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: .77rem;
+    }
+
+    .trust > span {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .trust b {
+      color: var(--green);
+    }
+
+    /* Travel card */
+
+    .ticket {
+      position: relative;
+      padding: 28px;
+      overflow: hidden;
+      color: white;
+      background: linear-gradient(145deg, var(--navy), var(--navy-light));
+      border-radius: 30px;
+      box-shadow: 0 32px 80px rgba(23,38,83,.28);
+      transform: rotate(1.4deg);
+    }
+
+    .ticket::before {
+      content: "";
+      position: absolute;
+      top: -125px;
+      right: -100px;
+      width: 280px;
+      height: 280px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 35px rgba(255,255,255,.025),
+        0 0 0 70px rgba(255,255,255,.02);
+    }
+
+    .ticket-top {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .ticket-kicker {
+      color: rgba(255,255,255,.58);
+      font: 700 .67rem/1.2 "Manrope", sans-serif;
+      letter-spacing: .16em;
+    }
+
+    .ticket-status {
+      padding: 6px 10px;
+      color: #c9ffe5;
+      background: rgba(19,139,89,.35);
+      border-radius: 999px;
+      font-size: .64rem;
+      font-weight: 800;
+    }
+
+    .route {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 13px;
+      margin: 34px 0 28px;
+    }
+
+    .airport-code {
+      font: 800 clamp(2.4rem, 7vw, 3.9rem)/1 "Manrope", sans-serif;
+      letter-spacing: -.05em;
+    }
+
+    .airport-code small {
+      display: block;
+      margin-top: 8px;
+      color: rgba(255,255,255,.55);
+      font: 600 .67rem/1.2 "Manrope", sans-serif;
+      letter-spacing: .08em;
+    }
+
+    .route-line {
+      position: relative;
+      height: 1px;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(255,255,255,.35) 0 7px,
+        transparent 7px 13px
+      );
+    }
+
+    .route-line span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      font-size: 1.55rem;
+      transform: translate(-50%, -50%) rotate(8deg);
+    }
+
+    .ticket-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .ticket-cell {
+      min-height: 88px;
+      padding: 14px;
+      background: rgba(255,255,255,.075);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+    }
+
+    .ticket-cell i {
+      display: block;
+      font-style: normal;
+      font-size: 1.25rem;
+    }
+
+    .ticket-cell strong {
+      display: block;
+      margin-top: 5px;
+      font-size: .82rem;
+    }
+
+    .ticket-cell small {
+      display: block;
+      margin-top: 3px;
+      color: rgba(255,255,255,.56);
+      font-size: .66rem;
+    }
+
+    .ticket-footer {
+      position: relative;
+      margin-top: 21px;
+      padding-top: 18px;
+      color: rgba(255,255,255,.58);
+      border-top: 1px dashed rgba(255,255,255,.2);
+      font-size: .68rem;
+    }
+
+    /* Quick advantages */
+
+    .quick {
+      padding: 20px 0 55px;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      overflow: hidden;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .quick-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 20px;
+    }
+
+    .quick-item + .quick-item {
+      border-left: 1px solid var(--line);
+    }
+
+    .quick-icon {
+      width: 42px;
+      height: 42px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      background: var(--saffron-soft);
+      border-radius: 13px;
+      font-size: 1.2rem;
+    }
+
+    .quick-item:nth-child(even) .quick-icon {
+      background: var(--green-soft);
+    }
+
+    .quick-item strong {
+      display: block;
+      color: var(--navy);
+      font-size: .81rem;
+    }
+
+    .quick-item small {
+      display: block;
+      color: var(--muted);
+      font-size: .66rem;
+      line-height: 1.4;
+    }
+
+    /* Sections */
+
+    .section {
+      padding: 78px 0;
+    }
+
+    .section.soft {
+      background: rgba(255,255,255,.58);
+      border-block: 1px solid rgba(23,38,83,.06);
+    }
+
+    .section-head {
+      max-width: 720px;
+      margin-bottom: 35px;
+    }
+
+    .section-head.center {
+      margin-inline: auto;
+      text-align: center;
+    }
+
+    .label {
+      display: inline-block;
+      color: var(--saffron);
+      font: 800 .7rem/1 "Manrope", sans-serif;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 12px 0;
+      color: var(--navy);
+      font-size: clamp(2rem, 4.5vw, 3.3rem);
+      line-height: 1.12;
+      letter-spacing: -.035em;
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .96rem;
+    }
+
+    /* Values */
+
+    .values {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .value-card {
+      padding: 27px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      transition: transform .25s, box-shadow .25s;
+    }
+
+    .value-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+    }
+
+    .value-icon {
+      width: 50px;
+      height: 50px;
+      display: grid;
+      place-items: center;
+      background: var(--saffron-soft);
+      border-radius: 16px;
+      font-size: 1.45rem;
+    }
+
+    .value-card:nth-child(2) .value-icon {
+      background: var(--green-soft);
+    }
+
+    .value-card:nth-child(3) .value-icon {
+      background: #eaf0ff;
+    }
+
+    .value-card h3 {
+      margin: 17px 0 8px;
+      color: var(--navy);
+      font-size: 1.06rem;
+    }
+
+    .value-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    /* Roles */
+
+    .roles-layout {
+      display: grid;
+      grid-template-columns: .76fr 1.24fr;
+      gap: 24px;
+    }
+
+    .roles-intro {
+      position: relative;
+      overflow: hidden;
+      padding: 34px;
+      color: white;
+      background: var(--navy);
+      border-radius: 28px;
+    }
+
+    .roles-intro::after {
+      content: "✦";
+      position: absolute;
+      right: -10px;
+      bottom: -70px;
+      color: rgba(255,255,255,.05);
+      font-size: 13rem;
+    }
+
+    .roles-intro h2 {
+      color: white;
+    }
+
+    .roles-intro p {
+      color: rgba(255,255,255,.62);
+    }
+
+    .role-note {
+      position: relative;
+      margin-top: 28px;
+      padding: 16px;
+      color: rgba(255,255,255,.75);
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 16px;
+      font-size: .75rem;
+    }
+
+    .roles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .role {
+      padding: 23px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+    }
+
+    .role-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .role-icon {
+      font-size: 1.55rem;
+    }
+
+    .role-tag {
+      padding: 5px 9px;
+      color: var(--green);
+      background: var(--green-soft);
+      border-radius: 999px;
+      font-size: .62rem;
+      font-weight: 800;
+    }
+
+    .role h3 {
+      margin: 15px 0 7px;
+      color: var(--navy);
+      font-size: .98rem;
+    }
+
+    .role p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .76rem;
+    }
+
+    /* Included */
+
+    .included {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .visual {
+      position: relative;
+      min-height: 455px;
+      overflow: hidden;
+      background: linear-gradient(160deg, #ffd99d, #fff0d7);
+      border-radius: 32px;
+    }
+
+    .visual-sun {
+      position: absolute;
+      top: -60px;
+      left: -60px;
+      width: 250px;
+      height: 250px;
+      background: rgba(245,139,34,.3);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 42px rgba(245,139,34,.08),
+        0 0 0 84px rgba(245,139,34,.04);
+    }
+
+    .visual-plane {
+      position: absolute;
+      top: 42%;
+      left: 50%;
+      font-size: 7rem;
+      filter: drop-shadow(0 24px 18px rgba(23,38,83,.18));
+      transform: translate(-50%, -50%) rotate(-8deg);
+    }
+
+    .city {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 140px;
+      background: var(--navy);
+      opacity: .75;
+      clip-path: polygon(
+        0 100%,0 50%,6% 50%,6% 15%,10% 15%,10% 50%,
+        18% 50%,18% 28%,22% 28%,22% 68%,28% 68%,
+        28% 42%,33% 42%,33% 58%,40% 58%,40% 20%,
+        47% 20%,47% 50%,54% 50%,54% 33%,61% 33%,
+        61% 63%,68% 63%,68% 27%,74% 27%,74% 46%,
+        80% 46%,80% 17%,86% 17%,86% 56%,93% 56%,
+        93% 34%,100% 34%,100% 100%
+      );
+    }
+
+    .visual-badge {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 14px;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 15px 38px rgba(23,38,83,.15);
+      font-size: .7rem;
+      font-weight: 800;
+    }
+
+    .badge-one {
+      top: 59%;
+      left: 24px;
+    }
+
+    .badge-two {
+      top: 20%;
+      right: 24px;
+    }
+
+    .checks {
+      display: grid;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .check {
+      display: grid;
+      grid-template-columns: 43px 1fr;
+      gap: 13px;
+      align-items: center;
+      padding: 14px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+    }
+
+    .check-icon {
+      width: 43px;
+      height: 43px;
+      display: grid;
+      place-items: center;
+      color: var(--green);
+      background: var(--green-soft);
+      border-radius: 13px;
+      font-weight: 900;
+    }
+
+    .check strong {
+      display: block;
+      color: var(--navy);
+      font-size: .86rem;
+    }
+
+    .check small {
+      display: block;
+      color: var(--muted);
+      font-size: .7rem;
+    }
+
+    /* Process */
+
+    .process {
+      counter-reset: process;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .step {
+      counter-increment: process;
+      position: relative;
+      padding: 28px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+    }
+
+    .step::before {
+      content: "0" counter(process);
+      display: block;
+      margin-bottom: 36px;
+      color: var(--saffron);
+      font: 800 1.05rem/1 "Manrope", sans-serif;
+    }
+
+    .step:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      top: 34px;
+      right: -18px;
+      z-index: 2;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: var(--navy);
+      border-radius: 50%;
+    }
+
+    .step h3 {
+      margin: 0 0 8px;
+      color: var(--navy);
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    .safety {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 18px;
+      align-items: center;
+      margin-top: 25px;
+      padding: 23px;
+      color: #113e2d;
+      background: var(--green-soft);
+      border: 1px solid rgba(19,139,89,.16);
+      border-radius: 22px;
+    }
+
+    .safety-icon {
+      width: 53px;
+      height: 53px;
+      display: grid;
+      place-items: center;
+      background: white;
+      border-radius: 17px;
+      font-size: 1.4rem;
+    }
+
+    .safety strong {
+      display: block;
+    }
+
+    .safety p {
+      margin: 3px 0 0;
+      font-size: .76rem;
+      opacity: .75;
+    }
+
+    .safety a {
+      padding: 11px 14px;
+      color: white;
+      background: var(--green);
+      border-radius: 12px;
+      text-decoration: none;
+      white-space: nowrap;
+      font-size: .73rem;
+      font-weight: 800;
+    }
+
+    /* FAQ */
+
+    .faq {
+      max-width: 850px;
+      display: grid;
+      gap: 10px;
+      margin-inline: auto;
+    }
+
+    .faq-item {
+      overflow: hidden;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+
+    .faq-question {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 20px;
+      color: var(--navy);
+      background: transparent;
+      border: 0;
+      text-align: left;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .plus {
+      width: 29px;
+      height: 29px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      background: #f4f1ea;
+      border-radius: 9px;
+      transition: transform .25s;
+    }
+
+    .faq-item.open .plus {
+      background: var(--saffron-soft);
+      transform: rotate(45deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease;
+    }
+
+    .faq-answer p {
+      margin: 0;
+      padding: 0 20px 19px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    /* Final CTA */
+
+    .final {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 32px;
+      align-items: center;
+      padding: 47px;
+      overflow: hidden;
+      color: white;
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      border-radius: 32px;
+      box-shadow: 0 30px 80px rgba(23,38,83,.26);
+    }
+
+    .final::after {
+      content: "";
+      position: absolute;
+      top: -220px;
+      right: -180px;
+      width: 350px;
+      height: 350px;
+      border: 55px solid rgba(255,255,255,.035);
+      border-radius: 50%;
+    }
+
+    .final h2 {
+      margin-top: 0;
+      color: white;
+    }
+
+    .final p {
+      max-width: 650px;
+      margin: 0;
+      color: rgba(255,255,255,.65);
+    }
+
+    .final .cta {
+      position: relative;
+      background: var(--saffron);
+      box-shadow: 0 16px 34px rgba(245,139,34,.25);
+    }
+
+    footer {
+      padding: 34px 0 105px;
+      color: var(--muted);
+      font-size: .7rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .footer-note {
+      max-width: 760px;
+    }
+
+    .footer-brand {
+      color: var(--navy);
+      font: 800 .73rem/1.4 "Manrope", sans-serif;
+      white-space: nowrap;
+    }
+
+    .mobile-bar {
+      display: none;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity .65s, transform .65s;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .roles-layout,
+      .included {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-grid {
+        gap: 42px;
+      }
+
+      .ticket {
+        max-width: 620px;
+        margin-inline: auto;
+        transform: none;
+      }
+
+      .quick-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .quick-item:nth-child(3) {
+        border-top: 1px solid var(--line);
+        border-left: 0;
+      }
+
+      .quick-item:nth-child(4) {
+        border-top: 1px solid var(--line);
+      }
+
+      .values,
+      .process {
+        grid-template-columns: 1fr;
+      }
+
+      .step:not(:last-child)::after {
+        content: "↓";
+        top: auto;
+        right: 25px;
+        bottom: -18px;
+      }
+
+      .final {
+        grid-template-columns: 1fr;
+      }
+
+      .final .cta {
+        width: max-content;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .shell {
+        width: calc(100% - 28px);
+      }
+
+      .nav {
+        min-height: 66px;
+      }
+
+      .brand small,
+      .nav-cta {
+        display: none;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+      }
+
+      .hero {
+        padding-top: 45px;
+      }
+
+      h1 {
+        font-size: clamp(2.35rem, 13vw, 4rem);
+      }
+
+      .actions {
+        display: grid;
+      }
+
+      .cta {
+        width: 100%;
+      }
+
+      .ticket {
+        padding: 21px;
+        border-radius: 24px;
+      }
+
+      .airport-code {
+        font-size: 2.35rem;
+      }
+
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-item + .quick-item {
+        border-top: 1px solid var(--line);
+        border-left: 0;
+      }
+
+      .section {
+        padding: 58px 0;
+      }
+
+      .roles {
+        grid-template-columns: 1fr;
+      }
+
+      .roles-intro {
+        padding: 27px;
+      }
+
+      .visual {
+        min-height: 335px;
+      }
+
+      .visual-plane {
+        font-size: 5.1rem;
+      }
+
+      .visual-badge {
+        font-size: .62rem;
+      }
+
+      .safety {
+        grid-template-columns: auto 1fr;
+      }
+
+      .safety a {
+        grid-column: 1 / -1;
+        text-align: center;
+      }
+
+      .final {
+        padding: 31px 23px;
+      }
+
+      .footer-inner {
+        display: grid;
+      }
+
+      .mobile-bar {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 60;
+        display: grid;
+        grid-template-columns: 1fr 52px;
+        gap: 9px;
+        padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+        background: rgba(255,250,241,.93);
+        border-top: 1px solid var(--line);
+        backdrop-filter: blur(16px);
+        transform: translateY(115%);
+        transition: transform .35s;
+      }
+
+      .mobile-bar.show {
+        transform: none;
+      }
+
+      .mobile-bar a {
+        min-height: 49px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        text-decoration: none;
+        font-size: .77rem;
+        font-weight: 800;
+      }
+
+      .mobile-whatsapp {
+        color: white;
+        background: var(--green);
+      }
+
+      .mobile-telegram {
+        color: var(--navy);
+        background: white;
+        border: 1px solid var(--line);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition-duration: .01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress" id="progress"></div>
+
+  <header class="header">
+    <div class="shell nav">
+      <a class="brand" href="#top" aria-label="Udaan Careers">
+        <span class="brand-mark"></span>
+
+        <span>
+          <strong>UDAAN CAREERS</strong>
+          <small
+            data-hi="भारत से दुनिया तक"
+            data-en="From India to the world"
+          >भारत से दुनिया तक</small>
+        </span>
+      </a>
+
+      <div class="nav-actions">
+        <div class="language-switch" role="group" aria-label="Language">
+          <button
+            class="language-button"
+            type="button"
+            data-language="hi"
+            aria-pressed="true"
+          >हिंदी</button>
+
+          <button
+            class="language-button"
+            type="button"
+            data-language="en"
+            aria-pressed="false"
+          >EN</button>
+        </div>
+
+        <a
+          class="nav-cta js-whatsapp"
+          href="#"
+          target="_blank"
+          rel="noopener"
+          data-hi="WhatsApp पर पूछें"
+          data-en="Ask on WhatsApp"
+        >WhatsApp पर पूछें</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <div class="eyebrow">
+            <span class="dot"></span>
+            <span
+              data-hi="2026 के लिए विदेशी नौकरियाँ खुली हैं"
+              data-en="Overseas roles open for 2026"
+            >2026 के लिए विदेशी नौकरियाँ खुली हैं</span>
+          </div>
+
+          <h1>
+            <span
+              data-hi="विदेश में काम।"
+              data-en="Work abroad."
+            >विदेश में काम।</span>
+
+            <br>
+
+            <span
+              class="accent"
+              data-hi="ऊँची कमाई"
+              data-en="Earn more"
+            >ऊँची कमाई</span>
+
+            <br>
+
+            <span
+              data-hi="घर के सपनों के लिए।"
+              data-en="for the dreams back home."
+            >घर के सपनों के लिए।</span>
+          </h1>
+
+          <p class="lead">
+            <span
+              data-hi="चुनी हुई नौकरियों में"
+              data-en="Selected roles include"
+            >चुनी हुई नौकरियों में</span>
+
+            <strong
+              data-hi="मुफ़्त हवाई यात्रा, रहने की जगह और भोजन"
+              data-en="employer-paid flights, accommodation and meals"
+            >मुफ़्त हवाई यात्रा, रहने की जगह और भोजन</strong>
+
+            <span
+              data-hi="नियोक्ता की ओर से। आप कमाएँ, बचत करें और परिवार का भविष्य मजबूत बनाएँ।"
+              data-en="from the employer. Earn, save and build a stronger future for your family."
+            >नियोक्ता की ओर से। आप कमाएँ, बचत करें और परिवार का भविष्य मजबूत बनाएँ।</span>
+          </p>
+
+          <div class="actions">
+            <a
+              class="cta js-whatsapp"
+              href="#"
+              target="_blank"
+              rel="noopener"
+              data-channel="whatsapp"
+            >
+              <span class="cta-icon">💬</span>
+
+              <span class="cta-copy">
+                <span
+                  data-hi="WhatsApp पर जानकारी लें"
+                  data-en="Get details on WhatsApp"
+                >WhatsApp पर जानकारी लें</span>
+
+                <small
+                  data-hi="मुफ़्त प्रोफ़ाइल जाँच · कोई दबाव नहीं"
+                  data-en="Free profile review · no pressure"
+                >मुफ़्त प्रोफ़ाइल जाँच · कोई दबाव नहीं</small>
+              </span>
+            </a>
+
+            <a
+              class="cta secondary js-telegram"
+              href="#"
+              target="_blank"
+              rel="noopener"
+              data-channel="telegram"
+            >
+              <span class="cta-icon">✈️</span>
+
+              <span class="cta-copy">
+                <span
+                  data-hi="Telegram खोलें"
+                  data-en="Open Telegram"
+                >Telegram खोलें</span>
+
+                <small
+                  data-hi="सीधे सलाहकार से बात करें"
+                  data-en="Speak directly with an adviser"
+                >सीधे सलाहकार से बात करें</small>
+              </span>
+            </a>
+          </div>
+
+          <div class="trust">
+            <span>
+              <b>✓</b>
+              <span
+                data-hi="हिंदी और English सहायता"
+                data-en="Hindi & English guidance"
+              >हिंदी और English सहायता</span>
+            </span>
+
+            <span>
+              <b>✓</b>
+              <span
+                data-hi="शर्तें लिखित ऑफ़र में"
+                data-en="Terms in a written offer"
+              >शर्तें लिखित ऑफ़र में</span>
+            </span>
+
+            <span>
+              <b>✓</b>
+              <span
+                data-hi="पहले जानकारी, फिर निर्णय"
+                data-en="Learn first, decide later"
+              >पहले जानकारी, फिर निर्णय</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="ticket">
+          <div class="ticket-top">
+            <span class="ticket-kicker">YOUR NEXT CHAPTER</span>
+
+            <span
+              class="ticket-status"
+              data-hi="प्रोफ़ाइल जाँच"
+              data-en="PROFILE REVIEW"
+            >प्रोफ़ाइल जाँच</span>
+          </div>
+
+          <div class="route">
+            <div class="airport-code">
+              IND
+              <small data-hi="भारत" data-en="INDIA">भारत</small>
+            </div>
+
+            <div class="route-line">
+              <span>✈</span>
+            </div>
+
+            <div class="airport-code">
+              WRL
+              <small data-hi="दुनिया" data-en="WORLD">दुनिया</small>
+            </div>
+          </div>
+
+          <div class="ticket-grid">
+            <div class="ticket-cell">
+              <i>🎫</i>
+              <strong
+                data-hi="उड़ान की व्यवस्था"
+                data-en="Flight arranged"
+              >उड़ान की व्यवस्था</strong>
+              <small
+                data-hi="चयनित ऑफ़र में"
+                data-en="Selected offers"
+              >चयनित ऑफ़र में</small>
+            </div>
+
+            <div class="ticket-cell">
+              <i>🏠</i>
+              <strong
+                data-hi="रहने की जगह"
+                data-en="Accommodation"
+              >रहने की जगह</strong>
+              <small
+                data-hi="पहुँचने से पहले तय"
+                data-en="Set before arrival"
+              >पहुँचने से पहले तय</small>
+            </div>
+
+            <div class="ticket-cell">
+              <i>🍛</i>
+              <strong
+                data-hi="भोजन सहायता"
+                data-en="Meal support"
+              >भोजन सहायता</strong>
+              <small
+                data-hi="ऑफ़र के अनुसार"
+                data-en="As stated in the offer"
+              >ऑफ़र के अनुसार</small>
+            </div>
+
+            <div class="ticket-cell">
+              <i>📄</i>
+              <strong
+                data-hi="स्पष्ट ऑफ़र"
+                data-en="Clear offer"
+              >स्पष्ट ऑफ़र</strong>
+              <small
+                data-hi="वेतन और भूमिका लिखित में"
+                data-en="Role and pay in writing"
+              >वेतन और भूमिका लिखित में</small>
+            </div>
+          </div>
+
+          <div
+            class="ticket-footer"
+            data-hi="पासपोर्ट तैयार रखें · उपलब्धता प्रोफ़ाइल और देश के नियमों पर निर्भर है"
+            data-en="Keep your passport ready · availability depends on profile and destination rules"
+          >पासपोर्ट तैयार रखें · उपलब्धता प्रोफ़ाइल और देश के नियमों पर निर्भर है</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="quick">
+      <div class="shell quick-grid reveal">
+        <div class="quick-item">
+          <span class="quick-icon">✈️</span>
+          <div>
+            <strong data-hi="मुफ़्त यात्रा" data-en="Paid flight">मुफ़्त यात्रा</strong>
+            <small data-hi="चयनित रिक्तियों में" data-en="Selected vacancies">चयनित रिक्तियों में</small>
+          </div>
+        </div>
+
+        <div class="quick-item">
+          <span class="quick-icon">🛏️</span>
+          <div>
+            <strong data-hi="रहना शामिल" data-en="Stay included">रहना शामिल</strong>
+            <small data-hi="लिखित ऑफ़र के अनुसार" data-en="As stated in the offer">लिखित ऑफ़र के अनुसार</small>
+          </div>
+        </div>
+
+        <div class="quick-item">
+          <span class="quick-icon">🍲</span>
+          <div>
+            <strong data-hi="भोजन शामिल" data-en="Meals included">भोजन शामिल</strong>
+            <small data-hi="शर्तें पहले स्पष्ट" data-en="Terms confirmed first">शर्तें पहले स्पष्ट</small>
+          </div>
+        </div>
+
+        <div class="quick-item">
+          <span class="quick-icon">💼</span>
+          <div>
+            <strong data-hi="बेहतर कमाई" data-en="Higher earning">बेहतर कमाई</strong>
+            <small data-hi="भूमिका और देश के अनुसार" data-en="Depends on role and country">भूमिका और देश के अनुसार</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section soft">
+      <div class="shell">
+        <div class="section-head center reveal">
+          <span
+            class="label"
+            data-hi="सिर्फ़ नौकरी नहीं"
+            data-en="More than a job"
+          >सिर्फ़ नौकरी नहीं</span>
+
+          <h2
+            data-hi="आपकी मेहनत, पूरे परिवार की प्रगति"
+            data-en="Your work can move the whole family forward"
+          >आपकी मेहनत, पूरे परिवार की प्रगति</h2>
+
+          <p
+            data-hi="जब बड़े रोज़मर्रा खर्च नियोक्ता उठाता है, तो आपकी कमाई का बड़ा हिस्सा बचत और घर के लक्ष्यों के लिए रह सकता है।"
+            data-en="When an employer covers major living costs, more of your earnings can go towards savings and goals back home."
+          >जब बड़े रोज़मर्रा खर्च नियोक्ता उठाता है, तो आपकी कमाई का बड़ा हिस्सा बचत और घर के लक्ष्यों के लिए रह सकता है।</p>
+        </div>
+
+        <div class="values">
+          <article class="value-card reveal">
+            <span class="value-icon">🏡</span>
+
+            <h3 data-hi="घर और परिवार" data-en="Home & family">घर और परिवार</h3>
+
+            <p
+              data-hi="माता-पिता की मदद, बच्चों की पढ़ाई या अपने घर के लिए नियमित बचत की योजना बनाएँ।"
+              data-en="Plan regular savings for your parents, children’s education or a home of your own."
+            >माता-पिता की मदद, बच्चों की पढ़ाई या अपने घर के लिए नियमित बचत की योजना बनाएँ।</p>
+          </article>
+
+          <article class="value-card reveal">
+            <span class="value-icon">📈</span>
+
+            <h3 data-hi="मजबूत भविष्य" data-en="A stronger future">मजबूत भविष्य</h3>
+
+            <p
+              data-hi="अंतरराष्ट्रीय अनुभव, नई skills और आगे बढ़ने के बेहतर अवसर हासिल करें।"
+              data-en="Build international experience, new skills and better opportunities for your next step."
+            >अंतरराष्ट्रीय अनुभव, नई skills और आगे बढ़ने के बेहतर अवसर हासिल करें।</p>
+          </article>
+
+          <article class="value-card reveal">
+            <span class="value-icon">🤝</span>
+
+            <h3
+              data-hi="सम्मान और स्पष्टता"
+              data-en="Respect & clarity"
+            >सम्मान और स्पष्टता</h3>
+
+            <p
+              data-hi="भूमिका, वेतन, रहने और भोजन की शर्तें यात्रा से पहले लिखित ऑफ़र में देखें।"
+              data-en="Review the role, pay, stay and meal terms in writing before you travel."
+            >भूमिका, वेतन, रहने और भोजन की शर्तें यात्रा से पहले लिखित ऑफ़र में देखें।</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell roles-layout">
+        <div class="roles-intro reveal">
+          <span
+            class="label"
+            data-hi="आपके लिए रास्ते"
+            data-en="Paths for you"
+          >आपके लिए रास्ते</span>
+
+          <h2
+            data-hi="किस तरह की नौकरियाँ मिल सकती हैं?"
+            data-en="What kind of work may be available?"
+          >किस तरह की नौकरियाँ मिल सकती हैं?</h2>
+
+          <p
+            data-hi="रिक्तियाँ समय, देश और आपकी प्रोफ़ाइल के अनुसार बदलती हैं। कुछ entry-level भूमिकाओं में अनुभव ज़रूरी नहीं होता।"
+            data-en="Openings change by time, destination and profile. Some entry-level roles do not require previous experience."
+          >रिक्तियाँ समय, देश और आपकी प्रोफ़ाइल के अनुसार बदलती हैं। कुछ entry-level भूमिकाओं में अनुभव ज़रूरी नहीं होता।</p>
+
+          <div
+            class="role-note"
+            data-hi="अपनी उम्र, अनुभव, पासपोर्ट स्थिति और पसंदीदा काम WhatsApp पर भेजें — उपलब्ध विकल्प बताए जाएँगे।"
+            data-en="Send your age, experience, passport status and preferred work on WhatsApp to see current options."
+          >अपनी उम्र, अनुभव, पासपोर्ट स्थिति और पसंदीदा काम WhatsApp पर भेजें — उपलब्ध विकल्प बताए जाएँगे।</div>
+        </div>
+
+        <div class="roles">
+          <article class="role reveal">
+            <div class="role-top">
+              <span class="role-icon">📦</span>
+              <span class="role-tag" data-hi="लोकप्रिय" data-en="Popular">लोकप्रिय</span>
+            </div>
+            <h3>Warehouse & Logistics</h3>
+            <p
+              data-hi="पैकिंग, sorting, inventory और dispatch सहायता।"
+              data-en="Packing, sorting, inventory and dispatch support."
+            >पैकिंग, sorting, inventory और dispatch सहायता।</p>
+          </article>
+
+          <article class="role reveal">
+            <div class="role-top">
+              <span class="role-icon">🏭</span>
+              <span class="role-tag" data-hi="ट्रेनिंग संभव" data-en="Training possible">ट्रेनिंग संभव</span>
+            </div>
+            <h3>Manufacturing</h3>
+            <p
+              data-hi="Production line, quality check और मशीन सहायता।"
+              data-en="Production line, quality checks and machine support."
+            >Production line, quality check और मशीन सहायता।</p>
+          </article>
+
+          <article class="role reveal">
+            <div class="role-top">
+              <span class="role-icon">🏨</span>
+              <span class="role-tag" data-hi="सेवा क्षेत्र" data-en="Service sector">सेवा क्षेत्र</span>
+            </div>
+            <h3>Hospitality</h3>
+            <p
+              data-hi="Housekeeping, kitchen support और guest services।"
+              data-en="Housekeeping, kitchen support and guest services."
+            >Housekeeping, kitchen support और guest services।</p>
+          </article>
+
+          <article class="role reveal">
+            <div class="role-top">
+              <span class="role-icon">🦺</span>
+              <span class="role-tag" data-hi="कुशल/सामान्य" data-en="Skilled/general">कुशल/सामान्य</span>
+            </div>
+            <h3>Facilities & Construction</h3>
+            <p
+              data-hi="Maintenance, cleaning और site-support भूमिकाएँ।"
+              data-en="Maintenance, cleaning and site-support roles."
+            >Maintenance, cleaning और site-support भूमिकाएँ।</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section soft">
+      <div class="shell included">
+        <div class="visual reveal" aria-hidden="true">
+          <span class="visual-sun"></span>
+          <span class="visual-plane">✈️</span>
+          <span class="city"></span>
+
+          <span class="visual-badge badge-one">
+            🏠
+            <span data-hi="रहना तय" data-en="Stay arranged">रहना तय</span>
+          </span>
+
+          <span class="visual-badge badge-two">
+            🍛
+            <span data-hi="भोजन शामिल*" data-en="Meals included*">भोजन शामिल*</span>
+          </span>
+        </div>
+
+        <div class="reveal">
+          <div class="section-head">
+            <span
+              class="label"
+              data-hi="कम चिंता, ज्यादा फोकस"
+              data-en="Less worry, more focus"
+            >कम चिंता, ज्यादा फोकस</span>
+
+            <h2
+              data-hi="नई जगह पर शुरुआत आसान बने"
+              data-en="A smoother start in a new country"
+            >नई जगह पर शुरुआत आसान बने</h2>
+
+            <p
+              data-hi="चुनी हुई नौकरियों में बुनियादी ज़रूरतों की व्यवस्था पहले से होती है, ताकि आप काम और बचत पर ध्यान दे सकें।"
+              data-en="Selected roles arrange essential needs in advance so you can focus on your work and savings."
+            >चुनी हुई नौकरियों में बुनियादी ज़रूरतों की व्यवस्था पहले से होती है, ताकि आप काम और बचत पर ध्यान दे सकें।</p>
+          </div>
+
+          <div class="checks">
+            <div class="check">
+              <span class="check-icon">✓</span>
+              <div>
+                <strong>Employer-arranged flight</strong>
+                <small
+                  data-hi="टिकट की शर्त लिखित ऑफ़र में जाँचें"
+                  data-en="Check ticket terms in the written offer"
+                >टिकट की शर्त लिखित ऑफ़र में जाँचें</small>
+              </div>
+            </div>
+
+            <div class="check">
+              <span class="check-icon">✓</span>
+              <div>
+                <strong>Accommodation before arrival</strong>
+                <small
+                  data-hi="स्थान और sharing details पहले पूछें"
+                  data-en="Ask about location and sharing details"
+                >स्थान और sharing details पहले पूछें</small>
+              </div>
+            </div>
+
+            <div class="check">
+              <span class="check-icon">✓</span>
+              <div>
+                <strong>Meal plan or food support</strong>
+                <small
+                  data-hi="शाकाहारी विकल्प की पुष्टि करें"
+                  data-en="Confirm vegetarian options if needed"
+                >शाकाहारी विकल्प की पुष्टि करें</small>
+              </div>
+            </div>
+
+            <div class="check">
+              <span class="check-icon">✓</span>
+              <div>
+                <strong>Document guidance</strong>
+                <small
+                  data-hi="पासपोर्ट और कागज़ात की checklist"
+                  data-en="A checklist for passport and papers"
+                >पासपोर्ट और कागज़ात की checklist</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-head center reveal">
+          <span
+            class="label"
+            data-hi="सीधा और पारदर्शी"
+            data-en="Simple & transparent"
+          >सीधा और पारदर्शी</span>
+
+          <h2
+            data-hi="पहले समझें, फिर आगे बढ़ें"
+            data-en="Understand first. Move forward second."
+          >पहले समझें, फिर आगे बढ़ें</h2>
+
+          <p
+            data-hi="किसी निर्णय से पहले भूमिका और शर्तें जानना आपका अधिकार है।"
+            data-en="You have the right to know the role and terms before making a decision."
+          >किसी निर्णय से पहले भूमिका और शर्तें जानना आपका अधिकार है।</p>
+        </div>
+
+        <div class="process">
+          <article class="step reveal">
+            <h3
+              data-hi="अपनी प्रोफ़ाइल भेजें"
+              data-en="Share your profile"
+            >अपनी प्रोफ़ाइल भेजें</h3>
+
+            <p
+              data-hi="उम्र, अनुभव, पासपोर्ट स्थिति और पसंदीदा काम WhatsApp पर साझा करें।"
+              data-en="Send your age, experience, passport status and preferred work on WhatsApp."
+            >उम्र, अनुभव, पासपोर्ट स्थिति और पसंदीदा काम WhatsApp पर साझा करें।</p>
+          </article>
+
+          <article class="step reveal">
+            <h3
+              data-hi="विकल्प और ऑफ़र देखें"
+              data-en="Review roles and offers"
+            >विकल्प और ऑफ़र देखें</h3>
+
+            <p
+              data-hi="देश, नौकरी, वेतन, duty hours और सुविधाओं की जानकारी लिखित में लें।"
+              data-en="Get the country, job, salary, duty hours and benefits in writing."
+            >देश, नौकरी, वेतन, duty hours और सुविधाओं की जानकारी लिखित में लें।</p>
+          </article>
+
+          <article class="step reveal">
+            <h3
+              data-hi="दस्तावेज़ और यात्रा"
+              data-en="Documents and travel"
+            >दस्तावेज़ और यात्रा</h3>
+
+            <p
+              data-hi="योग्यता पूरी होने पर दस्तावेज़, वीज़ा और यात्रा के अगले कदम समझें।"
+              data-en="If eligible, understand the next steps for documents, visa and travel."
+            >योग्यता पूरी होने पर दस्तावेज़, वीज़ा और यात्रा के अगले कदम समझें।</p>
+          </article>
+        </div>
+
+        <div class="safety reveal">
+          <span class="safety-icon">🛡️</span>
+
+          <div>
+            <strong
+              data-hi="सुरक्षित रहें: बिना लिखित जानकारी के भुगतान न करें"
+              data-en="Stay safe: do not pay without written information"
+            >सुरक्षित रहें: बिना लिखित जानकारी के भुगतान न करें</strong>
+
+            <p
+              data-hi="ऑफ़र, employer details, refund terms और receipt हमेशा माँगें। OTP या banking password कभी साझा न करें।"
+              data-en="Always ask for the offer, employer details, refund terms and a receipt. Never share an OTP or banking password."
+            >ऑफ़र, employer details, refund terms और receipt हमेशा माँगें। OTP या banking password कभी साझा न करें।</p>
+          </div>
+
+          <a
+            class="js-whatsapp"
+            href="#"
+            target="_blank"
+            rel="noopener"
+            data-hi="शर्तें पूछें"
+            data-en="Ask about terms"
+          >शर्तें पूछें</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section soft">
+      <div class="shell">
+        <div class="section-head center reveal">
+          <span class="label">FAQ</span>
+
+          <h2
+            data-hi="आपके सवाल, साफ़ जवाब"
+            data-en="Your questions, clear answers"
+          >आपके सवाल, साफ़ जवाब</h2>
+
+          <p
+            data-hi="यात्रा से पहले हर महत्वपूर्ण बात की पुष्टि करें।"
+            data-en="Confirm every important detail before travelling."
+          >यात्रा से पहले हर महत्वपूर्ण बात की पुष्टि करें।</p>
+        </div>
+
+        <div class="faq">
+          <article class="faq-item reveal">
+            <button class="faq-question" type="button">
+              <span
+                data-hi="वेतन कितना होगा?"
+                data-en="How much will I earn?"
+              >वेतन कितना होगा?</span>
+              <span class="plus">+</span>
+            </button>
+
+            <div class="faq-answer">
+              <p
+                data-hi="वेतन देश, भूमिका, अनुभव और duty hours पर निर्भर करता है। आगे बढ़ने से पहले salary, overtime और deductions लिखित ऑफ़र में जाँचें।"
+                data-en="Pay depends on country, role, experience and duty hours. Check salary, overtime and deductions in the written offer."
+              >वेतन देश, भूमिका, अनुभव और duty hours पर निर्भर करता है। आगे बढ़ने से पहले salary, overtime और deductions लिखित ऑफ़र में जाँचें।</p>
+            </div>
+          </article>
+
+          <article class="faq-item reveal">
+            <button class="faq-question" type="button">
+              <span
+                data-hi="क्या flight, रहना और भोजन सच में शामिल हैं?"
+                data-en="Are the flight, stay and meals really included?"
+              >क्या flight, रहना और भोजन सच में शामिल हैं?</span>
+              <span class="plus">+</span>
+            </button>
+
+            <div class="faq-answer">
+              <p
+                data-hi="चयनित रिक्तियों में ये सुविधाएँ नियोक्ता देता है। ticket type, accommodation और meal plan की शर्तें लिखित में लें।"
+                data-en="Employers provide these benefits for selected vacancies. Confirm ticket type, accommodation and meal plan in writing."
+              >चयनित रिक्तियों में ये सुविधाएँ नियोक्ता देता है। ticket type, accommodation और meal plan की शर्तें लिखित में लें।</p>
+            </div>
+          </article>
+
+          <article class="faq-item reveal">
+            <button class="faq-question" type="button">
+              <span
+                data-hi="क्या बिना अनुभव आवेदन कर सकता हूँ?"
+                data-en="Can I apply without experience?"
+              >क्या बिना अनुभव आवेदन कर सकता हूँ?</span>
+              <span class="plus">+</span>
+            </button>
+
+            <div class="faq-answer">
+              <p
+                data-hi="हाँ, कुछ entry-level भूमिकाओं में training मिलती है। चयन उम्र, स्वास्थ्य, दस्तावेज़ और employer requirements पर निर्भर करेगा।"
+                data-en="Yes, some entry-level roles provide training. Selection depends on age, health, documents and employer requirements."
+              >हाँ, कुछ entry-level भूमिकाओं में training मिलती है। चयन उम्र, स्वास्थ्य, दस्तावेज़ और employer requirements पर निर्भर करेगा।</p>
+            </div>
+          </article>
+
+          <article class="faq-item reveal">
+            <button class="faq-question" type="button">
+              <span
+                data-hi="क्या पासपोर्ट ज़रूरी है?"
+                data-en="Do I need a passport?"
+              >क्या पासपोर्ट ज़रूरी है?</span>
+              <span class="plus">+</span>
+            </button>
+
+            <div class="faq-answer">
+              <p
+                data-hi="विदेश यात्रा के लिए वैध पासपोर्ट आवश्यक है। यदि आवेदन या renewal चल रहा है, तो सलाहकार को अपनी स्थिति बताएँ।"
+                data-en="A valid passport is required. If yours is under application or renewal, tell the adviser your current status."
+              >विदेश यात्रा के लिए वैध पासपोर्ट आवश्यक है। यदि आवेदन या renewal चल रहा है, तो सलाहकार को अपनी स्थिति बताएँ।</p>
+            </div>
+          </article>
+
+          <article class="faq-item reveal">
+            <button class="faq-question" type="button">
+              <span
+                data-hi="क्या शाकाहारी भोजन मिलेगा?"
+                data-en="Will vegetarian food be available?"
+              >क्या शाकाहारी भोजन मिलेगा?</span>
+              <span class="plus">+</span>
+            </button>
+
+            <div class="faq-answer">
+              <p
+                data-hi="यह employer और destination पर निर्भर करता है। धार्मिक, स्वास्थ्य या vegetarian food preference की लिखित पुष्टि offer स्वीकार करने से पहले लें।"
+                data-en="This depends on employer and destination. Get written confirmation of religious, medical or vegetarian food needs before accepting."
+              >यह employer और destination पर निर्भर करता है। धार्मिक, स्वास्थ्य या vegetarian food preference की लिखित पुष्टि offer स्वीकार करने से पहले लें।</p>
+            </div>
+          </article>
+
+          <article class="faq-item reveal">
+            <button class="faq-question" type="button">
+              <span
+                data-hi="प्रक्रिया में कितना समय लगता है?"
+                data-en="How long does the process take?"
+              >प्रक्रिया में कितना समय लगता है?</span>
+              <span class="plus">+</span>
+            </button>
+
+            <div class="faq-answer">
+              <p
+                data-hi="समय vacancy, दस्तावेज़, medical और visa processing पर निर्भर करता है। यात्रा की तारीख आधिकारिक approval के बाद ही निश्चित मानें।"
+                data-en="Timing depends on vacancy, documents, medical checks and visa processing. Treat a date as final only after official approval."
+              >समय vacancy, दस्तावेज़, medical और visa processing पर निर्भर करता है। यात्रा की तारीख आधिकारिक approval के बाद ही निश्चित मानें।</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell final reveal">
+        <div>
+          <h2
+            data-hi="एक संदेश से शुरुआत करें"
+            data-en="Start with one message"
+          >एक संदेश से शुरुआत करें</h2>
+
+          <p
+            data-hi="आज केवल अपनी प्रोफ़ाइल जाँचें। उपलब्ध नौकरी, देश और पूरी शर्तें समझने के बाद ही फैसला करें।"
+            data-en="Review your profile today. Decide only after you understand the available job, destination and full terms."
+          >आज केवल अपनी प्रोफ़ाइल जाँचें। उपलब्ध नौकरी, देश और पूरी शर्तें समझने के बाद ही फैसला करें।</p>
+        </div>
+
+        <a
+          class="cta js-whatsapp"
+          href="#"
+          target="_blank"
+          rel="noopener"
+          data-channel="whatsapp"
+        >
+          <span>💬</span>
+          <span
+            data-hi="WhatsApp पर बात करें"
+            data-en="Talk on WhatsApp"
+          >WhatsApp पर बात करें</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-inner">
+      <div
+        class="footer-note"
+        data-hi="*नौकरियाँ, वेतन, उड़ान, आवास और भोजन की उपलब्धता employer, destination, eligibility और लिखित contract पर निर्भर करती है। यह पेज नौकरी या visa की गारंटी नहीं देता। आधिकारिक दस्तावेज़ और immigration rules मान्य होंगे।"
+        data-en="*Job, salary, flight, accommodation and meal availability depends on employer, destination, eligibility and written contract. This page does not guarantee a job or visa. Official documents and immigration rules prevail."
+      >*नौकरियाँ, वेतन, उड़ान, आवास और भोजन की उपलब्धता employer, destination, eligibility और लिखित contract पर निर्भर करती है। यह पेज नौकरी या visa की गारंटी नहीं देता। आधिकारिक दस्तावेज़ और immigration rules मान्य होंगे।</div>
+
+      <div class="footer-brand">
+        © 2026 UDAAN CAREERS · INDIA
+      </div>
+    </div>
+  </footer>
+
+  <div class="mobile-bar" id="mobileBar">
+    <a
+      class="mobile-whatsapp js-whatsapp"
+      href="#"
+      target="_blank"
+      rel="noopener"
+      data-hi="💬 WhatsApp पर पूछें"
+      data-en="💬 Ask on WhatsApp"
+    >💬 WhatsApp पर पूछें</a>
+
+    <a
+      class="mobile-telegram js-telegram"
+      href="#"
+      target="_blank"
+      rel="noopener"
+      aria-label="Telegram"
+    >✈️</a>
+  </div>
+
+  <script>
+    let currentLanguage =
+      localStorage.getItem("udaan-language") === "en" ? "en" : "hi";
+
+    function contactMessage(language) {
+      if (language === "hi") {
+        return "नमस्ते! मैंने विदेश में नौकरी के बारे में देखा। कृपया उपलब्ध नौकरी, वेतन और प्रक्रिया की जानकारी भेजें।";
+      }
+
+      return "Hello! I saw the overseas jobs page. Please share current roles, salary details and the application process.";
+    }
+
+    function updateContactLinks() {
+      const message = encodeURIComponent(contactMessage(currentLanguage));
+
+      document.querySelectorAll(".js-whatsapp").forEach(link => {
+        link.href =
+          window.JOB_CONTACTS.whatsapp.split("?")[0] +
+          "?text=" +
+          message;
+      });
+
+      document.querySelectorAll(".js-telegram").forEach(link => {
+        link.href =
+          window.JOB_CONTACTS.telegram.split("?")[0] +
+          "?text=" +
+          message;
+      });
+    }
+
+    function setLanguage(language) {
+      currentLanguage = language;
+
+      localStorage.setItem("udaan-language", language);
+      document.documentElement.lang = language;
+
+      document.querySelectorAll("[data-hi][data-en]").forEach(element => {
+        element.textContent = element.getAttribute("data-" + language);
+      });
+
+      document.querySelectorAll(".language-button").forEach(button => {
+        button.setAttribute(
+          "aria-pressed",
+          String(button.dataset.language === language)
+        );
+      });
+
+      document.title =
+        language === "hi"
+          ? "विदेश में नौकरी | भारत से दुनिया तक"
+          : "Overseas Jobs | From India to the World";
+
+      document.querySelector('meta[name="description"]').content =
+        language === "hi"
+          ? "विदेश में नौकरी — चयनित नौकरियों में उड़ान, रहना और भोजन शामिल।"
+          : "Overseas jobs for Indians — selected roles include flights, accommodation and meals.";
+
+      document.querySelectorAll(".faq-item.open .faq-answer").forEach(answer => {
+        answer.style.maxHeight = answer.scrollHeight + "px";
+      });
+
+      updateContactLinks();
+    }
+
+    document.querySelectorAll(".language-button").forEach(button => {
+      button.addEventListener("click", () => {
+        setLanguage(button.dataset.language);
+      });
+    });
+
+    document.querySelectorAll(".faq-item").forEach(item => {
+      const button = item.querySelector(".faq-question");
+      const answer = item.querySelector(".faq-answer");
+
+      button.addEventListener("click", () => {
+        const wasOpen = item.classList.contains("open");
+
+        document.querySelectorAll(".faq-item.open").forEach(openItem => {
+          openItem.classList.remove("open");
+          openItem.querySelector(".faq-answer").style.maxHeight = "0px";
+        });
+
+        if (!wasOpen) {
+          item.classList.add("open");
+          answer.style.maxHeight = answer.scrollHeight + "px";
+        }
+      });
+    });
+
+    const revealObserver =
+      "IntersectionObserver" in window
+        ? new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+                revealObserver.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.1 })
+        : null;
+
+    document.querySelectorAll(".reveal").forEach(element => {
+      if (revealObserver) {
+        revealObserver.observe(element);
+      } else {
+        element.classList.add("visible");
+      }
+    });
+
+    window.addEventListener("scroll", () => {
+      const availableHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+      document.getElementById("progress").style.width =
+        (availableHeight > 0
+          ? window.scrollY / availableHeight * 100
+          : 0) + "%";
+
+      document.getElementById("mobileBar").classList.toggle(
+        "show",
+        window.scrollY > window.innerHeight * 0.65
+      );
+    }, { passive: true });
+
+    document.querySelectorAll("[data-channel]").forEach(link => {
+      link.addEventListener("click", () => {
+        if (typeof fbq === "function") {
+          fbq("track", "Contact", {
+            channel: link.dataset.channel,
+            language: currentLanguage
+          });
+        }
+      });
+    });
+
+    setLanguage(currentLanguage);
+  </script>
+</body>
+</html>
