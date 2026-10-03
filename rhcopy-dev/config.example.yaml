@@ -29,6 +29,8 @@ wallets: []
 chains:
   robinhood: true
   ethereum: true
+  bsc: true
+  base: true
   solana: true
 
 ethereum:
@@ -43,6 +45,31 @@ ethereum:
   max_catchup_blocks: 25    # ~5 min after a restart; older signals are stale anyway
   min_gas_eth: 0.002        # live: below this ETH balance no new buys (gas is reserved for exits)
   max_gas_pct: 3.0          # gas on Ethereum costs more: allow up to 3% of the ticket
+
+bsc:
+  # BNB Chain. The trade stablecoin is USDT with 18 decimals (not 6) — the bot handles that itself.
+  # Public nodes that serve eth_getLogs by topics without a contract address (your own node -> .env BSC_RPC_URL):
+  rpc:
+    - https://rpc-bsc.48.club
+    - https://56.rpc.thirdweb.com
+    - https://1rpc.io/bnb       # caps eth_getLogs at 50 blocks per call
+  poll_seconds: 2
+  log_chunk_blocks: 45         # keep <= 50 for 1rpc.io
+  max_catchup_blocks: 600      # ~0.45 s blocks
+  min_gas_eth: 0.003           # here the gas coin is BNB
+  max_gas_pct: 1.5
+
+base:
+  # Base (Coinbase L2). Trade stablecoin USDC (6 decimals). Own node -> .env BASE_RPC_URL.
+  rpc:
+    - https://mainnet.base.org
+    - https://8453.rpc.thirdweb.com
+    - https://gateway.tenderly.co/public/base
+  poll_seconds: 3
+  log_chunk_blocks: 500
+  max_catchup_blocks: 150      # ~2 s blocks
+  min_gas_eth: 0.0005          # gas coin is ETH
+  max_gas_pct: 1.5
 
 solana:
   # Free endpoints work for a start; for reliable real-time detection put HELIUS_API_KEY into .env

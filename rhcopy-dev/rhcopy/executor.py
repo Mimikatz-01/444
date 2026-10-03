@@ -30,6 +30,7 @@ class Executor:
         self.chain_id, self.approval_proxy = chain_id, approval_proxy
         self.live = bool(cfg["live"])
         self.usdg = cfg["usdg"].lower()
+        self.usd_dec = int(cfg.get("usd_decimals", 6))  # stablecoin decimals (BNB Chain USDT = 18)
         self.eth_price = eth_price
         self.acct = Account.from_key(private_key) if private_key else None
         if self.live and not self.acct:
@@ -38,7 +39,7 @@ class Executor:
 
     # ---------- public ----------
     def buy(self, token, usd, slippage_bps):
-        amount = int(round(usd * 1e6))  # USDG has 6 decimals
+        amount = int(round(usd * 10 ** self.usd_dec))  # stablecoin units (6 decimals, 18 on BNB Chain)
         q = self.relay.quote(self.addr, self.usdg, token, amount, slippage_bps, chain_id=self.chain_id)
         if not q or q.out_raw <= 0:
             raise ExecError(self.relay.last_error or "no route")
@@ -49,7 +50,7 @@ class Executor:
         ub0 = self.chain.erc20_balance(self.usdg, self.addr)
         h, gas_eth = self._send_step(q, "swap")
         got = self.chain.erc20_balance(token, self.addr) - tb0
-        spent = (ub0 - self.chain.erc20_balance(self.usdg, self.addr)) / 1e6
+        spent = (ub0 - self.chain.erc20_balance(self.usdg, self.addr)) / 10 ** self.usd_dec
         if got <= 0:
             raise ExecError(f"swap {h} landed but no tokens arrived")
         # pre-approve the token so every later exit is a single transaction
@@ -65,12 +66,12 @@ class Executor:
         if not q or q.out_raw <= 0:
             raise ExecError(self.relay.last_error or "no route")
         if not self.live:
-            return Fill(tokens_raw, q.out_raw / 1e6, q.gas_usd, "paper", q.impact_pct)
+            return Fill(tokens_raw, q.out_raw / 10 ** self.usd_dec, q.gas_usd, "paper", q.impact_pct)
         self._ensure_allowance(token, tokens_raw)
         ub0 = self.chain.erc20_balance(self.usdg, self.addr)
         tb0 = self.chain.erc20_balance(token, self.addr)
         h, gas_eth = self._send_step(q, "swap")
-        got = (self.chain.erc20_balance(self.usdg, self.addr) - ub0) / 1e6
+        got = (self.chain.erc20_balance(self.usdg, self.addr) - ub0) / 10 ** self.usd_dec
         sold = tb0 - self.chain.erc20_balance(token, self.addr)
         return Fill(sold, got, gas_eth * self.eth_price(), h, q.impact_pct)
 
@@ -91,7 +92,7 @@ class Executor:
     def balances(self):
         if not self.live:
             return None
-        return {"usdg": self.chain.erc20_balance(self.usdg, self.addr) / 1e6,
+        return {"usdg": self.chain.erc20_balance(self.usdg, self.addr) / 10 ** self.usd_dec,
                 "eth": self.chain.eth_balance(self.addr) / 1e18}
 
     # ---------- internals ----------

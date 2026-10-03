@@ -2,7 +2,7 @@
 from conftest import EVM1, SOL_ONLY, seed
 
 # destructive or confirming actions are never pressed by the crawler (see AGENTS.md)
-SKIP = {"tdc", "udc", "wc", "wkc", "wsc", "wskc", "livec", "slivec", "elivec", "wdc", "inv", "impc"}
+SKIP = {"tdc", "udc", "wc", "wkc", "wsc", "wskc", "lvc", "wdc", "inv", "impc"}
 
 
 def buttons(kb):
@@ -72,7 +72,7 @@ def test_text_flows(bot):
     bot.ui.route(bot.db.user(uid2), "c:sizing.ticket_usd")
     bot.ui.on_text(bot.db.user(uid2), "20")
     assert bot.get_key(bot.db.user(uid2), "sizing.ticket_usd") == 20
-    bot.ui.route(bot.db.user(uid2), "wd:usdg")
+    bot.ui.route(bot.db.user(uid2), "wd:rh:usd")
     bot.ui.on_text(bot.db.user(uid2), "0x2222222222222222222222222222222222222222 5")
     assert "Кошелька нет" in bot.tg.texts()[-1]
 

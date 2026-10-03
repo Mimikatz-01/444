@@ -61,6 +61,12 @@ class DB:
             # copyfomo-style by default: every skipped signal is reported with its reason
             self.c.execute("UPDATE users SET notify_skips=1")
             self.c.execute("INSERT INTO kv(k,v) VALUES('skips_on_v1','true')")
+        if not self.c.execute("SELECT 1 FROM kv WHERE k='live_chains_v1'").fetchone():
+            # fold the old per-chain live flags (live / sol_live / eth_live) into one JSON list
+            for r in self.c.execute("SELECT id, live, sol_live, eth_live FROM users").fetchall():
+                chains = [c for c, v in (("rh", r["live"]), ("sol", r["sol_live"]), ("eth", r["eth_live"])) if v]
+                self.c.execute("UPDATE users SET live_chains=? WHERE id=?", (json.dumps(chains), r["id"]))
+            self.c.execute("INSERT INTO kv(k,v) VALUES('live_chains_v1','true')")
         self.c.commit()
 
     def migrate(self, cfg, env):

@@ -23,10 +23,17 @@ REPLY_KB = {"keyboard": [[{"text": MAIN_BTN}, {"text": POS_BTN}], [{"text": TR_B
             "resize_keyboard": True, "is_persistent": True}
 EXPLORER = "https://robin.etherscan.io"
 SOLSCAN = "https://solscan.io"
-CHAIN_NAME = {"rh": "Robinhood", "sol": "Solana", "eth": "Ethereum"}
-DEX_PATH = {"rh": "robinhood", "sol": "solana", "eth": "ethereum"}
+CHAIN_NAME = {"rh": "Robinhood", "sol": "Solana", "eth": "Ethereum", "bsc": "BNB Chain", "base": "Base"}
+DEX_PATH = {"rh": "robinhood", "sol": "solana", "eth": "ethereum", "bsc": "bsc", "base": "base"}
 ETHERSCAN = "https://etherscan.io"
-TAG = {"rh": "RH", "eth": "ETH", "sol": "SOL"}
+TAG = {"rh": "RH", "eth": "ETH", "sol": "SOL", "bsc": "BSC", "base": "BASE"}
+WICON = {"rh": "🟢", "eth": "🔷", "bsc": "🟠", "base": "🔵", "sol": "🟣"}
+FUND_RU = {
+    "rh": "USDG строго {usd} (другие «USDG» — фейки) и немного ETH на газ. Удобнее всего через relay.link.",
+    "eth": "USDC в сети Ethereum на сделки и ETH на газ — от 0.002 ETH. С биржи выводи, выбрав сеть Ethereum (ERC-20).",
+    "bsc": "USDT (BEP-20) в сети BNB Chain на сделки и немного BNB на газ. С биржи выбирай сеть BSC (BEP-20).",
+    "base": "USDC в сети Base на сделки и немного ETH на газ. С биржи выбирай сеть Base.",
+}
 
 LADDERS = {
     "mine": ("+50%→50%, +300%→25%", [{"at_pct": 50, "sell": 0.5}, {"at_pct": 300, "sell": 0.25}]),
@@ -237,34 +244,43 @@ class UI:
             return self.by_source(u), None
         if cmd == "cl":
             return self.closed(u), None
-        # --- wallet
+        # --- wallets: Robinhood / Ethereum / BNB Chain / Base share one EVM key; Solana is separate
         if cmd == "w":
             return self.wallets(u), None
-        if cmd == "wr":
-            return self.wallet(u), None
+        if cmd == "we":
+            return self.wallet_evm(u, arg or "rh"), None
         if cmd == "wsl":
             return self.wallet_sol(u), None
-        if cmd == "weth":
-            return self.wallet_eth(u), None
-        if cmd == "elive":
-            if arg == "on":
-                if not b.user_key(u):
-                    return self.wallet_eth(u), "сначала создай кошелёк"
-                net, addr = b.nets.get("eth"), b.wallet_address(u)
-                usdc = net.chain.erc20_balance(net.usd, addr) / 1e6 if net else 0
-                eth = net.chain.eth_balance(addr) / 1e18 if net else 0
-                return (f"🔴 Включить LIVE в Ethereum?\n\nПокупки пойдут с кошелька {addr} на реальные деньги.\n"
-                        f"Баланс в Ethereum: {usdc:.2f} USDC, {eth:.5f} ETH\n"
-                        "Нужны USDC (на сделки) и ETH на газ — от 0.002 ETH. Газ в Ethereum дороже, чем в Robinhood: "
-                        "тикет лучше от $25.",
-                        [[B("🔴 Да, включить", "elivec"), B("❌ Нет", "weth")]]), None
-            db.update_user(uid, eth_live=0)
-            return self.wallet_eth(db.user(uid)), "Ethereum: paper-режим"
-        if cmd == "elivec":
-            if not b.user_key(u):
-                return self.wallet_eth(u), "сначала создай кошелёк"
-            db.update_user(uid, eth_live=1)
-            return self.wallet_eth(db.user(uid)), "Ethereum: LIVE включён"
+        if cmd == "wc":
+            if b.user_key(u):
+                return self.wallet_evm(u, "rh"), "кошелёк уже есть"
+            k = Account.create().key.hex()
+            db.update_user(uid, private_key=k if k.startswith("0x") else "0x" + k)
+            return self.wallet_evm(db.user(uid), "rh", note="✅ Кошелёк создан. Сразу сохрани ключ: «🔐 Показать ключ»."), None
+        if cmd == "wk":
+            return ("🔐 Показать приватный ключ EVM-кошелька?\n\nОдин ключ на Robinhood, Ethereum, BNB Chain и Base. "
+                    "Кто знает ключ — распоряжается деньгами. Сообщение удалится через 60 секунд: перепиши его в "
+                    "менеджер паролей и никому не пересылай.",
+                    [[B("🔐 Да, показать", "wkc"), B("❌ Нет", "w")]]), None
+        if cmd == "wkc":
+            key = b.user_key(u)
+            if key:
+                self.send(u, f"Ключ EVM-кошелька {b.wallet_address(u)}:\n<tg-spoiler>{key}</tg-spoiler>\n\nУдалится через 60 секунд.",
+                          extra={"parse_mode": "HTML", "protect_content": True}, delete_after=60)
+            return self.wallet_evm(u, "rh"), "отправил, удалится через минуту"
+        if cmd == "wd":  # arg = "<chain>:<usd|gas>"
+            chain, _, kind = arg.partition(":")
+            net = b.nets.get(chain)
+            if not net:
+                return self.wallets(u), f"{CHAIN_NAME.get(chain, chain)} выключен"
+            self.awaiting[uid] = ("wd", arg)
+            coin = net.usd_name if kind == "usd" else net.coin
+            self.send(u, f"Куда и сколько вывести {coin} ({CHAIN_NAME[chain]})? Пришли одним сообщением:\n"
+                         f"0xАДРЕС СУММА   или   0xАДРЕС all\n\nАдрес — твой кошелёк в сети {CHAIN_NAME[chain]}.")
+            return None, None
+        if cmd == "wdc":
+            return self.do_withdraw(u)
+        # --- Solana wallet
         if cmd == "wsc":
             if b.sol_key(u):
                 return self.wallet_sol(u), "кошелёк уже есть"
@@ -286,70 +302,16 @@ class UI:
             self.send(u, f"Куда и сколько вывести {'USDC' if arg == 'sol_usdc' else 'SOL'}? Пришли одним сообщением:\n"
                          "АДРЕС СУММА   или   АДРЕС all\n\nАдрес — твой кошелёк в сети Solana (Phantom, биржа и т.п.).")
             return None, None
-        if cmd == "slive":
-            if arg == "on":
-                if not b.sol_key(u):
-                    return self.wallet_sol(u), "сначала создай кошелёк"
-                addr = b.sol_address(u)
-                usdc = b.sol_rpc.token_balance(addr, SOL_USDC) / 1e6
-                sol = b.sol_rpc.sol_balance(addr) / 1e9
-                return (f"🔴 Включить LIVE в Solana?\n\nПокупки пойдут с кошелька {addr} на реальные деньги.\n"
-                        f"Баланс: {usdc:.2f} USDC, {sol:.4f} SOL\n"
-                        "Нужны USDC (на сделки) и около 0.1 SOL (комиссии и залоги за токен-аккаунты). "
-                        "Открытые paper-позиции доиграют в paper.",
-                        [[B("🔴 Да, включить", "slivec"), B("❌ Нет", "wsl")]]), None
-            db.update_user(uid, sol_live=0)
-            return self.wallet_sol(db.user(uid)), "Solana: paper-режим"
-        if cmd == "slivec":
-            if not b.sol_key(u):
-                return self.wallet_sol(u), "сначала создай кошелёк"
-            db.update_user(uid, sol_live=1)
-            return self.wallet_sol(db.user(uid)), "Solana: LIVE включён"
-        if cmd == "wc":
-            if b.user_key(u):
-                return self.wallet(u), "кошелёк уже есть"
-            acct = Account.create()
-            k = acct.key.hex()
-            db.update_user(uid, private_key=k if k.startswith("0x") else "0x" + k)
-            return self.wallet(db.user(uid), note="✅ Кошелёк создан. Сразу сохрани ключ: кнопка «🔐 Показать ключ»."), None
-        if cmd == "wk":
-            return ("🔐 Показать приватный ключ?\n\nКто знает ключ — распоряжается деньгами. Сообщение с ключом "
-                    "удалится через 60 секунд: перепиши его в менеджер паролей и никому не пересылай.",
-                    [[B("🔐 Да, показать", "wkc"), B("❌ Нет", "wr")]]), None
-        if cmd == "wkc":
-            key = b.user_key(u)
-            if key:
-                self.send(u, f"Ключ кошелька {b.wallet_address(u)}:\n<tg-spoiler>{key}</tg-spoiler>\n\nУдалится через 60 секунд.",
-                          extra={"parse_mode": "HTML", "protect_content": True}, delete_after=60)
-            return self.wallet(u), "отправил, удалится через минуту"
-        if cmd == "wd":
-            self.awaiting[uid] = ("wd", arg)
-            net_name = "Ethereum" if arg.startswith("eth_") else "Robinhood Chain"
-            coin = {"usdg": "USDG", "eth_usdc": "USDC"}.get(arg, "ETH")
-            self.send(u, f"Куда и сколько вывести {coin} ({net_name})? Пришли одним сообщением:\n"
-                         f"0xАДРЕС СУММА   или   0xАДРЕС all\n\nАдрес — твой кошелёк в сети {net_name}.")
-            return None, None
-        if cmd == "wdc":
-            return self.do_withdraw(u)
-        if cmd == "live":
-            if arg == "on":
-                if not b.user_key(u):
-                    return self.wallet(u), "сначала создай кошелёк"
-                addr = b.wallet_address(u)
-                usdg = b.chain.erc20_balance(b.usdg, addr) / 1e6
-                eth = b.chain.eth_balance(addr) / 1e18
-                return (f"🔴 Включить LIVE?\n\nПокупки пойдут с кошелька {addr} на реальные деньги.\n"
-                        f"Баланс: {usdg:.2f} USDG, {eth:.5f} ETH\n"
-                        "Нужны USDG (на сделки) и немного ETH (на газ). Открытые paper-позиции доиграют в paper.\n"
-                        "Вернуться в paper можно в любой момент.",
-                        [[B("🔴 Да, включить LIVE", "livec"), B("❌ Нет", "wr")]]), None
-            db.update_user(uid, live=0)
-            return self.wallet(db.user(uid)), "paper-режим"
-        if cmd == "livec":
-            if not b.user_key(u):
-                return self.wallet(u), "сначала создай кошелёк"
-            db.update_user(uid, live=1)
-            return self.wallet(db.user(uid)), "LIVE включён"
+        # --- LIVE toggle: one scheme for every chain (lv:<chain> asks, lvc:<chain> confirms)
+        if cmd == "lv":
+            return self.live_toggle(u, arg)
+        if cmd == "lvc":
+            is_sol = arg == "sol"
+            if not (b.sol_key(u) if is_sol else b.user_key(u)):
+                return (self.wallet_sol(u) if is_sol else self.wallet_evm(u, arg)), "сначала создай кошелёк"
+            b.set_live(db.user(uid), arg, True)
+            scr = self.wallet_sol(db.user(uid)) if is_sol else self.wallet_evm(db.user(uid), arg)
+            return scr, f"{CHAIN_NAME[arg]}: LIVE включён"
         # --- admin
         if cmd in ("adm", "inv", "ud", "udc"):
             if uid != 1:
@@ -429,47 +391,47 @@ class UI:
     def prepare_withdraw(self, u, asset, text):
         b, uid = self.b, u["id"]
         parts = text.split()
-        sol = asset in ("sol_usdc", "sol")
-        if sol:
+        if asset in ("sol_usdc", "sol"):
             return self.prepare_withdraw_sol(u, asset, parts)
+        chain, _, kind = asset.partition(":")   # "<chain>:<usd|gas>"
+        net = b.nets.get(chain)
+        if not net:
+            self.awaiting.pop(uid, None)
+            return self.send(u, f"{CHAIN_NAME.get(chain, chain)} выключен в config.yaml.")
         if len(parts) != 2 or not (parts[0].lower().startswith("0x") and len(parts[0]) == 42):
             return self.send(u, "Формат: 0xАДРЕС СУММА или 0xАДРЕС all")
         to, amt = parts[0], parts[1].lower().replace(",", ".")
         addr = b.wallet_address(u)
         if not addr:
             self.awaiting.pop(uid, None)
-            return self.send(u, "Кошелька нет — создай его в «👛 Кошелёк».")
+            return self.send(u, "Кошелька нет — создай его в «👛 Кошельки».")
         if to.lower() == addr.lower():
             return self.send(u, "Это адрес самого бота. Нужен твой внешний кошелёк.")
-        chain = "eth" if asset.startswith("eth_") else "rh"
-        if chain not in b.nets:
-            self.awaiting.pop(uid, None)
-            return self.send(u, "Ethereum выключен в config.yaml.")
-        net = b.nets[chain]
         exe = b.exe(u, True, chain)
+        dec = net.usd_decimals
         try:
-            if asset in ("usdg", "eth_usdc"):
+            if kind == "usd":
                 bal = net.chain.erc20_balance(net.usd, addr)
-                raw = bal if amt == "all" else int(float(amt) * 1e6)
-                human = f"{raw / 1e6:.2f} {'USDG' if chain == 'rh' else 'USDC'} ({CHAIN_NAME[chain]})"
+                raw = bal if amt == "all" else int(float(amt) * 10 ** dec)
+                human = f"{raw / 10 ** dec:.2f} {net.usd_name} ({CHAIN_NAME[chain]})"
             else:
                 bal = net.chain.eth_balance(addr)
                 reserve = exe.eth_reserve(to)
                 raw = bal - reserve if amt == "all" else int(float(amt) * 1e18)
-                human = f"{raw / 1e18:.6f} ETH ({CHAIN_NAME[chain]})"
+                human = f"{raw / 1e18:.6f} {net.coin} ({CHAIN_NAME[chain]})"
                 if raw + reserve > bal:
                     raw = -1
         except ValueError:
             return self.send(u, "Не понял сумму.")
         if raw <= 0 or raw > bal:
-            return self.send(u, "Не хватает баланса (для ETH учти газ на саму отправку). Попробуй меньшую сумму.")
+            return self.send(u, f"Не хватает баланса (для {net.coin} учти газ на саму отправку). Попробуй меньшую сумму.")
         self.awaiting.pop(uid, None)
-        self.pending[uid] = {"asset": asset, "to": to, "raw": raw, "human": human, "ts": time.time(), "chain": chain}
+        self.pending[uid] = {"asset": asset, "to": to, "raw": raw, "human": human, "ts": time.time(),
+                             "chain": chain, "kind": kind}
         warn = ""
-        if asset in ("eth", "eth_eth") and any(not p["paper"] and (p.get("chain") or "rh") == chain for p in b.db.positions(uid)):
-            warn = f"\n⚠ Есть открытые live-позиции в {CHAIN_NAME[chain]} — без ETH бот не сможет их продать."
-        self.push(u, (f"Вывести {human}\nна {to}?{warn}",
-                      [[B("✅ Да, вывести", "wdc"), B("❌ Нет", "weth" if chain == "eth" else "wr")]]))
+        if kind == "gas" and any(not p["paper"] and (p.get("chain") or "rh") == chain for p in b.db.positions(uid)):
+            warn = f"\n⚠ Есть открытые live-позиции в {CHAIN_NAME[chain]} — без {net.coin} бот не сможет их продать."
+        self.push(u, (f"Вывести {human}\nна {to}?{warn}", [[B("✅ Да, вывести", "wdc"), B("❌ Нет", f"we:{chain}")]]))
 
     def prepare_withdraw_sol(self, u, asset, parts):
         b, uid = self.b, u["id"]
@@ -515,17 +477,12 @@ class UI:
                 return self.wallet_sol(u, note=f"⚠ Вывод не прошёл: {e}"), "ошибка"
             return self.wallet_sol(u, note=f"✅ Отправил {w['human']}\n{SOLSCAN}/tx/{sig}"), "готово"
         chain = w.get("chain", "rh")
-        exe = b.exe(u, True, chain)
+        net, exe = b.nets[chain], b.exe(u, True, chain)
         try:
-            if w["asset"] in ("usdg", "eth_usdc"):
-                h = exe.transfer_erc20(b.nets[chain].usd, w["to"], w["raw"])
-            else:
-                h = exe.send_eth(w["to"], w["raw"])
+            h = exe.transfer_erc20(net.usd, w["to"], w["raw"]) if w.get("kind") == "usd" else exe.send_eth(w["to"], w["raw"])
         except Exception as e:
-            return (self.wallet_eth if chain == "eth" else self.wallet)(u, note=f"⚠ Вывод не прошёл: {e}"), "ошибка"
-        if chain == "eth":
-            return self.wallet_eth(u, note=f"✅ Отправил {w['human']}\n{ETHERSCAN}/tx/{h}"), "готово"
-        return self.wallet(u, note=f"✅ Отправил {w['human']}\n{EXPLORER}/tx/{h}"), "готово"
+            return self.wallet_evm(u, chain, note=f"⚠ Вывод не прошёл: {e}"), "ошибка"
+        return self.wallet_evm(u, chain, note=f"✅ Отправил {w['human']}\n{net.explorer}/tx/{h}"), "готово"
 
     # ================================================================ screens
     def _pnl(self, p):
@@ -542,17 +499,17 @@ class UI:
         ops, st = db.positions(u["id"]), db.stats(u["id"])
         pnl = sum((s["realized_usd"] or 0) - s["cost_usd"] - (s["gas_usd"] or 0) for s in st)
         wins = sum(1 for s in st if (s["realized_usd"] or 0) - s["cost_usd"] - (s["gas_usd"] or 0) > 0)
-        lrh, lsol = b.live_on(u, "rh"), b.live_on(u, "sol")
         cfg = b.ucfg(u)
-        leth = b.live_on(u, "eth")
-        nets = [n for n, k in (("Robinhood", "robinhood"), ("Ethereum", "ethereum"), ("Solana", "solana"))
-                if (cfg.get("chains") or {}).get(k, True)]
-        if not lrh and not lsol and not leth:
+        evm = [(CHAIN_NAME[c], b.live_on(u, c), b.cash(u, c)) for c in ("rh", "eth", "bsc", "base") if c in b.nets]
+        lsol = b.live_on(u, "sol")
+        sol_on = bool((cfg.get("chains") or {}).get("solana", True) and b.sol_rpc)
+        nets = [name for name, _, _ in evm] + (["Solana"] if sol_on else [])
+        if not lsol and not any(lv for _, lv, _ in evm):
             money = f"🟡 PAPER — без реальных денег\nКапитал: {usd(b.equity(u))} · кэш {usd(b.cash(u))}\n"
         else:
-            money = (f"Robinhood: {'🔴 LIVE' if lrh else '🟡 paper'} · кэш {usd(b.cash(u, 'rh'))}\n"
-                     f"Ethereum: {'🔴 LIVE' if leth else '🟡 paper'} · кэш {usd(b.cash(u, 'eth') if 'eth' in b.nets else 0)}\n"
-                     f"Solana: {'🔴 LIVE' if lsol else '🟡 paper'} · кэш {usd(b.cash(u, 'sol'))}\n")
+            money = "".join(f"{name}: {'🔴 LIVE' if lv else '🟡 paper'} · кэш {usd(cash)}\n" for name, lv, cash in evm)
+            if sol_on:
+                money += f"Solana: {'🔴 LIVE' if lsol else '🟡 paper'} · кэш {usd(b.cash(u, 'sol'))}\n"
         val = sum(self._pnl(p)[0] for p in ops)
         text = (f"🤖 rhcopy · {u['name']}\n"
                 f"{'⏸ Пауза — новые покупки остановлены' if u['paused'] else '▶️ Работает'} · сети: {', '.join(nets) or 'нет'}\n\n"
@@ -683,69 +640,71 @@ class UI:
               [B("🗑 Удалить", f"td:{a}"), B("⬅ Трейдеры", "tr")]]
         return "\n".join(lines), kb
 
-    def wallet(self, u, note=None):
-        b = self.b
-        addr = b.wallet_address(u)
-        live = b.is_live(u)
-        if not addr:
-            text = ("🟢 Robinhood-кошелёк\n\nСейчас ты в paper-режиме: бот считает сделки по реальным котировкам, но без денег.\n\n"
-                    "Для реальных сделок боту нужен свой кошелёк. Ключ хранится на сервере бота — "
-                    "держи на нём только рабочую сумму.")
-            kb = [[B("🔑 Создать кошелёк", "wc")], [B("⬅ Кошельки", "w")]]
-        else:
-            usdg = b.chain.erc20_balance(b.usdg, addr) / 1e6
-            eth = b.chain.eth_balance(addr) / 1e18
-            text = (f"🟢 Robinhood-кошелёк · {'🔴 LIVE' if live else '🟡 PAPER'}\n\n"
-                    f"Адрес (Robinhood Chain):\n{addr}\n\n"
-                    f"USDG: {usdg:.2f}\nETH: {eth:.5f}\n\n"
-                    f"Пополнение: USDG строго {b.usdg} (другие «USDG» — фейки) и немного ETH на газ. "
-                    "Удобнее всего через relay.link.")
-            kb = [[B("💸 Вывести USDG", "wd:usdg"), B("💸 Вывести ETH", "wd:eth")],
-                  [B("🔐 Показать ключ", "wk"), U("🔎 Эксплорер", f"{EXPLORER}/address/{addr}")],
-                  [B("🟡 Вернуть PAPER", "live:off") if live else B("🔴 Включить LIVE", "live:on")],
-                  [B("🔄 Обновить", "wr"), B("⬅ Кошельки", "w")]]
-        if note:
-            text += "\n\n" + note
-        return text, kb
-
     def wallets(self, u):
         b = self.b
-        rh, sol = b.wallet_address(u), b.sol_address(u)
-        text = ("👛 Кошельки\n\n"
-                f"🟢 Robinhood Chain · {'🔴 LIVE' if b.live_on(u, 'rh') else '🟡 PAPER'}\n"
-                f"🔷 Ethereum · {'🔴 LIVE' if b.live_on(u, 'eth') else '🟡 PAPER'}\n"
-                f"{rh or 'EVM-кошелька пока нет'}  (один адрес на обе сети)\n\n"
-                f"🟣 Solana · {'🔴 LIVE' if b.live_on(u, 'sol') else '🟡 PAPER'}\n"
-                f"{sol or 'кошелька пока нет'}\n\n"
-                "Paper-режим общий для обеих сетей: один банк, реальные котировки, без денег. "
-                "LIVE включается в каждой сети отдельно.")
-        return text, [[B("🟢 Robinhood", "wr"), B("🔷 Ethereum", "weth"), B("🟣 Solana", "wsl")], [B("⬅ Меню", "m")]]
+        evm, sol = b.wallet_address(u), b.sol_address(u)
+        rows, kb_evm = [], []
+        for ch in ("rh", "eth", "bsc", "base"):
+            if ch in b.nets:
+                rows.append(f"{WICON[ch]} {CHAIN_NAME[ch]} · {'🔴 LIVE' if b.live_on(u, ch) else '🟡 PAPER'}")
+                kb_evm.append(B(f"{WICON[ch]} {CHAIN_NAME[ch]}", f"we:{ch}"))
+        text = ("👛 Кошельки\n\nEVM-сети (один адрес и ключ на все):\n" + "\n".join(rows) +
+                f"\n{evm or 'EVM-кошелька пока нет'}\n\n"
+                f"🟣 Solana · {'🔴 LIVE' if b.live_on(u, 'sol') else '🟡 PAPER'}\n{sol or 'кошелька пока нет'}\n\n"
+                "PAPER общий для всех сетей: один банк, реальные котировки, без денег. LIVE — в каждой сети отдельно.")
+        kb = [kb_evm[i:i + 2] for i in range(0, len(kb_evm), 2)]
+        kb.append([B("🟣 Solana", "wsl")])
+        kb.append([B("⬅ Меню", "m")])
+        return text, kb
 
-    def wallet_eth(self, u, note=None):
+    def wallet_evm(self, u, chain, note=None):
         b = self.b
-        addr, live = b.wallet_address(u), b.live_on(u, "eth")
-        net = b.nets.get("eth")
+        net = b.nets.get(chain)
         if not net:
-            return "Ethereum выключен в config.yaml (chains.ethereum: false).", [[B("⬅ Кошельки", "w")]]
+            return f"{CHAIN_NAME.get(chain, chain)} выключен в config.yaml.", [[B("⬅ Кошельки", "w")]]
+        addr, live = b.wallet_address(u), b.live_on(u, chain)
         if not addr:
-            text = ("🔷 Ethereum-кошелёк\n\nВ Ethereum бот использует тот же EVM-кошелёк, что и в Robinhood Chain: "
-                    "один адрес и один ключ, но балансы в каждой сети свои.")
+            text = (f"{WICON[chain]} Кошелёк {CHAIN_NAME[chain]}\n\nВо всех EVM-сетях (Robinhood, Ethereum, BNB Chain, "
+                    "Base) бот использует один и тот же кошелёк: один адрес и ключ, но балансы в каждой сети свои.\n\n"
+                    "Ключ хранится на сервере бота — держи на нём только рабочую сумму.")
             kb = [[B("🔑 Создать EVM-кошелёк", "wc")], [B("⬅ Кошельки", "w")]]
         else:
-            usdc = net.chain.erc20_balance(net.usd, addr) / 1e6
-            eth = net.chain.eth_balance(addr) / 1e18
-            text = (f"🔷 Ethereum-кошелёк · {'🔴 LIVE' if live else '🟡 PAPER'}\n\n"
-                    f"Адрес (тот же, что в Robinhood):\n{addr}\n\n"
-                    f"USDC: {usdc:.2f}\nETH: {eth:.5f}\n\n"
-                    "Пополнение: USDC в сети Ethereum (0xA0b8…eB48) на сделки и ETH на газ — от 0.002 ETH. "
-                    "С биржи выводи, выбрав сеть Ethereum (ERC-20).")
-            kb = [[B("💸 Вывести USDC", "wd:eth_usdc"), B("💸 Вывести ETH", "wd:eth_eth")],
-                  [B("🔐 Показать ключ", "wk"), U("🔎 Etherscan", f"{ETHERSCAN}/address/{addr}")],
-                  [B("🟡 Вернуть PAPER", "elive:off") if live else B("🔴 Включить LIVE", "elive:on")],
-                  [B("🔄 Обновить", "weth"), B("⬅ Кошельки", "w")]]
+            usd_bal = net.chain.erc20_balance(net.usd, addr) / 10 ** net.usd_decimals
+            gas = net.chain.eth_balance(addr) / 1e18
+            text = (f"{WICON[chain]} Кошелёк {CHAIN_NAME[chain]} · {'🔴 LIVE' if live else '🟡 PAPER'}\n\n"
+                    f"Адрес:\n{addr}\n\n{net.usd_name}: {usd_bal:.2f}\n{net.coin}: {gas:.5f}\n\n"
+                    "Пополнение: " + FUND_RU[chain].format(usd=net.usd))
+            kb = [[B(f"💸 Вывести {net.usd_name}", f"wd:{chain}:usd"), B(f"💸 Вывести {net.coin}", f"wd:{chain}:gas")],
+                  [B("🔐 Показать ключ", "wk"), U("🔎 Эксплорер", f"{net.explorer}/address/{addr}")],
+                  [B("🟡 Вернуть PAPER" if live else "🔴 Включить LIVE", f"lv:{chain}")],
+                  [B("🔄 Обновить", f"we:{chain}"), B("⬅ Кошельки", "w")]]
         if note:
             text += "\n\n" + note
         return text, kb
+
+    def live_toggle(self, u, chain):
+        """Ask before switching a chain to LIVE; switch back to paper directly. Works for every chain."""
+        b, db = self.b, self.b.db
+        is_sol = chain == "sol"
+        scr = (lambda: self.wallet_sol(db.user(u["id"]))) if is_sol else (lambda: self.wallet_evm(db.user(u["id"]), chain))
+        if chain in b.live_chains(u):   # already LIVE -> back to paper, no confirm
+            b.set_live(db.user(u["id"]), chain, False)
+            return scr(), f"{CHAIN_NAME[chain]}: paper-режим"
+        if not (b.sol_key(u) if is_sol else b.user_key(u)):
+            return scr(), "сначала создай кошелёк"
+        addr = b.sol_address(u) if is_sol else b.wallet_address(u)
+        if is_sol:
+            body = (f"Баланс: {b.sol_rpc.token_balance(addr, SOL_USDC) / 1e6:.2f} USDC, "
+                    f"{b.sol_rpc.sol_balance(addr) / 1e9:.4f} SOL\n"
+                    "Нужны USDC (на сделки) и около 0.1 SOL (комиссии и залоги за токен-аккаунты).")
+        else:
+            net = b.nets[chain]
+            body = (f"Баланс в {CHAIN_NAME[chain]}: {net.chain.erc20_balance(net.usd, addr) / 10 ** net.usd_decimals:.2f} "
+                    f"{net.usd_name}, {net.chain.eth_balance(addr) / 1e18:.5f} {net.coin}\n"
+                    f"Нужны {net.usd_name} (на сделки) и {net.coin} на газ.")
+        return (f"🔴 Включить LIVE в {CHAIN_NAME[chain]}?\n\nПокупки пойдут с кошелька {addr} на реальные деньги.\n"
+                f"{body}\nОткрытые paper-позиции доиграют в paper.",
+                [[B("🔴 Да, включить", f"lvc:{chain}"), B("❌ Нет", "wsl" if is_sol else f"we:{chain}")]]), None
 
     def wallet_sol(self, u, note=None):
         b = self.b
@@ -766,7 +725,7 @@ class UI:
                     "С биржи выводи, выбрав сеть Solana.")
             kb = [[B("💸 Вывести USDC", "wsd:sol_usdc"), B("💸 Вывести SOL", "wsd:sol")],
                   [B("🔐 Показать ключ", "wsk"), U("🔎 Solscan", f"{SOLSCAN}/account/{addr}")],
-                  [B("🟡 Вернуть PAPER", "slive:off") if live else B("🔴 Включить LIVE", "slive:on")],
+                  [B("🟡 Вернуть PAPER" if live else "🔴 Включить LIVE", "lv:sol")],
                   [B("🔄 Обновить", "wsl"), B("⬅ Кошельки", "w")]]
         if note:
             text += "\n\n" + note
@@ -779,9 +738,9 @@ class UI:
         for x in db.users(active_only=False):
             st = db.stats(x["id"])
             pnl = sum((s["realized_usd"] or 0) - s["cost_usd"] - (s["gas_usd"] or 0) for s in st)
+            live = [TAG[c] for c in ("rh", "eth", "bsc", "base", "sol") if b.live_on(x, c)]
             lines.append(f"{'✅' if x['active'] else '🚫'} {x['name']}{' (владелец)' if x['id'] == 1 else ''} · "
-                         f"RH {'LIVE' if b.live_on(x, 'rh') else 'paper'} / ETH {'LIVE' if b.live_on(x, 'eth') else 'paper'}"
-                         f" / SOL {'LIVE' if b.live_on(x, 'sol') else 'paper'} · "
+                         f"LIVE: {', '.join(live) if live else 'нет (paper)'} · "
                          f"трейдеров {len(db.traders(x['id'], True))} · "
                          f"открыто {len(db.positions(x['id']))} · PnL {usd(pnl)}")
             if x["id"] != 1 and x["active"]:
@@ -883,13 +842,13 @@ class UI:
             return text, kb
         if name == "net":
             ch = cfg.get("chains") or {}
-            rh, sol, eth = ch.get("robinhood", True), ch.get("solana", True), ch.get("ethereum", True)
-            text = ("🌐 Сети\n\nВ каких сетях копировать сделки твоих трейдеров. Трейдеры FOMO торгуют во всех трёх: "
-                    "в Robinhood Chain и Ethereum бот следит за их EVM-кошельком (адрес один), в Solana — за Solana-кошельком.\n"
+            text = ("🌐 Сети\n\nВ каких сетях копировать сделки твоих трейдеров. Трейдеры FOMO торгуют во всех EVM-сетях "
+                    "(Robinhood, Ethereum, BNB Chain, Base) с одного EVM-кошелька, а в Solana — со своего Solana-кошелька.\n"
                     "Выключенная сеть не трогает уже открытые позиции — они доиграют по выходам.")
-            return text, [[B(("✅" if rh else "❌") + " Robinhood Chain", "tog:chains.robinhood")],
-                          [B(("✅" if eth else "❌") + " Ethereum", "tog:chains.ethereum")],
-                          [B(("✅" if sol else "❌") + " Solana", "tog:chains.solana")], back]
+            rows = [[B(("✅" if ch.get(k, True) else "❌") + " " + title, f"tog:chains.{k}")]
+                    for k, title in (("robinhood", "Robinhood Chain"), ("ethereum", "Ethereum"),
+                                     ("bsc", "BNB Chain"), ("base", "Base"), ("solana", "Solana"))]
+            return text, rows + [back]
         if name == "notif":
             on = u["notify_skips"]
             muted = json.loads(u.get("muted") or "[]")

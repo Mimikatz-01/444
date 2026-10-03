@@ -19,6 +19,8 @@ WALLET = "0xddd462bb053b57d5d73c9615e11a7284cfee9233"
 SOLW = "DyXg3Xp6BoMq5K6Nmdb7hEzPMpkRWH2aXHHZhUgN1gd6"
 RH_TOKEN = "0x9e795209be691654fb908ab86b3a651551939e16"
 ETH_TOKEN = "0x6982508145454ce325ddbe47a25d4ec3d2311933"
+BSC_TOKEN = "0x1111111111111111111111111111111111110056"
+BASE_TOKEN = "0x2222222222222222222222222222222222228453"
 SOL_TOKEN = "5GDX5fJTQns4arM1J94wjxdA8KXFsV5qW46MLFpHpump"
 PRICE = 0.001
 
@@ -85,11 +87,14 @@ def ff_bot(tmp_path, monkeypatch):
     return bot
 
 
-@pytest.mark.parametrize("chain,token", [("rh", RH_TOKEN), ("eth", ETH_TOKEN)])
-def test_evm_buy_and_exit(ff_bot, monkeypatch, chain, token):
+@pytest.mark.parametrize("chain,token,usd_dec", [("rh", RH_TOKEN, 6), ("eth", ETH_TOKEN, 6),
+                                                 ("bsc", BSC_TOKEN, 18), ("base", BASE_TOKEN, 6)])
+def test_evm_buy_and_exit(ff_bot, monkeypatch, chain, token, usd_dec):
     bot = ff_bot
+    assert bot.nets[chain].usd_decimals == usd_dec  # BNB Chain stablecoin has 18 decimals, others 6
+    bot.nets[chain].chain._sym[token] = "TT"
     monkeypatch.setattr(bot, "facts", lambda *a, **k: evm_facts(chain))
-    monkeypatch.setattr(bot.relay, "quote", relay_quote_stub(token))
+    monkeypatch.setattr(bot.relay, "quote", relay_quote_stub(token, usd_dec))
     cash0 = bot.cash(bot.db.user(1), chain)
 
     bot.on_signal(WALLET, token, int(50000 * 1e18), 1000, "0xtx", bot.nets[chain])
@@ -97,7 +102,7 @@ def test_evm_buy_and_exit(ff_bot, monkeypatch, chain, token):
     pos = bot.db.positions(1)
     assert len(pos) == 1 and pos[0]["token"] == token and (pos[0]["chain"] or "rh") == chain
     p = pos[0]
-    assert abs(p["cost_usd"] - 15.0) < 1e-6 and p["symbol"] in ("RHT", "ETHT")
+    assert abs(p["cost_usd"] - 15.0) < 1e-6  # ticket is $15 regardless of the stablecoin's decimals
     assert abs(bot.cash(bot.db.user(1), chain) - (cash0 - 15.0)) < 1e-6  # paper cash debited
     assert any("КУПИЛ" in t for t in bot.tg.texts("1001"))
 
