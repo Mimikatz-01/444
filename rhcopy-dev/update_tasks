@@ -1,0 +1,67 @@
+Изучил AGENTS.md, TASK_SIGNAL_SOURCES.md, README и bot.py. Теперь перейду к остальным модулям (db, ui, sol, relay, executor и т.д.), а затем приступлю к этапам задачи.
+
+Read 12 files, ran a command
+Весь код прочитан. Теперь проверяю окружение (Python, зависимости, git) и переходу к Этапу 0 — baseline-коммиту и тестам.
+
+Ran 5 commands (1 failed)
+Dev-база оказалась от старой версии — без колонок muted/eth_live, что отлично подходит для теста миграции. Сейчас изучаю её содержимое (трейдеры, сигналы, позиции), после чего создам git baseline.
+
+Ran 4 commands
+Базовая версия закоммичена. Теперь изучу внешние API для этапов 1.5–4: Relay /chains (BNB/Base), документацию MadeOnSol, Etherscan V2 и публичные RPC.
+
+Fetched Relay chains and inspected BSC/Base entries
+Relay поддерживает и
+
+Fetched a page, used a tool
+Нашёл в документации MadeOnSol: /kol/leaderboard и /tokens/{mint}/bundle бесплатные, а /tokens/{mint}/risk доступен только в PRO. Теперь поищу OpenAPI-спеку и сделаю пару тестовых запросов с ключом, не раскрывая его.
+
+Ran 5 commands (1 failed), read b3oste3j0.txt
+Разобрал OpenAPI-спеку MadeOnSol: лидерборд и бандлы доступны бесплатно (фильтры по win rate сделаю на клиенте), а risk/cap-table требуют PRO-тариф (403 = недоступно). Теперь перехожу к Etherscan V2 и формату профилей MadeOnSol.
+
+Ran 2 commands, fetched a page, browsed the web
+Выяснил, что эндпоинты holders в Etherscan V2 доступны только по PRO-плану: для BSC/Base это платно, для Ethereum — бесплатно, а Robinhood бесплатно до 15.10.2026. Теперь проверю публичные RPC для BSC и Base — eth_getLogs по topics без адреса, батч-запросы и eth_call на свежих блоках.
+
+Ran 3 commands
+Нашёл рабочие публичные RPC для BSC и Base, подтвердив, что PublicNode требует адрес в getLogs. Теперь проверяю Solana-методы для эвристик инсайдеров.
+
+Ran 6 commands
+Активные токены pump.fun накапливают тысячи транзакций за минуты, поэтому 8 страниц getSignaturesForAddress не доходят до момента создания и найти создателя по первой транзакции часто невозможно. Проверю более дешёвый вариант — поле creator в on-chain аккаунте bonding curve, что требует всего одного запроса.
+
+Ran 2 commands
+Подтвердил, что создатель pump.fun-токена надёжно читается из bonding curve (сверено с MadeOnSol). Исследование API завершено — теперь пишу тесты Этапа 0 против исходного кода.
+
+Created 6 files, ran 2 commands
+Лимит использования исчерпан, работа остановлена в начале. Готов только Этап 0 (без теста сделок), Этапы 1–5 из TASK_SIGNAL_SOURCES.md не начаты, бот пока не менялся.
+
+Сделано (в rhcopy-dev, два коммита):
+
+Git. Создан репозиторий, baseline-коммит исходного состояния. В .gitignore добавлены .venv/, data-dev/, *.log и CLAUDE.md (его создаёт плагин памяти, к проекту он не относится). data-dev/ исключил, потому что в базе настоящие chat_id пользователей.
+Тесты. tests/ с подменой Telegram и блокировкой сети: обход всех кнопок для двух пользователей, путь через inbox, текстовые вводы, защита от чужих объектов и админ-действий, миграция базы прошлой версии со старым config.yaml, открытие копии data-dev/bot.db. Результат: python -m pytest -q → 7 passed на исходном коде.
+Не успел: тест сделки с подставленными фактами в Solana и Ethereum, хотя Этап 0 его требует. С него стоит начать.
+Что выяснил по внешним API (это понадобится в следующих этапах):
+
+Relay поддерживает BSC (56) и Base (8453) с теми же контрактами. USDT в BSC — 18 знаков, USDC в Base — 6, адреса совпадают с задачей.
+Публичные RPC без ключей, которые отдают getLogs без адреса, батчи и eth_call на свежие блоки:
+BSC: rpc-bsc.48.club, 56.rpc.thirdweb.com, 1rpc.io/bnb (не больше 50 блоков за запрос).
+Base: mainnet.base.org, 8453.rpc.thirdweb.com, gateway.tenderly.co/public/base.
+PublicNode, как и предупреждала задача, требует адрес в getLogs — не подходит.
+MadeOnSol на бесплатном тарифе:
+/kol/leaderboard отдаёт максимум 50 KOL, а фильтры по win rate — только на PRO. Значит, фильтровать придётся у себя после одного запроса.
+/tokens/{mint}/bundle бесплатный.
+/tokens/{mint}/risk отвечает 403 (нужен PRO) — это «недоступно», не ошибка.
+Ссылки на профили KOL имеют вид madeonsol.com/kol-tracker/<адрес>.
+Etherscan V2. topholders только для PRO; BSC и Base на бесплатном тарифе недоступны. Зато бесплатный getcontractcreation сразу даёт создателя токена в Ethereum и Robinhood (в Robinhood бесплатно до 15.10.2026).
+Создатель токена в Solana. Искать его по первой транзакции минта у активных pump.fun-токенов не получается: 8000 подписей не доходят до момента создания. Надёжнее читать создателя из аккаунта bonding curve pump.fun — проверил, MadeOnSol подтверждает результат.
+Реальные ответы MadeOnSol и Solana сохранены в tests/fixtures/ для будущих тестов фильтра инсайдеров.
+Осталось:
+
+Тест сделки с подставленными фактами (Solana и Ethereum).
+Этап 1: колонки source, сообщения о докупках not_first_buy, экран «📡 По источникам».
+Этап 1.5: BNB Chain и Base, поле usd_decimals, live_chains с миграцией, кнопки.
+Этап 2: импорт вставкой и из MadeOnSol, пачки по 100 адресов в scan_net, несколько WebSocket-соединений в SolWatcher.
+Этап 3: совпадения.
+Этап 4: модуль risk.py.
+Документация (README, CHANGELOG, примеры конфига и .env), живой прогон, итоговый отчёт.
+Важно для живого прогона: в .env лежит настоящий TELEGRAM_BOT_TOKEN. Если запустить main.py run с этим .env, второй поллер getUpdates будет мешать рабочему боту. Прогон нужно делать с конфигом, где telegram.enabled: false.
+
+Продолжить можно в новой сессии с этого места — история в git и тесты уже на месте.
