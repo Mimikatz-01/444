@@ -93,8 +93,9 @@ class CopyBot:
         cfg.setdefault("gates", {})
         for k, v in {"confluence_min": 1, "confluence_window_min": 10, "insider_check": "soft",
                      "max_bundle_pct": 25, "max_dev_pct": 10, "max_top10_pct": 60, "max_insider_pct": 20,
-                     "skip_dev_rugger": True}.items():
+                     "skip_dev_rugger": True, "add_entry_min_usd": 0}.items():  # 0 = ignore trader add-buys
             cfg["gates"].setdefault(k, v)
+        cfg.setdefault("exits", {}).setdefault("exit_style", "all")  # all | mirror (sell the trader's fraction)
         cfg["chains"].setdefault("ethereum", True)
         cfg.setdefault("ethereum", {})
         for k, v in {"rpc": ["https://eth.drpc.org", "https://rpc.mevblocker.io", "https://eth-mainnet.public.blastapi.io"],
@@ -505,15 +506,38 @@ class CopyBot:
             if len(lg["topics"]) != 3:
                 continue  # ERC-721 and other non-fungible Transfer events
             token, src, dst = lg["address"].lower(), topic_addr(lg["topics"][1]), topic_addr(lg["topics"][2])
-            ps = [p for p in self.db.open_for_token(token) if p["wallet"] == src and not p["state"].get("origin_exit")
+            ps = [p for p in self.db.open_for_token(token) if p["wallet"] == src
                   and (p.get("chain") or "rh") == net.key]
             if not ps or not (dst == ZERO or net.chain.is_contract(dst)):
                 continue
+            mirror = [p for p in ps if self.ucfg(self.db.user(p["user_id"]))["exits"].get("exit_style", "all") == "mirror"]
+            frac = 1.0
+            if mirror:  # fraction the trader sold = sold / balance one block before the sale
+                blk = int(lg["blockNumber"], 16)
+                sold = int((lg.get("data") or "0x")[:66], 16) if len(lg.get("data") or "0x") > 2 else 0
+                try:
+                    before = net.chain.erc20_balance(token, src, hex(blk - 1))
+                except RPCError:
+                    before = 0
+                frac = min(1.0, sold / before) if before and sold else 1.0
             for p in ps:
-                p["state"]["origin_exit"] = True
-                self.db.update_position(p["id"], state=json.dumps(p["state"]))
-                self.notify(self.db.user(p["user_id"]), f"↘ {p['label']} начал продавать {p['symbol']} ({CHAIN_NAME[net.key]}) — выхожу следом",
-                            kb=[[B("📄 Позиция", f"p:{p['id']}")]])
+                self.on_origin_sell(p, net.key, frac)
+
+    def on_origin_sell(self, p, chain, frac):
+        """A trader started selling a coin we hold. exit_style 'all' -> dump everything (origin_exit);
+        'mirror' -> sell the same fraction `frac` the trader sold."""
+        u = self.db.user(p["user_id"])
+        st = p["state"]
+        if self.ucfg(u)["exits"].get("exit_style", "all") == "mirror":
+            st["mirror_frac"] = round(min(1.0, st.get("mirror_frac", 0) + min(1.0, frac)), 4)
+            self.db.update_position(p["id"], state=json.dumps(st))
+            self.notify(u, f"↘ {p['label']} продал ~{min(1.0, frac) * 100:.0f}% {p['symbol']} ({CHAIN_NAME[chain]}) — продаю столько же",
+                        kb=[[B("📄 Позиция", f"p:{p['id']}")]])
+        elif not st.get("origin_exit"):
+            st["origin_exit"] = True
+            self.db.update_position(p["id"], state=json.dumps(st))
+            self.notify(u, f"↘ {p['label']} начал продавать {p['symbol']} ({CHAIN_NAME[chain]}) — выхожу следом",
+                        kb=[[B("📄 Позиция", f"p:{p['id']}")]])
 
     def on_incoming(self, logs, watched, net=None):
         net = net or self.nets["rh"]
@@ -546,15 +570,40 @@ class CopyBot:
                 self.log.exception("signal %s in %s failed: %s", token, lg["transactionHash"], e)
 
     def on_add_buy(self, wallet, token, amount_raw, blk, txh, net):
-        """A trader bought more of a coin he already holds (EVM). Not an entry: report it as
-        not_first_buy to followers who don't hold it, and never buy on an add."""
+        """A trader bought more of a coin he already holds (EVM). Normally just reported as
+        not_first_buy; a user with gates.add_entry_min_usd can treat a big enough add as an entry."""
         followers = self.db.followers(wallet)
         if not followers:
             return
         info = net.market.info(token)  # cached: do not fetch fresh in the scan loop
         price = (info or {}).get("price_usd") or 0
         add_usd = amount_raw / 10 ** net.chain.decimals(token) * price if price else None
-        self.report_not_first_buy(followers, token, net.chain.symbol(token), add_usd, blk, txh, net.key, info)
+        symbol = net.chain.symbol(token)
+        conv, rest = self._split_adds(followers, token, add_usd)
+        if conv:
+            try:
+                f = self.facts(wallet, token, amount_raw, blk, txh, [self.db.user(t["user_id"]) for t in conv], net)
+                f["conviction"] = True
+                for t in conv:
+                    self.enter(self.db.user(t["user_id"]), t, token, symbol, f, txh, blk)
+            except Skip as s:
+                for t in conv:
+                    self.log_skip(self.db.user(t["user_id"]), t, token, symbol, txh, blk, s, {"chain": net.key, "info": info})
+        self.report_not_first_buy(rest, token, symbol, add_usd, blk, txh, net.key, info)
+
+    def _split_adds(self, followers, token, add_usd):
+        """Split add-buy followers: those whose gates.add_entry_min_usd makes this add a conviction
+        entry (big enough, not already holding) vs. the rest (just a not_first_buy report)."""
+        conv, rest, seen = [], [], set()
+        for t in followers:
+            if t["user_id"] in seen:
+                continue
+            seen.add(t["user_id"])
+            if self.db.holding(t["user_id"], token):
+                continue
+            thr = float(self.ucfg(self.db.user(t["user_id"]))["gates"].get("add_entry_min_usd", 0) or 0)
+            (conv if thr > 0 and add_usd and add_usd >= thr else rest).append(t)
+        return conv, rest
 
     def report_not_first_buy(self, followers, token, symbol, add_usd, blk, txh, chain, info):
         """Record a not_first_buy skip for each follower who is not already holding the coin
@@ -598,23 +647,22 @@ class CopyBot:
         for ev in tr["tokens"]:
             if ev["post"] < ev["pre"]:
                 if tr["signer"]:
-                    self.on_sol_exit(ev["mint"], traders)
+                    frac = (ev["pre"] - ev["post"]) / ev["pre"] if ev["pre"] > 0 else 1.0
+                    self.on_sol_exit(ev["mint"], traders, frac)
             elif ev["pre"] == 0:  # a first buy, not an add to an existing bag
                 for trader in traders:
                     self.on_signal_sol(trader, wallet, ev, tr, sig)
             elif tr["signer"]:  # pre > 0 and post > pre: the trader added to a bag he already holds
                 self.on_add_buy_sol(wallet, ev, tr, sig, traders)
 
-    def on_sol_exit(self, mint, traders):
+    def on_sol_exit(self, mint, traders, frac=1.0):
         for p in self.db.open_for_token(mint):
-            if p.get("chain") == "sol" and p["wallet"] in traders and not p["state"].get("origin_exit"):
-                p["state"]["origin_exit"] = True
-                self.db.update_position(p["id"], state=json.dumps(p["state"]))
-                self.notify(self.db.user(p["user_id"]), f"↘ {p['label']} начал продавать {p['symbol']} (Solana) — выхожу следом",
-                            kb=[[B("📄 Позиция", f"p:{p['id']}")]])
+            if p.get("chain") == "sol" and p["wallet"] in traders:
+                self.on_origin_sell(p, "sol", frac)
 
     def on_add_buy_sol(self, wallet, ev, tr, sig, traders):
-        """The trader added to a Solana bag he already holds. Report not_first_buy, never buy."""
+        """The trader added to a Solana bag he already holds. Report not_first_buy; a big enough add
+        is a conviction entry for users with gates.add_entry_min_usd."""
         followers = [t for trader in traders for t in self.db.followers(trader)]
         if not followers:
             return
@@ -624,7 +672,18 @@ class CopyBot:
         add_usd = paid if paid > 0 else ((ev["post"] - ev["pre"]) / 10 ** ev["dec"] * info["price_usd"]
                                          if info and info.get("price_usd") else None)
         symbol = (info or {}).get("symbol") or mint[:6]
-        self.report_not_first_buy(followers, mint, symbol, add_usd, tr.get("slot") or 0, sig, "sol", info)
+        slot = tr.get("slot") or 0
+        conv, rest = self._split_adds(followers, mint, add_usd)
+        if conv:
+            try:
+                f = self.facts_sol(wallet, mint, ev, tr, info)
+                f["conviction"] = True
+                for t in conv:
+                    self.enter(self.db.user(t["user_id"]), t, mint, symbol, f, sig, slot)
+            except Skip as s:
+                for t in conv:
+                    self.log_skip(self.db.user(t["user_id"]), t, mint, symbol, sig, slot, s, {"chain": "sol", "info": info})
+        self.report_not_first_buy(rest, mint, symbol, add_usd, slot, sig, "sol", info)
 
     def on_signal_sol(self, trader, wallet, ev, tr, sig):
         followers = self.db.followers(trader)
@@ -711,7 +770,7 @@ class CopyBot:
         g, sz, ex = cfg["gates"], cfg["sizing"], cfg["execution"]
         now = time.time()
         chain = f.get("chain", "rh")
-        d = {"age_s": f["age_s"], "own": f["own"], "chain": chain, "dec": f["dec"]}
+        d = {"age_s": f["age_s"], "own": f["own"], "chain": chain, "dec": f["dec"], "conviction": bool(f.get("conviction"))}
         live = self.live_on(u, chain)
         if not (cfg.get("chains") or {}).get(CHAIN_KEY[chain], True) or (chain != "sol" and chain not in self.nets):
             raise Skip("chain_off")
@@ -990,9 +1049,15 @@ class CopyBot:
         self.db.fill(pid, "buy", fill.tokens_raw, fill.usd, fill.gas_usd, fill.tx, "entry")
         if not live:
             self.add_paper_cash(u["id"], -fill.usd)
-        self.db.signal(u["id"], t["address"], t["label"], token, symbol, txh, blk, "bought", "", d, source=source)
+        self.db.signal(u["id"], t["address"], t["label"], token, symbol, txh, blk, "bought",
+                       "conviction_add" if d.get("conviction") else "", d, source=source)
         head = f"🟢 КУПИЛ {symbol} ({CHAIN_NAME[chain]}) на {usd(fill.usd)}"
-        head += f" — {d['confluence_note']}" if d.get("confluence_note") else f" вслед за {t['label']}"
+        if d.get("confluence_note"):
+            head += f" — {d['confluence_note']}"
+        elif d.get("conviction"):
+            head += f" — крупная докупка {t['label']}"
+        else:
+            head += f" вслед за {t['label']}"
         self.notify(u, head + ("" if live else " [paper]") +
                        f"\nпул {big(d.get('liq', 0))} · капа {big(d.get('mcap', 0))} · догон {d.get('chase', 0):+.1f}%",
                     kb=[[B("📄 Позиция", f"p:{pid}"), B("🔴 Продать всё", f"ps:{pid}:100")],

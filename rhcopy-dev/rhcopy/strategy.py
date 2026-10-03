@@ -33,6 +33,10 @@ def exit_plan(pos, price, now, ex):
         return ("manual", left if frac >= 1 else max(1, int(left * frac)), {})
     if st.get("planted"):
         return ("planted", left, {})
+    if st.get("mirror_frac") and ex.get("follow_origin_exit", True):
+        # exit_style=mirror: sell the same fraction of our bag that the trader just sold
+        frac = min(1.0, float(st["mirror_frac"]))
+        return ("origin_exit", left if frac >= 0.999 else max(1, int(left * frac)), {"mirror_frac": 0})
     if st.get("origin_exit") and ex.get("follow_origin_exit", True):
         return ("origin_exit", left, {})
     if ex.get("max_hold_hours") and age_min >= float(ex["max_hold_hours"]) * 60:

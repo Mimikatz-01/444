@@ -125,6 +125,7 @@ gates:
   max_top10_pct: 60         # top-10 holders (pools / curves / burns excluded)
   max_insider_pct: 20       # wallets tied to the creator
   skip_dev_rugger: true     # skip tokens whose creator has rugged before
+  add_entry_min_usd: 0      # Этап 5: 0 = off; >0 = a trader add-buy >= this USD is an entry (conviction_add)
 
 exits:
   mode: ladder              # ladder | timed | both
@@ -137,6 +138,7 @@ exits:
   stop_loss_pct: 50
   stop_after_tp: keep       # keep | breakeven
   follow_origin_exit: true  # sell the rest when the trader starts selling
+  exit_style: all           # Этап 5: all = dump everything on a trader sell; mirror = sell the same fraction he sold
   max_hold_hours: 24
   price_check_seconds: 10
 

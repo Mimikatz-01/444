@@ -895,7 +895,7 @@ class UI:
         parts.append(f"стоп −{ex['stop_loss_pct']}%" if ex.get("stop_loss_pct") else "без стопа")
         parts.append("после TP в безубыток" if ex.get("stop_after_tp") == "breakeven" else "после TP стоп прежний")
         if ex.get("follow_origin_exit", True):
-            parts.append("выход вслед за трейдером")
+            parts.append("выход зеркалом" if ex.get("exit_style") == "mirror" else "выход вслед за трейдером")
         return " · ".join(parts)
 
     def section(self, u, name):
@@ -934,6 +934,8 @@ class UI:
                               lambda v: "стоп прежний" if v == "keep" else "безубыток"),
                    [B(("✅" if follow else "❌") + " Выходить вслед за трейдером", "tog:exits.follow_origin_exit")],
                    self._opts(u, "Держать макс.", "exits.max_hold_hours", [6, 24, 72], lambda v: f"{v} ч"),
+                   self._opts(u, "Когда трейдер продаёт", "exits.exit_style", ["all", "mirror"],
+                              lambda v: "выходить всё" if v == "all" else "зеркалом"),
                    back]
             return text, kb
         if name == "filt":
@@ -960,6 +962,7 @@ class UI:
                              lambda v: {"strict": "strict", "fomo": "fomo", "off": "выкл"}[v]),
                   self._opts(u, "Совпадение", "gates.confluence_min", [1, 2, 3], lambda v: "выкл" if v == 1 else f"≥{v}"),
                   self._opts(u, "Окно совпад.", "gates.confluence_window_min", [5, 10, 30], lambda v: f"{v} мин"),
+                  self._opts(u, "Докупка=вход от", "gates.add_entry_min_usd", [0, 100, 500], lambda v: "выкл" if not v else f"${v}"),
                   [B("🕵️ Инсайдеры", "s:ins")],
                   back]
             return text, kb
