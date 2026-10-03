@@ -8,6 +8,10 @@ from eth_account import Account
 
 from .fmt import ENTRY_RU, IMPORT_RU, NOISE, SKIP_RU, age, big, usd
 from .sol import USDC as SOL_USDC, is_sol_addr, new_keypair
+from .sources import filter_kols, import_stats, parse_wallets
+
+MOS_DEFAULTS = {"period": "7d", "min_winrate": 40, "min_trades": 20, "top": 20}
+KIND_TAG = {"sol": "SOL", "evm": "EVM"}
 
 
 def B(text, data):
@@ -71,8 +75,10 @@ def timed_str(timed):
 class UI:
     def __init__(self, bot):
         self.b = bot
-        self.awaiting = {}   # user id -> ("add"|"set"|"wd", key)
-        self.pending = {}    # user id -> prepared withdrawal
+        self.awaiting = {}         # user id -> ("add"|"set"|"wd"|"imp", key)
+        self.pending = {}          # user id -> prepared withdrawal
+        self.pending_import = {}   # user id -> parsed wallets awaiting confirmation
+        self.mos = {}              # user id -> MadeOnSol leaderboard filters
 
     # ================================================================ entry points
     def send(self, u, text, kb=None, **kw):
@@ -201,6 +207,23 @@ class UI:
                          "Адрес FOMO-трейдера берётся в copyfomo: /find ник — бот сам найдёт и его Solana-кошелёк.\n"
                          "Можно прислать и просто Solana-адрес любого трейдера — тогда копирую только в Solana.")
             return None, None
+        if cmd == "imp":
+            self.awaiting[uid] = ("imp", None)
+            self.send(u, "📥 Пришли список кошельков одним сообщением: адреса (EVM 0x… и/или Solana) по одному в строке, "
+                         "CSV, вставленную таблицу или ссылки (gmgn.ai, kolscan.io, solscan.io, etherscan.io, MadeOnSol). "
+                         "Ник можно рядом с адресом: «Ник адрес» или «адрес Ник».\n\n"
+                         "GMGN и kolscan не парсятся напрямую (защита от ботов) — просто скопируй оттуда адреса сюда.")
+            return None, None
+        if cmd == "impc":
+            return self.do_import(u)
+        if cmd == "mos":
+            return self.madeonsol_screen(u), None
+        if cmd == "mosv":
+            key, _, val = arg.partition(":")
+            self.mos.setdefault(uid, dict(MOS_DEFAULTS))[key] = json.loads(val)
+            return self.madeonsol_screen(u), "сохранено"
+        if cmd == "mosf":
+            return self.madeonsol_fetch(u)
         # --- settings
         if cmd == "set":
             return self.settings(u), None
@@ -351,6 +374,12 @@ class UI:
             label = parts[1] if len(parts) > 1 else addr[:8]
             db.add_trader(uid, addr, label)
             return self.push(u, self.trader(u, addr, note=self._pair_note(addr, label)))
+        if kind == "imp":
+            self.awaiting.pop(uid)
+            items = [x for x in parse_wallets(text) if x["kind"]]
+            if not items:
+                return self.send(u, "Не нашёл ни одного адреса. Пришли ещё раз или нажми 📊 Меню.")
+            return self.push(u, self.import_preview(u, items))
         if kind == "wd":
             return self.prepare_withdraw(u, key, text)
         val = self.parse(key, text)
@@ -612,9 +641,89 @@ class UI:
             kb.append([B(f"{icon} {t['label']}", f"t:{t['address']}")])
         if any(not db.pairs(t["address"]) for t in ts):
             lines.append("\n⚠️ не найден Solana-кошелёк — без него не отличить подставную покупку")
-        kb.append([B("➕ Добавить трейдера", "tadd")])
-        kb.append([B("⬅ Меню", "m")])
+        kb.append([B("➕ Добавить", "tadd"), B("📥 Импорт", "imp")])
+        kb.append([B("🏆 Топ KOL (MadeOnSol)", "mos"), B("⬅ Меню", "m")])
         return "\n".join(lines), kb
+
+    def import_preview(self, u, items):
+        db, uid = self.b.db, u["id"]
+        self.pending_import[uid] = items
+        stats = import_stats(items)
+        dups = sum(1 for x in items if db.trader(uid, x["address"]))
+        lines = [f"📥 Нашёл {stats['total']} адресов: {stats['evm']} EVM, {stats['sol']} Solana."]
+        if dups:
+            lines.append(f"Уже в списке: {dups} — их пропущу.")
+        lines.append("")
+        for x in items[:10]:
+            lines.append(f"· {x['label']} — {x['address'][:10]}… ({KIND_TAG[x['kind']]}, {IMPORT_RU.get(x['source'], x['source'])})")
+        if stats["total"] > 10:
+            lines.append(f"…и ещё {stats['total'] - 10}")
+        new = stats["total"] - dups
+        row = [B(f"✅ Добавить {new}", "impc")] if new else [B("нечего добавлять", "noop")]
+        return "\n".join(lines), [row, [B("⬅ Трейдеры", "tr")]]
+
+    def do_import(self, u):
+        b, db, uid = self.b, self.b.db, u["id"]
+        items = self.pending_import.pop(uid, [])
+        if not items:
+            return self.traders(u), "нечего добавлять"
+        limit = int((b.base_cfg.get("sources") or {}).get("max_traders_per_user", 200))
+        have, added, skipped = len(db.traders(uid)), 0, 0
+        for it in items:
+            if db.trader(uid, it["address"]):
+                continue
+            if have + added >= limit:
+                skipped += 1
+                continue
+            db.add_trader(uid, it["address"], it["label"], source=it["source"])
+            if it["kind"] == "sol":   # a Solana wallet watches its own address (like manual Solana add)
+                db.set_pair(it["address"], it["address"])
+            added += 1
+        note = f"добавлено {added}" + (f", лимит {limit} — ещё {skipped} не влезли" if skipped else "")
+        return self.traders(u), note
+
+    def _opts_raw(self, label, key, values, cur, fmt):
+        return [B(label, "noop")] + [B(("✅ " if cur.get(key) == v else "") + fmt(v), f"mosv:{key}:{json.dumps(v)}")
+                                     for v in values]
+
+    def madeonsol_screen(self, u):
+        b, uid = self.b, u["id"]
+        if not b.madeonsol.configured:
+            return ("🏆 Топ KOL из MadeOnSol\n\nНужен ключ MADEONSOL_API_KEY в .env (бесплатный тариф — 200 запросов "
+                    "в день, до 50 KOL в лидерборде). Добавь ключ и перезапусти бота.", [[B("⬅ Трейдеры", "tr")]])
+        f = self.mos.setdefault(uid, dict(MOS_DEFAULTS))
+        text = ("🏆 Топ KOL из MadeOnSol\n\nЗагружу лидерборд и отфильтрую у себя (бесплатный тариф не фильтрует на "
+                "сервере). KOL добавятся как Solana-трейдеры с меткой madeonsol.\n\n"
+                f"Период {f['period']} · винрейт ≥{f['min_winrate']}% · сделок ≥{f['min_trades']} · топ {f['top']}")
+        kb = [self._opts_raw("Период", "period", ["1d", "7d", "30d"], f, lambda v: v),
+              self._opts_raw("Винрейт", "min_winrate", [0, 40, 55], f, lambda v: f"≥{v}%"),
+              self._opts_raw("Сделок", "min_trades", [0, 20, 100], f, lambda v: f"≥{v}"),
+              self._opts_raw("Топ", "top", [10, 20, 50], f, str),
+              [B("🔎 Найти KOL", "mosf")], [B("⬅ Трейдеры", "tr")]]
+        return text, kb
+
+    def madeonsol_fetch(self, u):
+        b, uid = self.b, u["id"]
+        f = self.mos.setdefault(uid, dict(MOS_DEFAULTS))
+        rows = b.madeonsol.leaderboard(period=f["period"])
+        if rows is None:
+            return self.madeonsol_screen(u), f"не удалось: {b.madeonsol.last_error}"[:190]
+        picked = filter_kols(rows, f["min_winrate"], f["min_trades"], f["top"])
+        if not picked:
+            return self.madeonsol_screen(u), "под фильтры никто не попал"
+        items = [{"address": r["wallet"], "label": r["name"][:32], "source": "madeonsol", "kind": "sol"} for r in picked]
+        self.pending_import[uid] = items
+        lines = [f"🏆 Нашёл {len(picked)} KOL (период {f['period']}):\n"]
+        for r in picked[:10]:
+            lines.append(f"· {r['name']} — win {r['win_rate']:.0f}% · PnL {usd(r['pnl'])} · сделок {r['trades']}")
+        if len(picked) > 10:
+            lines.append(f"…и ещё {len(picked) - 10}")
+        dups = sum(1 for it in items if b.db.trader(uid, it["address"]))
+        if dups:
+            lines.append(f"\nУже в списке: {dups}")
+        new = len(items) - dups
+        row = [B(f"✅ Добавить {new}", "impc")] if new else [B("все уже в списке", "noop")]
+        return ("\n".join(lines), [row, [B("🔄 Другие фильтры", "mos"), B("⬅ Трейдеры", "tr")]]), None
 
     def trader(self, u, addr, note=None):
         b, db = self.b, self.b.db

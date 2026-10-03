@@ -16,6 +16,7 @@ from .executor import ExecError, Executor
 from .fmt import NOISE, SKIP_RU, big, exit_reason, skip_detail, usd
 from .market import Market
 from .relay import APPROVAL_PROXY, SOLANA_CHAIN_ID, Relay
+from .sources import MadeOnSol
 from .sol import USDC as SOL_USDC, WSOL, Jupiter, SolError, SolExecutor, SolRPC, SolWatcher, is_sol_addr, keypair, parse_trade, spent_usd
 from .telegram import Telegram
 from .ui import REPLY_KB, UI, B
@@ -85,8 +86,10 @@ class CopyBot:
         cfg["chains"].setdefault("solana", True)
         cfg.setdefault("solana", {})
         for k, v in {"rpc": "https://solana-rpc.publicnode.com", "ws": "wss://api.mainnet-beta.solana.com",
-                     "poll_seconds": 5, "min_sol": 0.02, "est_fee_sol": 0.0002, "round_trip_check": False}.items():
+                     "poll_seconds": 5, "min_sol": 0.02, "est_fee_sol": 0.0002, "round_trip_check": False,
+                     "ws_wallets_per_conn": 50}.items():  # one WebSocket per this many watched wallets
             cfg["solana"].setdefault(k, v)
+        cfg.setdefault("sources", {}).setdefault("max_traders_per_user", 200)
         cfg["chains"].setdefault("ethereum", True)
         cfg.setdefault("ethereum", {})
         for k, v in {"rpc": ["https://eth.drpc.org", "https://rpc.mevblocker.io", "https://eth-mainnet.public.blastapi.io"],
@@ -166,10 +169,11 @@ class CopyBot:
         ws = env.get("SOLANA_WS_URL") or (f"wss://mainnet.helius-rpc.com/?api-key={helius}" if helius else scfg.get("ws"))
         self.sol_enabled = bool((cfg.get("chains") or {}).get("solana", True)) and bool(rpc)
         self.sol_rpc = SolRPC(rpc, log=log) if self.sol_enabled else None
-        self.sol_watch = SolWatcher(ws, log, rpc=self.sol_rpc, poll_seconds=float(scfg.get("poll_seconds", 5))) \
-            if self.sol_enabled else None
+        self.sol_watch = SolWatcher(ws, log, rpc=self.sol_rpc, poll_seconds=float(scfg.get("poll_seconds", 5)),
+                                    per_conn=int(scfg.get("ws_wallets_per_conn", 50))) if self.sol_enabled else None
         self.jup = Jupiter(env.get("JUPITER_API_KEY"), log)
         self.market_sol = Market("solana")
+        self.madeonsol = MadeOnSol(env.get("MADEONSOL_API_KEY"), log)
         self._sol_exes, self._sol_px = {}, (0.0, 0.0)
 
     # ------------------------------------------------------------------ per-user config
@@ -468,17 +472,23 @@ class CopyBot:
         if last is None or head - last > net.max_catch:
             last = head - (1 if last is None else net.max_catch)
         topics = [pad_addr(a) for a in watched]
+        watch_set = set(watched)
         frm = last + 1
         while frm <= head:
             to = min(head, frm + net.chunk - 1)
             flt = {"fromBlock": hex(frm), "toBlock": hex(to)}
-            inc, out = net.chain.batch([("eth_getLogs", [{**flt, "topics": [TRANSFER, None, topics]}]),
-                                        ("eth_getLogs", [{**flt, "topics": [TRANSFER, topics]}])])
-            for r in (inc, out):
-                if isinstance(r, Exception):
-                    raise r
-            self.on_outgoing(out, net)
-            self.on_incoming(inc, set(watched), net)
+            inc_all, out_all = [], []
+            for i in range(0, len(topics), 100):  # RPCs cap the topics array: watch in batches of 100 wallets
+                chunk = topics[i:i + 100]
+                inc, out = net.chain.batch([("eth_getLogs", [{**flt, "topics": [TRANSFER, None, chunk]}]),
+                                            ("eth_getLogs", [{**flt, "topics": [TRANSFER, chunk]}])])
+                for r in (inc, out):
+                    if isinstance(r, Exception):
+                        raise r
+                inc_all += inc
+                out_all += out
+            self.on_outgoing(out_all, net)
+            self.on_incoming(inc_all, watch_set, net)
             self.db.put(net.last_key, to)
             frm = to + 1
 
