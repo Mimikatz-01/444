@@ -459,12 +459,37 @@ class CopyBot:
                 except RPCError:
                     prev = 0
                 if prev > 0:
-                    continue  # adding to an existing bag is not an entry
+                    # adding to a bag the trader already holds: not an entry. Report it (don't buy).
+                    self.on_add_buy(wallet, token, int(lg["data"][:66], 16), blk, lg["transactionHash"], net)
+                    continue
                 self.on_signal(wallet, token, int(lg["data"][:66], 16), blk, lg["transactionHash"], net)
             except RPCError:
                 raise  # network trouble: retry the whole block range
             except Exception as e:  # one broken token must not stall the watcher
                 self.log.exception("signal %s in %s failed: %s", token, lg["transactionHash"], e)
+
+    def on_add_buy(self, wallet, token, amount_raw, blk, txh, net):
+        """A trader bought more of a coin he already holds (EVM). Not an entry: report it as
+        not_first_buy to followers who don't hold it, and never buy on an add."""
+        followers = self.db.followers(wallet)
+        if not followers:
+            return
+        info = net.market.info(token)  # cached: do not fetch fresh in the scan loop
+        price = (info or {}).get("price_usd") or 0
+        add_usd = amount_raw / 10 ** net.chain.decimals(token) * price if price else None
+        self.report_not_first_buy(followers, token, net.chain.symbol(token), add_usd, blk, txh, net.key, info)
+
+    def report_not_first_buy(self, followers, token, symbol, add_usd, blk, txh, chain, info):
+        """Record a not_first_buy skip for each follower who is not already holding the coin
+        (if they hold it, an add is ordinary and we say nothing)."""
+        seen = set()
+        for t in followers:
+            uid = t["user_id"]
+            if uid in seen or self.db.holding(uid, token):
+                continue
+            seen.add(uid)
+            s = Skip("not_first_buy", add_usd=round(add_usd, 2) if add_usd else None, chain=chain)
+            self.log_skip(self.db.user(uid), t, token, symbol, txh, blk, s, {"chain": chain, "info": info})
 
     # ------------------------------------------------------------------ Solana detection
     def scan_sol(self):
@@ -500,6 +525,8 @@ class CopyBot:
             elif ev["pre"] == 0:  # a first buy, not an add to an existing bag
                 for trader in traders:
                     self.on_signal_sol(trader, wallet, ev, tr, sig)
+            elif tr["signer"]:  # pre > 0 and post > pre: the trader added to a bag he already holds
+                self.on_add_buy_sol(wallet, ev, tr, sig, traders)
 
     def on_sol_exit(self, mint, traders):
         for p in self.db.open_for_token(mint):
@@ -508,6 +535,19 @@ class CopyBot:
                 self.db.update_position(p["id"], state=json.dumps(p["state"]))
                 self.notify(self.db.user(p["user_id"]), f"↘ {p['label']} начал продавать {p['symbol']} (Solana) — выхожу следом",
                             kb=[[B("📄 Позиция", f"p:{p['id']}")]])
+
+    def on_add_buy_sol(self, wallet, ev, tr, sig, traders):
+        """The trader added to a Solana bag he already holds. Report not_first_buy, never buy."""
+        followers = [t for trader in traders for t in self.db.followers(trader)]
+        if not followers:
+            return
+        mint = ev["mint"]
+        info = self.market_sol.info(mint)  # cached
+        paid = spent_usd(tr, self.sol_price())
+        add_usd = paid if paid > 0 else ((ev["post"] - ev["pre"]) / 10 ** ev["dec"] * info["price_usd"]
+                                         if info and info.get("price_usd") else None)
+        symbol = (info or {}).get("symbol") or mint[:6]
+        self.report_not_first_buy(followers, mint, symbol, add_usd, tr.get("slot") or 0, sig, "sol", info)
 
     def on_signal_sol(self, trader, wallet, ev, tr, sig):
         followers = self.db.followers(trader)
@@ -779,9 +819,10 @@ class CopyBot:
         state = {"origin_tx": txh}
         if d.get("relay") == "unknown":
             state["recheck_until"] = time.time() + float(cfg["gates"].get("relay_watch_s", 120))
+        source = d.get("source", "wallet")
         pid = self.db.open_position(
             user_id=u["id"], chain=chain, token=token, symbol=symbol, decimals=dec, wallet=t["address"], label=t["label"],
-            opened=time.time(), status="open", paper=0 if live else 1, cost_usd=fill.usd,
+            opened=time.time(), status="open", paper=0 if live else 1, cost_usd=fill.usd, source=source,
             tokens_initial=str(fill.tokens_raw), tokens_left=str(fill.tokens_raw),
             entry_price=fill.usd / (fill.tokens_raw / 10 ** dec), gas_usd=fill.gas_usd,
             last_price=fill.usd / (fill.tokens_raw / 10 ** dec), peak_price=fill.usd / (fill.tokens_raw / 10 ** dec),
@@ -789,7 +830,7 @@ class CopyBot:
         self.db.fill(pid, "buy", fill.tokens_raw, fill.usd, fill.gas_usd, fill.tx, "entry")
         if not live:
             self.add_paper_cash(u["id"], -fill.usd)
-        self.db.signal(u["id"], t["address"], t["label"], token, symbol, txh, blk, "bought", "", d)
+        self.db.signal(u["id"], t["address"], t["label"], token, symbol, txh, blk, "bought", "", d, source=source)
         self.notify(u, f"🟢 КУПИЛ {symbol} ({CHAIN_NAME[chain]}) на {usd(fill.usd)} вслед за {t['label']}"
                        f"{'' if live else ' [paper]'}\n"
                        f"пул {big(d.get('liq', 0))} · капа {big(d.get('mcap', 0))} · догон {d.get('chase', 0):+.1f}%",

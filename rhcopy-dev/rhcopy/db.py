@@ -50,7 +50,11 @@ class DB:
                 self.c.execute(f"ALTER TABLE {table} ADD COLUMN user_id INTEGER DEFAULT 1")
         for table, col, decl in (("positions", "chain", "TEXT DEFAULT 'rh'"), ("users", "sol_key", "TEXT"),
                                  ("users", "sol_live", "INTEGER DEFAULT 0"), ("users", "muted", "TEXT DEFAULT '[]'"),
-                                 ("users", "eth_live", "INTEGER DEFAULT 0")):
+                                 ("users", "eth_live", "INTEGER DEFAULT 0"),
+                                 ("traders", "source", "TEXT DEFAULT 'manual'"),  # where the trader was imported from
+                                 ("positions", "source", "TEXT DEFAULT 'wallet'"),  # entry type: wallet / confluence / tg
+                                 ("signals", "source", "TEXT DEFAULT 'wallet'"),
+                                 ("users", "live_chains", "TEXT")):  # JSON list of live networks (replaces live/*_live)
             if col not in {r[1] for r in self.c.execute(f"PRAGMA table_info({table})")}:
                 self.c.execute(f"ALTER TABLE {table} ADD COLUMN {col} {decl}")
         if not self.c.execute("SELECT 1 FROM kv WHERE k='skips_on_v1'").fetchone():
@@ -121,9 +125,9 @@ class DB:
                            " ORDER BY active DESC", (uid, norm(key), str(key).lower())).fetchone()
         return dict(r) if r else None
 
-    def add_trader(self, uid, address, label, ticket_usd=None):
-        self.c.execute("INSERT OR REPLACE INTO traders(user_id,address,label,active,ticket_usd) VALUES(?,?,?,1,?)",
-                       (uid, norm(address), label, ticket_usd))
+    def add_trader(self, uid, address, label, ticket_usd=None, source="manual"):
+        self.c.execute("INSERT OR REPLACE INTO traders(user_id,address,label,active,ticket_usd,source) VALUES(?,?,?,1,?,?)",
+                       (uid, norm(address), label, ticket_usd, source))
         self.c.commit()
 
     def set_trader(self, uid, address, **fields):
@@ -166,11 +170,11 @@ class DB:
         self.c.commit()
 
     # ---------- signals ----------
-    def signal(self, uid, wallet, label, token, symbol, tx, block, decision, reason, details=None):
-        self.c.execute("INSERT INTO signals(ts,wallet,label,token,symbol,tx,block,decision,reason,details,user_id)"
-                       " VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+    def signal(self, uid, wallet, label, token, symbol, tx, block, decision, reason, details=None, source="wallet"):
+        self.c.execute("INSERT INTO signals(ts,wallet,label,token,symbol,tx,block,decision,reason,details,user_id,source)"
+                       " VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
                        (time.time(), wallet, label, token, symbol, tx, block, decision, reason,
-                        json.dumps(details or {}, default=str), uid))
+                        json.dumps(details or {}, default=str), uid, source))
         self.c.commit()
 
     def skipped(self, uid, limit=12, exclude=()):
@@ -251,6 +255,24 @@ class DB:
             x = (r["realized_usd"] or 0) - r["cost_usd"] - (r["gas_usd"] or 0)
             n, wins, pnl = n + 1, wins + (x > 0), pnl + x
         return n, wins, pnl
+
+    def source_stats(self, uid):
+        """Closed trades grouped by entry type (positions.source) and by trader import label
+        (traders.source), so the user can see which sources actually pay off. Returns two dicts
+        {key: [n, wins, pnl]}."""
+        rows = self.c.execute(
+            "SELECT p.source AS psource, p.cost_usd, p.realized_usd, p.gas_usd, t.source AS tsource"
+            " FROM positions p LEFT JOIN traders t ON t.user_id=p.user_id AND t.address=p.wallet"
+            " WHERE p.status!='open' AND p.user_id=?", (uid,)).fetchall()
+        by_entry, by_import = {}, {}
+        for r in rows:
+            x = (r["realized_usd"] or 0) - r["cost_usd"] - (r["gas_usd"] or 0)
+            for d, key in ((by_entry, r["psource"] or "wallet"), (by_import, r["tsource"] or "manual")):
+                acc = d.setdefault(key, [0, 0, 0.0])
+                acc[0] += 1
+                acc[1] += x > 0
+                acc[2] += x
+        return by_entry, by_import
 
     @staticmethod
     def _pos(r):

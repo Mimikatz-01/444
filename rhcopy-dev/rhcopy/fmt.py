@@ -63,7 +63,16 @@ SKIP_RU = {
     "gas": "газ дороже лимита", "no_exit_route": "нет маршрута продажи", "round_trip": "большая потеря на круге",
     "not_signed": "не сделка трейдера (токены прислали)", "freezable": "токен можно заморозить",
     "token_ext": "опасные расширения токена", "chain_off": "сеть выключена",
+    "not_first_buy": "не первая покупка трейдера", "no_confluence": "нет совпадения",
+    "insider_bundle": "скупка пачкой на запуске", "dev_holding": "много у создателя",
+    "top10_concentration": "концентрация у топ-держателей", "insider_cluster": "кошельки вокруг создателя",
+    "dev_rugger": "создатель уже рагал", "risk_unknown": "риск не проверить",
 }
+
+# where a trader was imported from / how a position was entered — for the "По источникам" screen
+IMPORT_RU = {"manual": "вручную", "fomo": "FOMO", "gmgn": "GMGN", "kolscan": "kolscan",
+             "madeonsol": "MadeOnSol", "paste": "вставка"}
+ENTRY_RU = {"wallet": "по кошельку", "confluence": "совпадение", "tg": "канал"}
 
 
 NOISE = {"not_a_swap", "not_signed"}  # tokens pushed into a trader's wallet: spam, never reported
@@ -95,4 +104,22 @@ def skip_detail(reason, d, g):
         return f"комиссия сети {d['gas_pct']:.1f}% от тикета (лимит {lim('max_gas_pct')}%)"
     if reason in ("mcap_low", "mcap_high") and "mcap" in d:
         return f"капа {big(d['mcap'])} вне заданных границ"
+    if reason == "not_first_buy":
+        extra = f" на {usd(d['add_usd'])}" if d.get("add_usd") else ""
+        return f"трейдер докупил монету{extra} — это не первый вход, по докупкам не копирую"
+    if reason == "no_confluence":
+        got, need = d.get("sources", 1), d.get("need", 2)
+        return f"за окно купил только {got} из нужных {need} кошельков — совпадения не было"
+    if reason == "insider_bundle" and "bundle_pct" in d:
+        return f"на запуске пачкой скупили {d['bundle_pct']:.0f}% (лимит {lim('max_bundle_pct')}%)"
+    if reason == "dev_holding" and "dev_pct" in d:
+        return f"у создателя {d['dev_pct']:.0f}% supply (лимит {lim('max_dev_pct')}%)"
+    if reason == "top10_concentration" and "top10_pct" in d:
+        return f"у топ-10 держателей {d['top10_pct']:.0f}% (лимит {lim('max_top10_pct')}%)"
+    if reason == "insider_cluster" and "insider_pct" in d:
+        return f"у кошельков вокруг создателя {d['insider_pct']:.0f}% (лимит {lim('max_insider_pct')}%)"
+    if reason == "dev_rugger":
+        return "создатель токена уже сливал прошлые запуски"
+    if reason == "risk_unknown":
+        return "не удалось проверить риск токена, а режим строгий — пропускаю"
     return SKIP_RU.get(reason, reason)

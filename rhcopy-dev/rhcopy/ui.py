@@ -6,7 +6,7 @@ import time
 
 from eth_account import Account
 
-from .fmt import NOISE, SKIP_RU, age, big, usd
+from .fmt import ENTRY_RU, IMPORT_RU, NOISE, SKIP_RU, age, big, usd
 from .sol import USDC as SOL_USDC, is_sol_addr, new_keypair
 
 
@@ -233,6 +233,8 @@ class UI:
         # --- stats
         if cmd == "st":
             return self.stats(u), None
+        if cmd == "src":
+            return self.by_source(u), None
         if cmd == "cl":
             return self.closed(u), None
         # --- wallet
@@ -922,7 +924,25 @@ class UI:
         if reasons:
             lines.append("\nПочему пропускались сигналы:")
             lines += [f"· {SKIP_RU.get(r, r)} — {n}" for r, n in reasons]
-        return "\n".join(lines), [[B("⏭ Пропущенные монеты", "miss")], [B("📜 Закрытые", "cl"), B("⬅ Меню", "m")]]
+        return "\n".join(lines), [[B("📡 По источникам", "src"), B("⏭ Пропущенные", "miss")],
+                                  [B("📜 Закрытые", "cl"), B("⬅ Меню", "m")]]
+
+    def by_source(self, u):
+        """Closed-trade PnL by entry type (wallet / confluence) and by trader import label."""
+        be, bi = self.b.db.source_stats(u["id"])
+
+        def block(title, d, names):
+            out = [title]
+            if not d:
+                return out + ["· пока нет закрытых сделок"]
+            for key, (n, wins, pnl) in sorted(d.items(), key=lambda kv: -kv[1][2]):
+                out.append(f"· {names.get(key, key)}: {n} · win {wins / n * 100:.0f}% · {usd(pnl)}")
+            return out
+
+        lines = ["📡 По источникам\n",
+                 "Что реально приносит плюс после задержки и комиссий.\n"]
+        lines += block("По типу входа:", be, ENTRY_RU) + [""] + block("По импорту трейдеров:", bi, IMPORT_RU)
+        return "\n".join(lines), [[B("🔄 Обновить", "src"), B("⬅ Статистика", "st")]]
 
     def missed(self, u):
         """Last skipped signals and what the coin did since: shows whether the filters cost or saved money."""
