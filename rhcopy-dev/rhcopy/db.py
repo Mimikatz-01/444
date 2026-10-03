@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS positions (
 CREATE TABLE IF NOT EXISTS fills (
   id INTEGER PRIMARY KEY, position_id INTEGER, ts REAL, side TEXT, tokens TEXT,
   usd REAL, gas_usd REAL, tx TEXT, reason TEXT);
+CREATE TABLE IF NOT EXISTS token_risk (chain TEXT, token TEXT, ts REAL, report_json TEXT, PRIMARY KEY (chain, token));
 CREATE INDEX IF NOT EXISTS ix_pos_status ON positions(status);
 CREATE INDEX IF NOT EXISTS ix_sig_ts ON signals(ts);
 """
@@ -50,13 +51,23 @@ class DB:
                 self.c.execute(f"ALTER TABLE {table} ADD COLUMN user_id INTEGER DEFAULT 1")
         for table, col, decl in (("positions", "chain", "TEXT DEFAULT 'rh'"), ("users", "sol_key", "TEXT"),
                                  ("users", "sol_live", "INTEGER DEFAULT 0"), ("users", "muted", "TEXT DEFAULT '[]'"),
-                                 ("users", "eth_live", "INTEGER DEFAULT 0")):
+                                 ("users", "eth_live", "INTEGER DEFAULT 0"),
+                                 ("traders", "source", "TEXT DEFAULT 'manual'"),  # where the trader was imported from
+                                 ("positions", "source", "TEXT DEFAULT 'wallet'"),  # entry type: wallet / confluence / tg
+                                 ("signals", "source", "TEXT DEFAULT 'wallet'"),
+                                 ("users", "live_chains", "TEXT")):  # JSON list of live networks (replaces live/*_live)
             if col not in {r[1] for r in self.c.execute(f"PRAGMA table_info({table})")}:
                 self.c.execute(f"ALTER TABLE {table} ADD COLUMN {col} {decl}")
         if not self.c.execute("SELECT 1 FROM kv WHERE k='skips_on_v1'").fetchone():
             # copyfomo-style by default: every skipped signal is reported with its reason
             self.c.execute("UPDATE users SET notify_skips=1")
             self.c.execute("INSERT INTO kv(k,v) VALUES('skips_on_v1','true')")
+        if not self.c.execute("SELECT 1 FROM kv WHERE k='live_chains_v1'").fetchone():
+            # fold the old per-chain live flags (live / sol_live / eth_live) into one JSON list
+            for r in self.c.execute("SELECT id, live, sol_live, eth_live FROM users").fetchall():
+                chains = [c for c, v in (("rh", r["live"]), ("sol", r["sol_live"]), ("eth", r["eth_live"])) if v]
+                self.c.execute("UPDATE users SET live_chains=? WHERE id=?", (json.dumps(chains), r["id"]))
+            self.c.execute("INSERT INTO kv(k,v) VALUES('live_chains_v1','true')")
         self.c.commit()
 
     def migrate(self, cfg, env):
@@ -121,9 +132,9 @@ class DB:
                            " ORDER BY active DESC", (uid, norm(key), str(key).lower())).fetchone()
         return dict(r) if r else None
 
-    def add_trader(self, uid, address, label, ticket_usd=None):
-        self.c.execute("INSERT OR REPLACE INTO traders(user_id,address,label,active,ticket_usd) VALUES(?,?,?,1,?)",
-                       (uid, norm(address), label, ticket_usd))
+    def add_trader(self, uid, address, label, ticket_usd=None, source="manual"):
+        self.c.execute("INSERT OR REPLACE INTO traders(user_id,address,label,active,ticket_usd,source) VALUES(?,?,?,1,?,?)",
+                       (uid, norm(address), label, ticket_usd, source))
         self.c.commit()
 
     def set_trader(self, uid, address, **fields):
@@ -166,11 +177,11 @@ class DB:
         self.c.commit()
 
     # ---------- signals ----------
-    def signal(self, uid, wallet, label, token, symbol, tx, block, decision, reason, details=None):
-        self.c.execute("INSERT INTO signals(ts,wallet,label,token,symbol,tx,block,decision,reason,details,user_id)"
-                       " VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+    def signal(self, uid, wallet, label, token, symbol, tx, block, decision, reason, details=None, source="wallet"):
+        self.c.execute("INSERT INTO signals(ts,wallet,label,token,symbol,tx,block,decision,reason,details,user_id,source)"
+                       " VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
                        (time.time(), wallet, label, token, symbol, tx, block, decision, reason,
-                        json.dumps(details or {}, default=str), uid))
+                        json.dumps(details or {}, default=str), uid, source))
         self.c.commit()
 
     def skipped(self, uid, limit=12, exclude=()):
@@ -252,6 +263,24 @@ class DB:
             n, wins, pnl = n + 1, wins + (x > 0), pnl + x
         return n, wins, pnl
 
+    def source_stats(self, uid):
+        """Closed trades grouped by entry type (positions.source) and by trader import label
+        (traders.source), so the user can see which sources actually pay off. Returns two dicts
+        {key: [n, wins, pnl]}."""
+        rows = self.c.execute(
+            "SELECT p.source AS psource, p.cost_usd, p.realized_usd, p.gas_usd, t.source AS tsource"
+            " FROM positions p LEFT JOIN traders t ON t.user_id=p.user_id AND t.address=p.wallet"
+            " WHERE p.status!='open' AND p.user_id=?", (uid,)).fetchall()
+        by_entry, by_import = {}, {}
+        for r in rows:
+            x = (r["realized_usd"] or 0) - r["cost_usd"] - (r["gas_usd"] or 0)
+            for d, key in ((by_entry, r["psource"] or "wallet"), (by_import, r["tsource"] or "manual")):
+                acc = d.setdefault(key, [0, 0, 0.0])
+                acc[0] += 1
+                acc[1] += x > 0
+                acc[2] += x
+        return by_entry, by_import
+
     @staticmethod
     def _pos(r):
         p = dict(r)
@@ -259,6 +288,16 @@ class DB:
         p["tokens_left"] = int(p["tokens_left"])
         p["state"] = json.loads(p["state"] or "{}")
         return p
+
+    # ---------- token risk cache (insider filter, Этап 4) ----------
+    def get_risk(self, chain, token, ttl=1800):
+        r = self.c.execute("SELECT ts, report_json FROM token_risk WHERE chain=? AND token=?", (chain, token)).fetchone()
+        return json.loads(r["report_json"]) if r and time.time() - r["ts"] <= ttl else None
+
+    def put_risk(self, chain, token, report):
+        self.c.execute("INSERT OR REPLACE INTO token_risk(chain,token,ts,report_json) VALUES(?,?,?,?)",
+                       (chain, token, time.time(), json.dumps(report, default=str)))
+        self.c.commit()
 
     def fill(self, position_id, side, tokens, usd, gas_usd, tx, reason):
         self.c.execute("INSERT INTO fills(position_id,ts,side,tokens,usd,gas_usd,tx,reason) VALUES(?,?,?,?,?,?,?,?)",

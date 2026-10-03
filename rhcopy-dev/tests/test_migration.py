@@ -11,8 +11,9 @@ def cols(db, table):
 
 
 def check_opened(bot):
-    assert {"muted", "eth_live", "sol_key", "sol_live"} <= cols(bot.db, "users")
-    assert "chain" in cols(bot.db, "positions")
+    assert {"muted", "eth_live", "sol_key", "sol_live", "live_chains"} <= cols(bot.db, "users")
+    assert {"chain", "source"} <= cols(bot.db, "positions")
+    assert "source" in cols(bot.db, "traders")
     for u in bot.db.users(active_only=False):
         assert bot.status_text(u)
         assert bot.ui.main(u)[0]

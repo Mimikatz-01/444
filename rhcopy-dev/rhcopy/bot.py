@@ -9,36 +9,47 @@ from dataclasses import dataclass
 
 from eth_account import Account
 
-from . import strategy
+from . import risk, strategy
 from .chain import SWAP_TOPICS, TRANSFER, Chain, RPCError, pad_addr, topic_addr
-from .db import DB
+from .db import DB, norm
 from .executor import ExecError, Executor
-from .fmt import NOISE, SKIP_RU, big, exit_reason, skip_detail, usd
+from .fmt import NOISE, big, exit_reason, skip_detail, usd
 from .market import Market
 from .relay import APPROVAL_PROXY, SOLANA_CHAIN_ID, Relay
+from .sources import MadeOnSol
 from .sol import USDC as SOL_USDC, WSOL, Jupiter, SolError, SolExecutor, SolRPC, SolWatcher, is_sol_addr, keypair, parse_trade, spent_usd
 from .telegram import Telegram
 from .ui import REPLY_KB, UI, B
 
 ZERO = "0x0000000000000000000000000000000000000000"
 EDITABLE = ("sizing", "gates", "exits", "execution", "chains")
-CHAIN_NAME = {"rh": "Robinhood", "sol": "Solana", "eth": "Ethereum"}
-DEX_PATH = {"rh": "robinhood", "sol": "solana", "eth": "ethereum"}
-CHAIN_KEY = {"rh": "robinhood", "sol": "solana", "eth": "ethereum"}
+CHAIN_NAME = {"rh": "Robinhood", "sol": "Solana", "eth": "Ethereum", "bsc": "BNB Chain", "base": "Base"}
+DEX_PATH = {"rh": "robinhood", "sol": "solana", "eth": "ethereum", "bsc": "bsc", "base": "base"}
+CHAIN_KEY = {"rh": "robinhood", "sol": "solana", "eth": "ethereum", "bsc": "bsc", "base": "base"}
 ETH_USDC = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
 ETH_WETH = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
 ETH_STABLES = {ETH_USDC, ETH_WETH, "0xdac17f958d2ee523a2206206994597c13d831ec7", "0x6b175474e89094c44da98b954eedeac495271d0f",
                "0x6c3ea9036406852006290770bedfcaba0e23a0e8"}  # USDT, DAI, PYUSD
+# BNB Chain: the bot trades with USDT, which has 18 decimals here (not 6)
+BSC_USDT = "0x55d398326f99059ff775485246999027b3197955"
+BSC_WBNB = "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+BSC_STABLES = {BSC_USDT, BSC_WBNB, "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",   # USDC (18 dec on BSC)
+               "0xe9e7cea3dedca5984780bafc599bd69add087d56"}                       # BUSD
+# Base: the bot trades with USDC (6 decimals)
+BASE_USDC = "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
+BASE_WETH = "0x4200000000000000000000000000000000000006"
+BASE_STABLES = {BASE_USDC, BASE_WETH, "0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca",  # USDbC
+                "0x50c5725949a6f0c72e6c4a641f24049a917db0cb"}                        # DAI
 
 
 @dataclass
 class EvmNet:
-    """One EVM network the bot watches and trades on (Robinhood Chain, Ethereum)."""
+    """One EVM network the bot watches and trades on (Robinhood Chain, Ethereum, BNB Chain, Base)."""
     key: str
     chain_id: int
     chain: Chain
     market: Market
-    usd: str            # the stablecoin the bot trades with (6 decimals)
+    usd: str            # the stablecoin the bot trades with
     ignore: set
     last_key: str       # where the last scanned block is stored
     chunk: int
@@ -46,6 +57,10 @@ class EvmNet:
     poll: float
     min_gas: float      # live: below this native balance no new buys
     max_gas_pct: float  # floor for the gas gate on this network
+    usd_decimals: int = 6     # stablecoin decimals (BNB Chain USDT = 18)
+    coin: str = "ETH"         # native gas coin (BNB on BNB Chain)
+    usd_name: str = "USDC"    # stablecoin ticker for the UI
+    explorer: str = ""        # block explorer base url
     last_scan: float = 0.0
 
 
@@ -71,14 +86,35 @@ class CopyBot:
         cfg["chains"].setdefault("solana", True)
         cfg.setdefault("solana", {})
         for k, v in {"rpc": "https://solana-rpc.publicnode.com", "ws": "wss://api.mainnet-beta.solana.com",
-                     "poll_seconds": 5, "min_sol": 0.02, "est_fee_sol": 0.0002, "round_trip_check": False}.items():
+                     "poll_seconds": 5, "min_sol": 0.02, "est_fee_sol": 0.0002, "round_trip_check": False,
+                     "ws_wallets_per_conn": 50}.items():  # one WebSocket per this many watched wallets
             cfg["solana"].setdefault(k, v)
+        cfg.setdefault("sources", {}).setdefault("max_traders_per_user", 200)
+        cfg.setdefault("gates", {})
+        for k, v in {"confluence_min": 1, "confluence_window_min": 10, "insider_check": "soft",
+                     "max_bundle_pct": 25, "max_dev_pct": 10, "max_top10_pct": 60, "max_insider_pct": 20,
+                     "skip_dev_rugger": True, "add_entry_min_usd": 0}.items():  # 0 = ignore trader add-buys
+            cfg["gates"].setdefault(k, v)
+        cfg.setdefault("exits", {}).setdefault("exit_style", "all")  # all | mirror (sell the trader's fraction)
         cfg["chains"].setdefault("ethereum", True)
         cfg.setdefault("ethereum", {})
         for k, v in {"rpc": ["https://eth.drpc.org", "https://rpc.mevblocker.io", "https://eth-mainnet.public.blastapi.io"],
                      "poll_seconds": 6, "log_chunk_blocks": 40, "max_catchup_blocks": 25,
                      "min_gas_eth": 0.002, "max_gas_pct": 3.0}.items():
             cfg["ethereum"].setdefault(k, v)
+        cfg["chains"].setdefault("bsc", True)
+        cfg.setdefault("bsc", {})
+        for k, v in {"rpc": ["https://rpc-bsc.48.club", "https://56.rpc.thirdweb.com", "https://1rpc.io/bnb"],
+                     "poll_seconds": 2, "log_chunk_blocks": 45, "max_catchup_blocks": 600,
+                     "min_gas_eth": 0.003, "max_gas_pct": 1.5}.items():  # ~0.45 s blocks; 1rpc caps getLogs at 50 blocks
+            cfg["bsc"].setdefault(k, v)
+        cfg["chains"].setdefault("base", True)
+        cfg.setdefault("base", {})
+        for k, v in {"rpc": ["https://mainnet.base.org", "https://8453.rpc.thirdweb.com",
+                             "https://gateway.tenderly.co/public/base"],
+                     "poll_seconds": 3, "log_chunk_blocks": 500, "max_catchup_blocks": 150,
+                     "min_gas_eth": 0.0005, "max_gas_pct": 1.5}.items():  # ~2 s blocks
+            cfg["base"].setdefault(k, v)
         self.base_cfg, self.db, self.env, self.log = cfg, db, env, log
         rpcs = [env.get("RPC_URL") or cfg["rpc"], cfg.get("fallback_rpc")]
         self.chain = Chain(rpcs, log=log)
@@ -101,26 +137,38 @@ class CopyBot:
                 if not valid_addr(t["address"]):
                     db.set_trader(u["id"], t["address"], active=0)
         self._cfg, self._exes = {}, {}
-        self._eth = (0.0, 0.0)
+        self._eth = self._bnb = (0.0, 0.0)
         self._last_prices = self._last_beat = 0.0
         self._gas_alert, self._hinted = {}, {}
         self._rr = 0
+        self.pending = {}  # confluence buffer: (uid, chain, token) -> [entry]; entries age out of the window
         tg_token = env.get("TELEGRAM_BOT_TOKEN")
         self.tg = Telegram(tg_token, log) if tg_token and cfg.get("telegram", {}).get("enabled", True) else None
         self.ui = UI(self) if self.tg else None
         self.admin_code = secrets.token_hex(3) if self.tg and not db.user(1)["chat_id"] else None
-        # ---- EVM networks: Robinhood Chain always, Ethereum unless switched off in config.yaml
+        # ---- EVM networks: Robinhood Chain always; Ethereum / BNB Chain / Base unless switched off
         self.nets = {"rh": EvmNet("rh", 4663, self.chain, self.market, self.usdg, self.ignore, "last_block",
                                   int(cfg.get("log_chunk_blocks", 2000)), int(cfg.get("max_catchup_blocks", 3000)),
                                   float(cfg.get("poll_seconds", 1.0)),
-                                  float(cfg["execution"].get("min_gas_eth", 0.0005)), 0.0)}
-        ecfg = cfg["ethereum"]
-        if cfg["chains"].get("ethereum", True):
-            rpcs = ecfg["rpc"] if isinstance(ecfg["rpc"], list) else [ecfg["rpc"]]
-            self.nets["eth"] = EvmNet("eth", 1, Chain([env.get("ETH_RPC_URL")] + rpcs, log=log), Market("ethereum"),
-                                      ETH_USDC, ETH_STABLES | {t.lower() for t in cfg.get("ignore_tokens", [])},
-                                      "last_block_eth", int(ecfg["log_chunk_blocks"]), int(ecfg["max_catchup_blocks"]),
-                                      float(ecfg["poll_seconds"]), float(ecfg["min_gas_eth"]), float(ecfg["max_gas_pct"]))
+                                  float(cfg["execution"].get("min_gas_eth", 0.0005)), 0.0,
+                                  usd_decimals=6, coin="ETH", usd_name="USDG", explorer="https://robin.etherscan.io")}
+        extra = {t.lower() for t in cfg.get("ignore_tokens", [])}
+
+        def evm_net(key, section, chain_id, rpc_env, usd, stables, last_key, usd_decimals, coin, usd_name, explorer):
+            sec = cfg[section]
+            rpcs = sec["rpc"] if isinstance(sec["rpc"], list) else [sec["rpc"]]
+            chain = Chain(([env.get(rpc_env)] if rpc_env else []) + rpcs, log=log)
+            return EvmNet(key, chain_id, chain, Market(DEX_PATH[key]), usd, stables | extra, last_key,
+                          int(sec["log_chunk_blocks"]), int(sec["max_catchup_blocks"]), float(sec["poll_seconds"]),
+                          float(sec["min_gas_eth"]), float(sec["max_gas_pct"]),
+                          usd_decimals=usd_decimals, coin=coin, usd_name=usd_name, explorer=explorer)
+
+        for key, section, cfgkey, cid, rpc_env, usd_addr, stables, last_key, dec, coin, name, expl in (
+                ("eth", "ethereum", "ethereum", 1, "ETH_RPC_URL", ETH_USDC, ETH_STABLES, "last_block_eth", 6, "ETH", "USDC", "https://etherscan.io"),
+                ("bsc", "bsc", "bsc", 56, "BSC_RPC_URL", BSC_USDT, BSC_STABLES, "last_block_bsc", 18, "BNB", "USDT", "https://bscscan.com"),
+                ("base", "base", "base", 8453, "BASE_RPC_URL", BASE_USDC, BASE_STABLES, "last_block_base", 6, "ETH", "USDC", "https://basescan.org")):
+            if cfg["chains"].get(cfgkey, True):
+                self.nets[key] = evm_net(key, section, cid, rpc_env, usd_addr, stables, last_key, dec, coin, name, expl)
         # ---- Solana
         scfg = cfg.get("solana") or {}
         helius = env.get("HELIUS_API_KEY")
@@ -128,10 +176,11 @@ class CopyBot:
         ws = env.get("SOLANA_WS_URL") or (f"wss://mainnet.helius-rpc.com/?api-key={helius}" if helius else scfg.get("ws"))
         self.sol_enabled = bool((cfg.get("chains") or {}).get("solana", True)) and bool(rpc)
         self.sol_rpc = SolRPC(rpc, log=log) if self.sol_enabled else None
-        self.sol_watch = SolWatcher(ws, log, rpc=self.sol_rpc, poll_seconds=float(scfg.get("poll_seconds", 5))) \
-            if self.sol_enabled else None
+        self.sol_watch = SolWatcher(ws, log, rpc=self.sol_rpc, poll_seconds=float(scfg.get("poll_seconds", 5)),
+                                    per_conn=int(scfg.get("ws_wallets_per_conn", 50))) if self.sol_enabled else None
         self.jup = Jupiter(env.get("JUPITER_API_KEY"), log)
         self.market_sol = Market("solana")
+        self.madeonsol = MadeOnSol(env.get("MADEONSOL_API_KEY"), log)
         self._sol_exes, self._sol_px = {}, (0.0, 0.0)
 
     # ------------------------------------------------------------------ per-user config
@@ -188,7 +237,7 @@ class CopyBot:
         return Account.from_key(k).address if k else None
 
     def is_live(self, u):
-        return bool(u.get("live")) and bool(self.user_key(u))
+        return self.live_on(u, "rh")
 
     def exe(self, u, live, chain="rh"):
         net = self.nets[chain]
@@ -198,8 +247,9 @@ class CopyBot:
         hit = self._exes.get((u["id"], chain, live))
         if hit and hit[0] == sig:
             return hit[1]
-        cfg = {"live": live, "usdg": net.usd, "execution": self.ucfg(u)["execution"]}
-        ex = Executor(net.chain, self.relay, cfg, key if live else None, self.eth_price, self.log,
+        cfg = {"live": live, "usdg": net.usd, "usd_decimals": net.usd_decimals, "execution": self.ucfg(u)["execution"]}
+        price_fn = self.bnb_price if net.coin == "BNB" else self.eth_price
+        ex = Executor(net.chain, self.relay, cfg, key if live else None, price_fn, self.log,
                       chain_id=net.chain_id, approval_proxy=APPROVAL_PROXY)
         self._exes[(u["id"], chain, live)] = (sig, ex)
         return ex
@@ -211,6 +261,15 @@ class CopyBot:
             if info and info["price_usd"] > 0:
                 self._eth = (time.time(), info["price_usd"])
         return self._eth[1]
+
+    def bnb_price(self):
+        ts, p = self._bnb
+        if time.time() - ts > 120 or p <= 0:
+            net = self.nets.get("bsc")
+            info = net.market.info(BSC_WBNB, fresh=True) if net else None
+            if info and info["price_usd"] > 0:
+                self._bnb = (time.time(), info["price_usd"])
+        return self._bnb[1]
 
     # ---- Solana wallet of a user
     def sol_key(self, u):
@@ -240,19 +299,31 @@ class CopyBot:
         self._sol_exes[(u["id"], live)] = (sig, ex)
         return ex
 
+    def live_chains(self, u):
+        """The networks this user has switched to LIVE (JSON list `users.live_chains`). Legacy rows
+        not yet backfilled fall back to the old per-chain flags."""
+        lc = u.get("live_chains")
+        if lc is not None:
+            return set(json.loads(lc))
+        return {c for c, v in (("rh", u.get("live")), ("sol", u.get("sol_live")), ("eth", u.get("eth_live"))) if v}
+
+    def set_live(self, u, chain, on):
+        chains = self.live_chains(u)
+        chains.add(chain) if on else chains.discard(chain)
+        u["live_chains"] = json.dumps(sorted(chains))
+        self.db.update_user(u["id"], live_chains=u["live_chains"])
+
     def live_on(self, u, chain):
-        if chain == "sol":
-            return bool(u.get("sol_live")) and bool(self.sol_key(u))
-        if chain == "eth":
-            return bool(u.get("eth_live")) and bool(self.user_key(u))
-        return self.is_live(u)
+        if chain not in self.live_chains(u):
+            return False
+        return bool(self.sol_key(u)) if chain == "sol" else bool(self.user_key(u))
 
     def cash(self, u, chain="rh"):
         if self.live_on(u, chain):
             if chain == "sol":
                 return self.sol_rpc.token_balance(self.sol_address(u), SOL_USDC) / 1e6
             net = self.nets[chain]
-            return net.chain.erc20_balance(net.usd, self.wallet_address(u)) / 1e6
+            return net.chain.erc20_balance(net.usd, self.wallet_address(u)) / 10 ** net.usd_decimals
         return float(u.get("paper_cash") or 0)
 
     def open_value(self, u, chain="rh"):
@@ -316,6 +387,7 @@ class CopyBot:
                 self.scan()
                 self.scan_sol()
                 self.recheck_provenance()
+                self.sweep_confluence()
                 if time.time() - self._last_prices >= float(self.base_cfg["exits"].get("price_check_seconds", 10)):
                     self._last_prices = time.time()
                     self.update_positions()
@@ -408,17 +480,23 @@ class CopyBot:
         if last is None or head - last > net.max_catch:
             last = head - (1 if last is None else net.max_catch)
         topics = [pad_addr(a) for a in watched]
+        watch_set = set(watched)
         frm = last + 1
         while frm <= head:
             to = min(head, frm + net.chunk - 1)
             flt = {"fromBlock": hex(frm), "toBlock": hex(to)}
-            inc, out = net.chain.batch([("eth_getLogs", [{**flt, "topics": [TRANSFER, None, topics]}]),
-                                        ("eth_getLogs", [{**flt, "topics": [TRANSFER, topics]}])])
-            for r in (inc, out):
-                if isinstance(r, Exception):
-                    raise r
-            self.on_outgoing(out, net)
-            self.on_incoming(inc, set(watched), net)
+            inc_all, out_all = [], []
+            for i in range(0, len(topics), 100):  # RPCs cap the topics array: watch in batches of 100 wallets
+                chunk = topics[i:i + 100]
+                inc, out = net.chain.batch([("eth_getLogs", [{**flt, "topics": [TRANSFER, None, chunk]}]),
+                                            ("eth_getLogs", [{**flt, "topics": [TRANSFER, chunk]}])])
+                for r in (inc, out):
+                    if isinstance(r, Exception):
+                        raise r
+                inc_all += inc
+                out_all += out
+            self.on_outgoing(out_all, net)
+            self.on_incoming(inc_all, watch_set, net)
             self.db.put(net.last_key, to)
             frm = to + 1
 
@@ -428,15 +506,38 @@ class CopyBot:
             if len(lg["topics"]) != 3:
                 continue  # ERC-721 and other non-fungible Transfer events
             token, src, dst = lg["address"].lower(), topic_addr(lg["topics"][1]), topic_addr(lg["topics"][2])
-            ps = [p for p in self.db.open_for_token(token) if p["wallet"] == src and not p["state"].get("origin_exit")
+            ps = [p for p in self.db.open_for_token(token) if p["wallet"] == src
                   and (p.get("chain") or "rh") == net.key]
             if not ps or not (dst == ZERO or net.chain.is_contract(dst)):
                 continue
+            mirror = [p for p in ps if self.ucfg(self.db.user(p["user_id"]))["exits"].get("exit_style", "all") == "mirror"]
+            frac = 1.0
+            if mirror:  # fraction the trader sold = sold / balance one block before the sale
+                blk = int(lg["blockNumber"], 16)
+                sold = int((lg.get("data") or "0x")[:66], 16) if len(lg.get("data") or "0x") > 2 else 0
+                try:
+                    before = net.chain.erc20_balance(token, src, hex(blk - 1))
+                except RPCError:
+                    before = 0
+                frac = min(1.0, sold / before) if before and sold else 1.0
             for p in ps:
-                p["state"]["origin_exit"] = True
-                self.db.update_position(p["id"], state=json.dumps(p["state"]))
-                self.notify(self.db.user(p["user_id"]), f"↘ {p['label']} начал продавать {p['symbol']} ({CHAIN_NAME[net.key]}) — выхожу следом",
-                            kb=[[B("📄 Позиция", f"p:{p['id']}")]])
+                self.on_origin_sell(p, net.key, frac)
+
+    def on_origin_sell(self, p, chain, frac):
+        """A trader started selling a coin we hold. exit_style 'all' -> dump everything (origin_exit);
+        'mirror' -> sell the same fraction `frac` the trader sold."""
+        u = self.db.user(p["user_id"])
+        st = p["state"]
+        if self.ucfg(u)["exits"].get("exit_style", "all") == "mirror":
+            st["mirror_frac"] = round(min(1.0, st.get("mirror_frac", 0) + min(1.0, frac)), 4)
+            self.db.update_position(p["id"], state=json.dumps(st))
+            self.notify(u, f"↘ {p['label']} продал ~{min(1.0, frac) * 100:.0f}% {p['symbol']} ({CHAIN_NAME[chain]}) — продаю столько же",
+                        kb=[[B("📄 Позиция", f"p:{p['id']}")]])
+        elif not st.get("origin_exit"):
+            st["origin_exit"] = True
+            self.db.update_position(p["id"], state=json.dumps(st))
+            self.notify(u, f"↘ {p['label']} начал продавать {p['symbol']} ({CHAIN_NAME[chain]}) — выхожу следом",
+                        kb=[[B("📄 Позиция", f"p:{p['id']}")]])
 
     def on_incoming(self, logs, watched, net=None):
         net = net or self.nets["rh"]
@@ -459,12 +560,62 @@ class CopyBot:
                 except RPCError:
                     prev = 0
                 if prev > 0:
-                    continue  # adding to an existing bag is not an entry
+                    # adding to a bag the trader already holds: not an entry. Report it (don't buy).
+                    self.on_add_buy(wallet, token, int(lg["data"][:66], 16), blk, lg["transactionHash"], net)
+                    continue
                 self.on_signal(wallet, token, int(lg["data"][:66], 16), blk, lg["transactionHash"], net)
             except RPCError:
                 raise  # network trouble: retry the whole block range
             except Exception as e:  # one broken token must not stall the watcher
                 self.log.exception("signal %s in %s failed: %s", token, lg["transactionHash"], e)
+
+    def on_add_buy(self, wallet, token, amount_raw, blk, txh, net):
+        """A trader bought more of a coin he already holds (EVM). Normally just reported as
+        not_first_buy; a user with gates.add_entry_min_usd can treat a big enough add as an entry."""
+        followers = self.db.followers(wallet)
+        if not followers:
+            return
+        info = net.market.info(token)  # cached: do not fetch fresh in the scan loop
+        price = (info or {}).get("price_usd") or 0
+        add_usd = amount_raw / 10 ** net.chain.decimals(token) * price if price else None
+        symbol = net.chain.symbol(token)
+        conv, rest = self._split_adds(followers, token, add_usd)
+        if conv:
+            try:
+                f = self.facts(wallet, token, amount_raw, blk, txh, [self.db.user(t["user_id"]) for t in conv], net)
+                f["conviction"] = True
+                for t in conv:
+                    self.enter(self.db.user(t["user_id"]), t, token, symbol, f, txh, blk)
+            except Skip as s:
+                for t in conv:
+                    self.log_skip(self.db.user(t["user_id"]), t, token, symbol, txh, blk, s, {"chain": net.key, "info": info})
+        self.report_not_first_buy(rest, token, symbol, add_usd, blk, txh, net.key, info)
+
+    def _split_adds(self, followers, token, add_usd):
+        """Split add-buy followers: those whose gates.add_entry_min_usd makes this add a conviction
+        entry (big enough, not already holding) vs. the rest (just a not_first_buy report)."""
+        conv, rest, seen = [], [], set()
+        for t in followers:
+            if t["user_id"] in seen:
+                continue
+            seen.add(t["user_id"])
+            if self.db.holding(t["user_id"], token):
+                continue
+            thr = float(self.ucfg(self.db.user(t["user_id"]))["gates"].get("add_entry_min_usd", 0) or 0)
+            (conv if thr > 0 and add_usd and add_usd >= thr else rest).append(t)
+        return conv, rest
+
+    def report_not_first_buy(self, followers, token, symbol, add_usd, blk, txh, chain, info):
+        """Record a not_first_buy skip for each follower who is not already holding the coin
+        (if they hold it, an add is ordinary and we say nothing)."""
+        seen = set()
+        for t in followers:
+            uid = t["user_id"]
+            if uid in seen or self.db.holding(uid, token):
+                continue
+            seen.add(uid)
+            s = Skip("not_first_buy", add_usd=round(add_usd, 2) if add_usd else None, chain=chain)
+            self.log_skip(self.db.user(uid), t, token, symbol, txh, blk, s, {"chain": chain, "info": info})
 
     # ------------------------------------------------------------------ Solana detection
     def scan_sol(self):
@@ -496,18 +647,43 @@ class CopyBot:
         for ev in tr["tokens"]:
             if ev["post"] < ev["pre"]:
                 if tr["signer"]:
-                    self.on_sol_exit(ev["mint"], traders)
+                    frac = (ev["pre"] - ev["post"]) / ev["pre"] if ev["pre"] > 0 else 1.0
+                    self.on_sol_exit(ev["mint"], traders, frac)
             elif ev["pre"] == 0:  # a first buy, not an add to an existing bag
                 for trader in traders:
                     self.on_signal_sol(trader, wallet, ev, tr, sig)
+            elif tr["signer"]:  # pre > 0 and post > pre: the trader added to a bag he already holds
+                self.on_add_buy_sol(wallet, ev, tr, sig, traders)
 
-    def on_sol_exit(self, mint, traders):
+    def on_sol_exit(self, mint, traders, frac=1.0):
         for p in self.db.open_for_token(mint):
-            if p.get("chain") == "sol" and p["wallet"] in traders and not p["state"].get("origin_exit"):
-                p["state"]["origin_exit"] = True
-                self.db.update_position(p["id"], state=json.dumps(p["state"]))
-                self.notify(self.db.user(p["user_id"]), f"↘ {p['label']} начал продавать {p['symbol']} (Solana) — выхожу следом",
-                            kb=[[B("📄 Позиция", f"p:{p['id']}")]])
+            if p.get("chain") == "sol" and p["wallet"] in traders:
+                self.on_origin_sell(p, "sol", frac)
+
+    def on_add_buy_sol(self, wallet, ev, tr, sig, traders):
+        """The trader added to a Solana bag he already holds. Report not_first_buy; a big enough add
+        is a conviction entry for users with gates.add_entry_min_usd."""
+        followers = [t for trader in traders for t in self.db.followers(trader)]
+        if not followers:
+            return
+        mint = ev["mint"]
+        info = self.market_sol.info(mint)  # cached
+        paid = spent_usd(tr, self.sol_price())
+        add_usd = paid if paid > 0 else ((ev["post"] - ev["pre"]) / 10 ** ev["dec"] * info["price_usd"]
+                                         if info and info.get("price_usd") else None)
+        symbol = (info or {}).get("symbol") or mint[:6]
+        slot = tr.get("slot") or 0
+        conv, rest = self._split_adds(followers, mint, add_usd)
+        if conv:
+            try:
+                f = self.facts_sol(wallet, mint, ev, tr, info)
+                f["conviction"] = True
+                for t in conv:
+                    self.enter(self.db.user(t["user_id"]), t, mint, symbol, f, sig, slot)
+            except Skip as s:
+                for t in conv:
+                    self.log_skip(self.db.user(t["user_id"]), t, mint, symbol, sig, slot, s, {"chain": "sol", "info": info})
+        self.report_not_first_buy(rest, mint, symbol, add_usd, slot, sig, "sol", info)
 
     def on_signal_sol(self, trader, wallet, ev, tr, sig):
         followers = self.db.followers(trader)
@@ -526,13 +702,7 @@ class CopyBot:
         self._rr += 1
         k = self._rr % len(followers)
         for t in followers[k:] + followers[:k]:
-            u = users[t["user_id"]]
-            try:
-                ticket, d = self.judge(u, t, mint, f)
-            except Skip as s:
-                self.log_skip(u, t, mint, symbol, sig, tr.get("slot") or 0, s, f)
-                continue
-            self.buy(u, t, mint, symbol, ticket, d, tr.get("slot") or 0, sig)
+            self.enter(users[t["user_id"]], t, mint, symbol, f, sig, tr.get("slot") or 0)
 
     def facts_sol(self, wallet, mint, ev, tr, info):
         """What a Solana fill looks like regardless of whose bot it is."""
@@ -567,13 +737,7 @@ class CopyBot:
         self._rr += 1
         k = self._rr % len(followers)
         for t in followers[k:] + followers[:k]:  # take turns: nobody is always second in line
-            u = users[t["user_id"]]
-            try:
-                ticket, d = self.judge(u, t, token, f)
-            except Skip as s:
-                self.log_skip(u, t, token, symbol, txh, blk, s, f)
-                continue
-            self.buy(u, t, token, symbol, ticket, d, blk, txh)
+            self.enter(users[t["user_id"]], t, token, symbol, f, txh, blk)
 
     def facts(self, wallet, token, amount_raw, blk, txh, users, net=None):
         """Everything about the fill that does not depend on whose bot it is."""
@@ -606,7 +770,7 @@ class CopyBot:
         g, sz, ex = cfg["gates"], cfg["sizing"], cfg["execution"]
         now = time.time()
         chain = f.get("chain", "rh")
-        d = {"age_s": f["age_s"], "own": f["own"], "chain": chain, "dec": f["dec"]}
+        d = {"age_s": f["age_s"], "own": f["own"], "chain": chain, "dec": f["dec"], "conviction": bool(f.get("conviction"))}
         live = self.live_on(u, chain)
         if not (cfg.get("chains") or {}).get(CHAIN_KEY[chain], True) or (chain != "sol" and chain not in self.nets):
             raise Skip("chain_off")
@@ -679,6 +843,7 @@ class CopyBot:
         if info["buys_h24"] >= int(g.get("honeypot_min_buys", 30)):
             if info["sells_h24"] / max(1, info["buys_h24"]) < float(g.get("honeypot_min_sell_ratio", 0.15)):
                 raise Skip("sell_ratio", **d)
+        self.insider_gate(u, g, chain, token, info, d)  # after market data, before quotes
         ticket = strategy.ticket_size(sz, t.get("ticket_usd"), self.equity(u, chain), info["liquidity_usd"])
         d["ticket"] = ticket
         if ticket < float(sz.get("min_ticket_usd", 3)):
@@ -689,7 +854,8 @@ class CopyBot:
             return ticket, self.judge_sol_quotes(token, ticket, f, g, d)
         net = self.nets[chain]
         exe = self.exe(u, live, chain)
-        q = self.relay.quote(exe.addr, net.usd, token, int(ticket * 1e6), int(ex["buy_slippage_bps"]), chain_id=net.chain_id)
+        q = self.relay.quote(exe.addr, net.usd, token, int(ticket * 10 ** net.usd_decimals),
+                             int(ex["buy_slippage_bps"]), chain_id=net.chain_id)
         if not q or q.out_raw <= 0:
             raise Skip("no_route", err=self.relay.last_error, **d)
         dec = f["dec"]
@@ -706,7 +872,7 @@ class CopyBot:
         back = self.relay.quote(exe.addr, token, net.usd, q.out_raw, int(ex["sell_slippage_bps"]), chain_id=net.chain_id)
         if not back or back.out_raw <= 0:
             raise Skip("no_exit_route", **d)
-        d["round_trip_loss"] = round((1 - back.out_raw / 1e6 / ticket) * 100, 2)
+        d["round_trip_loss"] = round((1 - back.out_raw / 10 ** net.usd_decimals / ticket) * 100, 2)
         if d["round_trip_loss"] > float(g["max_round_trip_loss_pct"]):
             raise Skip("round_trip", **d)
         return ticket, d
@@ -736,6 +902,35 @@ class CopyBot:
                 raise Skip("round_trip", **d)
         return d
 
+    def insider_gate(self, u, g, chain, token, info, d):
+        """Launch-risk / insider check. off: skip entirely. soft: skip the signal only on a proven
+        violation; unknown data passes. strict: also skip when the data is unavailable."""
+        mode = g.get("insider_check", "soft")
+        if mode == "off":
+            return
+        try:
+            rep = risk.assess(self, chain, token, info)
+        except Exception as e:
+            self.log.warning("insider check %s: %s", token, e)
+            rep = None
+        if rep is not None:
+            d["risk"] = rep.summary()
+        if rep is None or not rep.known():
+            if mode == "strict":
+                raise Skip("risk_unknown", **d)
+            return
+        for reason, val, lim, dkey in (
+                ("insider_bundle", rep.bundle_pct, float(g.get("max_bundle_pct", 25)), "bundle_pct"),
+                ("dev_holding", rep.dev_pct, float(g.get("max_dev_pct", 10)), "dev_pct"),
+                ("top10_concentration", rep.top10_pct, float(g.get("max_top10_pct", 60)), "top10_pct"),
+                ("insider_cluster", rep.insider_pct, float(g.get("max_insider_pct", 20)), "insider_pct")):
+            if val is not None and val > lim:
+                d[dkey] = round(val, 1)
+                raise Skip(reason, **d)
+        if g.get("skip_dev_rugger", True) and rep.dev_rugs:
+            d["dev_rugs"] = rep.dev_rugs
+            raise Skip("dev_rugger", **d)
+
     def log_skip(self, u, t, token, symbol, txh, blk, s, f=None):
         """Record the skip with the facts needed to judge it later (price, cap, chain), and report it."""
         f = f or {}
@@ -763,6 +958,68 @@ class CopyBot:
                B("🔕 Не присылать такие", f"mute:{s.reason}")]]
         self.tg.send(u["chat_id"], text, kb=kb)
 
+    # ------------------------------------------------------------------ per-user entry (direct / confluence)
+    def enter(self, u, t, token, symbol, f, txh, blk):
+        """One follower's entry. Direct when confluence is off, else buffer until enough independent
+        wallets bought the same coin inside the window."""
+        cmin = int(self.ucfg(u)["gates"].get("confluence_min", 1) or 1)
+        if cmin <= 1:
+            try:
+                ticket, d = self.judge(u, t, token, f)
+            except Skip as s:
+                return self.log_skip(u, t, token, symbol, txh, blk, s, f)
+            return self.buy(u, t, token, symbol, ticket, d, blk, txh)
+        self.add_confluence(u, t, token, symbol, f, txh, blk, cmin)
+
+    def _ident(self, address):
+        """The set of addresses that stand for one person: the wallet plus its Solana pair(s).
+        Two traders are the same person if these sets intersect (shared pair, or one in another's)."""
+        return {norm(address)} | self.db.pairs(address)
+
+    def add_confluence(self, u, t, token, symbol, f, txh, blk, cmin):
+        chain, now = f.get("chain", "rh"), time.time()
+        window = float(self.ucfg(u)["gates"].get("confluence_window_min", 10)) * 60
+        key = (u["id"], chain, token)
+        ident = self._ident(t["address"])
+        buf = [e for e in self.pending.get(key, []) if now - e["ts"] <= window and not (e["ident"] & ident)]
+        buf.append({"ident": ident, "label": t["label"], "ts": now, "facts": f, "trader": t,
+                    "txh": txh, "blk": blk, "symbol": symbol})
+        self.pending[key] = buf
+        if len(buf) < cmin:  # not enough independent wallets yet: record, don't notify, don't buy
+            self.db.signal(u["id"], t["address"], t["label"], token, symbol, txh, blk, "pending", "confluence_wait",
+                           {"chain": chain, "sources": len(buf), "need": cmin}, source="confluence")
+            return
+        self.pending.pop(key, None)
+        last, labels = buf[-1], [e["label"] for e in buf]
+        f2 = dict(last["facts"])  # judge on the LAST signal's facts (age counted from the last)
+        try:
+            ticket, d = self.judge(u, last["trader"], token, f2)
+        except Skip as s:
+            return self.log_skip(u, last["trader"], token, symbol, last["txh"], last["blk"], s, f2)
+        d["source"] = "confluence"
+        d["confluence_note"] = f"совпадение: {' + '.join(labels)} за {int((now - buf[0]['ts']) / 60)} мин"
+        self.buy(u, last["trader"], token, symbol, ticket, d, last["blk"], last["txh"])
+
+    def sweep_confluence(self):
+        """Drop confluence buffers whose window fully elapsed without reaching the threshold, and
+        report that miss once as no_confluence (muteable)."""
+        if not self.pending:
+            return
+        now = time.time()
+        for key in list(self.pending):
+            uid, chain, token = key
+            g = self.ucfg(self.db.user(uid))["gates"]
+            window = float(g.get("confluence_window_min", 10)) * 60
+            buf = self.pending[key]
+            fresh = [e for e in buf if now - e["ts"] <= window]
+            if fresh:
+                self.pending[key] = fresh
+                continue
+            self.pending.pop(key, None)
+            last = buf[-1]
+            s = Skip("no_confluence", chain=chain, sources=len(buf), need=int(g.get("confluence_min", 1) or 1))
+            self.log_skip(self.db.user(uid), last["trader"], token, last["symbol"], last["txh"], last["blk"], s, last["facts"])
+
     def buy(self, u, t, token, symbol, ticket, d, blk, txh):
         chain = d.get("chain", "rh")
         live = self.live_on(u, chain)
@@ -777,11 +1034,14 @@ class CopyBot:
             return self.notify(u, f"⚠ покупка {symbol} ({CHAIN_NAME[chain]}) не прошла: {e}")
         dec = d.get("dec") if d.get("dec") is not None else self.chain.decimals(token)
         state = {"origin_tx": txh}
+        if d.get("risk"):
+            state["risk"] = d["risk"]
         if d.get("relay") == "unknown":
             state["recheck_until"] = time.time() + float(cfg["gates"].get("relay_watch_s", 120))
+        source = d.get("source", "wallet")
         pid = self.db.open_position(
             user_id=u["id"], chain=chain, token=token, symbol=symbol, decimals=dec, wallet=t["address"], label=t["label"],
-            opened=time.time(), status="open", paper=0 if live else 1, cost_usd=fill.usd,
+            opened=time.time(), status="open", paper=0 if live else 1, cost_usd=fill.usd, source=source,
             tokens_initial=str(fill.tokens_raw), tokens_left=str(fill.tokens_raw),
             entry_price=fill.usd / (fill.tokens_raw / 10 ** dec), gas_usd=fill.gas_usd,
             last_price=fill.usd / (fill.tokens_raw / 10 ** dec), peak_price=fill.usd / (fill.tokens_raw / 10 ** dec),
@@ -789,10 +1049,17 @@ class CopyBot:
         self.db.fill(pid, "buy", fill.tokens_raw, fill.usd, fill.gas_usd, fill.tx, "entry")
         if not live:
             self.add_paper_cash(u["id"], -fill.usd)
-        self.db.signal(u["id"], t["address"], t["label"], token, symbol, txh, blk, "bought", "", d)
-        self.notify(u, f"🟢 КУПИЛ {symbol} ({CHAIN_NAME[chain]}) на {usd(fill.usd)} вслед за {t['label']}"
-                       f"{'' if live else ' [paper]'}\n"
-                       f"пул {big(d.get('liq', 0))} · капа {big(d.get('mcap', 0))} · догон {d.get('chase', 0):+.1f}%",
+        self.db.signal(u["id"], t["address"], t["label"], token, symbol, txh, blk, "bought",
+                       "conviction_add" if d.get("conviction") else "", d, source=source)
+        head = f"🟢 КУПИЛ {symbol} ({CHAIN_NAME[chain]}) на {usd(fill.usd)}"
+        if d.get("confluence_note"):
+            head += f" — {d['confluence_note']}"
+        elif d.get("conviction"):
+            head += f" — крупная докупка {t['label']}"
+        else:
+            head += f" вслед за {t['label']}"
+        self.notify(u, head + ("" if live else " [paper]") +
+                       f"\nпул {big(d.get('liq', 0))} · капа {big(d.get('mcap', 0))} · догон {d.get('chase', 0):+.1f}%",
                     kb=[[B("📄 Позиция", f"p:{pid}"), B("🔴 Продать всё", f"ps:{pid}:100")],
                         [{"text": "📈 DexScreener", "url": f"https://dexscreener.com/{DEX_PATH[chain]}/{token}"}]])
 
@@ -925,8 +1192,8 @@ class CopyBot:
         ops = self.db.positions(u["id"])
         st = self.db.stats(u["id"])
         pnl = sum((s["realized_usd"] or 0) - s["cost_usd"] - (s["gas_usd"] or 0) for s in st)
-        return (f"{u['name']}: RH {'LIVE' if self.is_live(u) else 'paper'} / SOL {'LIVE' if self.live_on(u, 'sol') else 'paper'}"
-                f" / ETH {'LIVE' if self.live_on(u, 'eth') else 'paper'}"
+        live = [c.upper() for c in ("rh", "eth", "bsc", "base", "sol") if self.live_on(u, c)]
+        return (f"{u['name']}: LIVE {','.join(live) or 'none (paper)'}"
                 f"{' · PAUSED' if u['paused'] else ''} · "
                 f"cash {usd(self.cash(u))} · open {len(ops)} ({usd(self.open_value(u))}) · "
                 f"closed {len(st)} PnL {usd(pnl)} · traders {len(self.db.traders(u['id'], True))}")

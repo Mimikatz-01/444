@@ -158,17 +158,32 @@ class SolRPC:
 
 # ================================================================== live watcher
 class SolWatcher:
-    """One WebSocket, one logsSubscribe per trader wallet. Pushes (wallet, signature) into `q`.
-    Reconnects with backoff and resubscribes whenever the set of wallets changes."""
+    """logsSubscribe per trader wallet, split across several WebSocket connections (RPCs cap how many
+    subscriptions one socket may hold). One `logsSubscribe` per wallet, pushing (wallet, signature)
+    into `q`. A manager thread (re)spawns one connection thread per group whenever the watched set
+    changes; a polling thread is the fallback when the sockets are down."""
 
-    def __init__(self, ws_url, log=None, rpc=None, poll_seconds=5.0):
+    def __init__(self, ws_url, log=None, rpc=None, poll_seconds=5.0, per_conn=50):
         self.url, self.log, self.rpc, self.poll_seconds = ws_url, log, rpc, poll_seconds
+        self.per_conn = max(1, int(per_conn))
         self.q = queue.Queue()
         self.want = frozenset()
-        self.connected = False
         self.down_since = time.time()
         self._seen = collections.OrderedDict()
         self._last_sig = {}
+        self._lock = threading.Lock()
+        self._groups = 0       # connection threads that should exist for the current `want`
+        self._up = 0           # connection threads currently connected
+
+    @property
+    def connected(self):
+        return self._groups > 0 and self._up >= self._groups
+
+    def _set_conn(self, delta):
+        with self._lock:
+            self._up = max(0, self._up + delta)
+            if not self.connected:
+                self.down_since = time.time()
 
     def _push(self, wallet, sig):
         if sig in self._seen:
@@ -181,14 +196,37 @@ class SolWatcher:
     def set_wallets(self, wallets):
         self.want = frozenset(wallets)
 
+    def groups_for(self, wallets):
+        wl = sorted(wallets)
+        return [frozenset(wl[i:i + self.per_conn]) for i in range(0, len(wl), self.per_conn)]
+
     def start(self):
         if self.url:
-            threading.Thread(target=self._run, daemon=True).start()
+            threading.Thread(target=self._manage, daemon=True).start()
         if self.rpc:
             threading.Thread(target=self._poll, daemon=True).start()
 
+    def _manage(self):
+        """Watch `want`; when it changes, spawn one connection thread per group. Old threads notice
+        the change (their snapshot != self.want) and exit on their own."""
+        cur = None
+        while True:
+            want = self.want
+            if want != cur:
+                cur = want
+                groups = self.groups_for(want)
+                with self._lock:
+                    self._groups, self._up = len(groups), 0
+                    if not groups:
+                        self.down_since = time.time()
+                for g in groups:
+                    threading.Thread(target=self._run_group, args=(g, want), daemon=True).start()
+                if self.log and groups:
+                    self.log.info("solana watcher: %d wallets across %d connection(s)", len(want), len(groups))
+            time.sleep(2)
+
     def _poll(self):
-        """Fallback when the WebSocket is down for 20+ s: poll each wallet's latest signatures.
+        """Fallback when the WebSockets are down for 20+ s: poll each wallet's latest signatures.
         Costs one RPC call per wallet per round, so it is only a safety net."""
         warned = False
         while True:
@@ -217,27 +255,23 @@ class SolWatcher:
                 for sig in reversed(new):
                     self._push(w, sig)
 
-    def _run(self):
+    def _run_group(self, group, snapshot):
+        """Hold one WebSocket for `group` until the watched set changes, reconnecting with backoff."""
         backoff = 2
-        while True:
-            want = self.want
-            if not want:
-                time.sleep(2)
-                continue
-            ws = None
+        while self.want == snapshot:
+            ws, up = None, False
             try:
                 ws = websocket.create_connection(self.url, timeout=20)
                 req, subs = {}, {}
-                for i, w in enumerate(sorted(want), start=1):
+                for i, w in enumerate(sorted(group), start=1):
                     req[i] = w
                     ws.send(json.dumps({"jsonrpc": "2.0", "id": i, "method": "logsSubscribe",
                                         "params": [{"mentions": [w]}, {"commitment": "confirmed"}]}))
                 ws.settimeout(2)
-                self.connected, backoff, last_ping = True, 2, time.time()
-                self._last_sig.clear()
-                if self.log:
-                    self.log.info("solana watcher: subscribed to %d wallets", len(want))
-                while self.want == want:
+                backoff, last_ping = 2, time.time()
+                up = True
+                self._set_conn(1)
+                while self.want == snapshot:
                     if time.time() - last_ping > 20:
                         ws.ping()
                         last_ping = time.time()
@@ -260,9 +294,8 @@ class SolWatcher:
                 time.sleep(backoff)
                 backoff = min(60, backoff * 2)
             finally:
-                if self.connected:
-                    self.down_since = time.time()
-                self.connected = False
+                if up:
+                    self._set_conn(-1)
                 try:
                     if ws:
                         ws.close()

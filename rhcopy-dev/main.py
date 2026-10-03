@@ -26,7 +26,8 @@ def load_env(path):
                 k, v = line.split("=", 1)
                 env[k.strip()] = v.strip().strip('"').strip("'")
     for k in ("PRIVATE_KEY", "TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID", "RPC_URL", "RELAY_API_KEY", "HELIUS_API_KEY",
-              "JUPITER_API_KEY", "SOLANA_RPC_URL", "SOLANA_WS_URL", "SOLANA_PRIVATE_KEY", "ETH_RPC_URL"):
+              "JUPITER_API_KEY", "SOLANA_RPC_URL", "SOLANA_WS_URL", "SOLANA_PRIVATE_KEY", "ETH_RPC_URL",
+              "BSC_RPC_URL", "BASE_RPC_URL", "MADEONSOL_API_KEY", "ETHERSCAN_API_KEY"):
         if os.environ.get(k):
             env[k] = os.environ[k]
     return env
