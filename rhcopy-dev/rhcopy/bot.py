@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 from eth_account import Account
 
-from . import strategy
+from . import risk, strategy
 from .chain import SWAP_TOPICS, TRANSFER, Chain, RPCError, pad_addr, topic_addr
 from .db import DB, norm
 from .executor import ExecError, Executor
@@ -91,7 +91,9 @@ class CopyBot:
             cfg["solana"].setdefault(k, v)
         cfg.setdefault("sources", {}).setdefault("max_traders_per_user", 200)
         cfg.setdefault("gates", {})
-        for k, v in {"confluence_min": 1, "confluence_window_min": 10}.items():
+        for k, v in {"confluence_min": 1, "confluence_window_min": 10, "insider_check": "soft",
+                     "max_bundle_pct": 25, "max_dev_pct": 10, "max_top10_pct": 60, "max_insider_pct": 20,
+                     "skip_dev_rugger": True}.items():
             cfg["gates"].setdefault(k, v)
         cfg["chains"].setdefault("ethereum", True)
         cfg.setdefault("ethereum", {})
@@ -782,6 +784,7 @@ class CopyBot:
         if info["buys_h24"] >= int(g.get("honeypot_min_buys", 30)):
             if info["sells_h24"] / max(1, info["buys_h24"]) < float(g.get("honeypot_min_sell_ratio", 0.15)):
                 raise Skip("sell_ratio", **d)
+        self.insider_gate(u, g, chain, token, info, d)  # after market data, before quotes
         ticket = strategy.ticket_size(sz, t.get("ticket_usd"), self.equity(u, chain), info["liquidity_usd"])
         d["ticket"] = ticket
         if ticket < float(sz.get("min_ticket_usd", 3)):
@@ -839,6 +842,35 @@ class CopyBot:
             if d["round_trip_loss"] > float(g["max_round_trip_loss_pct"]):
                 raise Skip("round_trip", **d)
         return d
+
+    def insider_gate(self, u, g, chain, token, info, d):
+        """Launch-risk / insider check. off: skip entirely. soft: skip the signal only on a proven
+        violation; unknown data passes. strict: also skip when the data is unavailable."""
+        mode = g.get("insider_check", "soft")
+        if mode == "off":
+            return
+        try:
+            rep = risk.assess(self, chain, token, info)
+        except Exception as e:
+            self.log.warning("insider check %s: %s", token, e)
+            rep = None
+        if rep is not None:
+            d["risk"] = rep.summary()
+        if rep is None or not rep.known():
+            if mode == "strict":
+                raise Skip("risk_unknown", **d)
+            return
+        for reason, val, lim, dkey in (
+                ("insider_bundle", rep.bundle_pct, float(g.get("max_bundle_pct", 25)), "bundle_pct"),
+                ("dev_holding", rep.dev_pct, float(g.get("max_dev_pct", 10)), "dev_pct"),
+                ("top10_concentration", rep.top10_pct, float(g.get("max_top10_pct", 60)), "top10_pct"),
+                ("insider_cluster", rep.insider_pct, float(g.get("max_insider_pct", 20)), "insider_pct")):
+            if val is not None and val > lim:
+                d[dkey] = round(val, 1)
+                raise Skip(reason, **d)
+        if g.get("skip_dev_rugger", True) and rep.dev_rugs:
+            d["dev_rugs"] = rep.dev_rugs
+            raise Skip("dev_rugger", **d)
 
     def log_skip(self, u, t, token, symbol, txh, blk, s, f=None):
         """Record the skip with the facts needed to judge it later (price, cap, chain), and report it."""
@@ -943,6 +975,8 @@ class CopyBot:
             return self.notify(u, f"⚠ покупка {symbol} ({CHAIN_NAME[chain]}) не прошла: {e}")
         dec = d.get("dec") if d.get("dec") is not None else self.chain.decimals(token)
         state = {"origin_tx": txh}
+        if d.get("risk"):
+            state["risk"] = d["risk"]
         if d.get("relay") == "unknown":
             state["recheck_until"] = time.time() + float(cfg["gates"].get("relay_watch_s", 120))
         source = d.get("source", "wallet")

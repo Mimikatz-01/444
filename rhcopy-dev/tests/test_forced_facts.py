@@ -120,6 +120,7 @@ def test_sol_buy_and_exit(ff_bot, monkeypatch):
     bot = ff_bot
     monkeypatch.setattr(bot, "facts_sol", lambda *a, **k: sol_facts())
     monkeypatch.setattr(bot.jup, "order", jup_order_stub(SOL_TOKEN))
+    bot.db.put_risk("sol", SOL_TOKEN, {})  # seed the risk cache so the insider gate needs no RPC
     cash0 = bot.cash(bot.db.user(1), "sol")
 
     ev = {"mint": SOL_TOKEN, "pre": 0, "post": int(50000 * 1e6), "dec": 6}

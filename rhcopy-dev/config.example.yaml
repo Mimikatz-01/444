@@ -80,6 +80,11 @@ solana:
   min_sol: 0.02             # live: below this SOL balance no new buys (fees + token-account deposits)
   est_fee_sol: 0.0002       # fee estimate per swap for the gas gate and paper PnL
   round_trip_check: false   # extra Jupiter quote per signal (costs rate limit on the free tier)
+  ws_wallets_per_conn: 50   # watch this many wallets per WebSocket; more wallets -> more connections
+
+# Wallet import (👥 Трейдеры -> 📥 Импорт / 🏆 Топ KOL). See README.
+sources:
+  max_traders_per_user: 200
 
 sizing:
   ticket_usd: 15            # fixed ticket per copy
@@ -110,6 +115,16 @@ gates:
   reentry_cooldown_hours: 24
   skip_stock_tokens: true
   require_market_data: true # skip tokens DexScreener does not know yet
+  # Confluence (Этап 3): buy only when several independent watched wallets buy the same coin
+  confluence_min: 1         # 1 = off; 2 or 3 = need that many independent wallets in the window
+  confluence_window_min: 10 # minutes to collect them (5 / 10 / 30)
+  # Insider / launch-risk filter (Этап 4). off | soft (skip only on a proven violation) | strict
+  insider_check: soft
+  max_bundle_pct: 25        # launch-bundle share of supply
+  max_dev_pct: 10           # creator's share of supply
+  max_top10_pct: 60         # top-10 holders (pools / curves / burns excluded)
+  max_insider_pct: 20       # wallets tied to the creator
+  skip_dev_rugger: true     # skip tokens whose creator has rugged before
 
 exits:
   mode: ladder              # ladder | timed | both

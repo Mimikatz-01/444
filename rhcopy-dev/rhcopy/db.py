@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS positions (
 CREATE TABLE IF NOT EXISTS fills (
   id INTEGER PRIMARY KEY, position_id INTEGER, ts REAL, side TEXT, tokens TEXT,
   usd REAL, gas_usd REAL, tx TEXT, reason TEXT);
+CREATE TABLE IF NOT EXISTS token_risk (chain TEXT, token TEXT, ts REAL, report_json TEXT, PRIMARY KEY (chain, token));
 CREATE INDEX IF NOT EXISTS ix_pos_status ON positions(status);
 CREATE INDEX IF NOT EXISTS ix_sig_ts ON signals(ts);
 """
@@ -287,6 +288,16 @@ class DB:
         p["tokens_left"] = int(p["tokens_left"])
         p["state"] = json.loads(p["state"] or "{}")
         return p
+
+    # ---------- token risk cache (insider filter, Этап 4) ----------
+    def get_risk(self, chain, token, ttl=1800):
+        r = self.c.execute("SELECT ts, report_json FROM token_risk WHERE chain=? AND token=?", (chain, token)).fetchone()
+        return json.loads(r["report_json"]) if r and time.time() - r["ts"] <= ttl else None
+
+    def put_risk(self, chain, token, report):
+        self.c.execute("INSERT OR REPLACE INTO token_risk(chain,token,ts,report_json) VALUES(?,?,?,?)",
+                       (chain, token, time.time(), json.dumps(report, default=str)))
+        self.c.commit()
 
     def fill(self, position_id, side, tokens, usd, gas_usd, tx, reason):
         self.c.execute("INSERT INTO fills(position_id,ts,side,tokens,usd,gas_usd,tx,reason) VALUES(?,?,?,?,?,?,?,?)",

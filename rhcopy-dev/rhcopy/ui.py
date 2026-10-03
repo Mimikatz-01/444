@@ -50,6 +50,12 @@ TIMED = {
     "slow": ("15м→50%, 60м→50%", [{"after_min": 15, "sell": 0.5}, {"after_min": 60, "sell": 0.5}]),
 }
 SECTION_OF = {"sizing": "size", "exits": "exit", "gates": "filt", "execution": "filt", "chains": "net"}
+INS_KEYS = {"gates.insider_check", "gates.max_bundle_pct", "gates.max_dev_pct", "gates.max_top10_pct",
+            "gates.max_insider_pct", "gates.skip_dev_rugger"}  # these buttons live on the 🕵️ Инсайдеры sub-screen
+
+
+def section_of(key):
+    return "ins" if key in INS_KEYS else SECTION_OF[key.split(".")[0]]
 LABELS = {"sizing.ticket_usd": "тикет, $", "sizing.max_positions": "макс. позиций",
           "exits.stop_loss_pct": "стоп-лосс, % (0 = без стопа)", "gates.max_chase_pct": "догон, %",
           "exits.ladder": "лесенку", "exits.timed": "таймер"}
@@ -232,10 +238,10 @@ class UI:
         if cmd == "v":
             key, _, raw = arg.partition(":")
             b.set_override(u, key, raw)
-            return self.section(u, SECTION_OF[key.split(".")[0]]), "сохранено"
+            return self.section(u, section_of(key)), "сохранено"
         if cmd == "tog":
             b.set_override(u, arg, json.dumps(not bool(b.get_key(u, arg))))
-            return self.section(u, SECTION_OF[arg.split(".")[0]]), "сохранено"
+            return self.section(u, section_of(arg)), "сохранено"
         if cmd == "lad":
             b.set_override(u, "exits.ladder", json.dumps(LADDERS[arg][1]))
             return self.section(u, "exit"), "лесенка сохранена"
@@ -387,7 +393,7 @@ class UI:
             return self.send(u, "Не понял значение, попробуй ещё раз (или нажми 📊 Меню для отмены).")
         self.awaiting.pop(uid)
         b.set_override(u, key, json.dumps(val))
-        self.push(u, self.section(db.user(uid), SECTION_OF[key.split(".")[0]]))
+        self.push(u, self.section(db.user(uid), section_of(key)))
 
     def _pair_note(self, addr, label=None):
         if self.b.db.pairs(addr):
@@ -597,6 +603,8 @@ class UI:
                  f"Держу: {age((time.time() - p['opened']) / 60)}",
                  f"Стоп: {stop}" + (" · сработали TP" if st.get("tp_done") else "")
                  + (" · трейдер выходит" if st.get("origin_exit") else "")]
+        if st.get("risk"):
+            lines.append(f"🕵️ Риск: {st['risk']}")
         if p["status"] != "open":
             lines.append("Позиция закрыта" if p["status"] == "closed" else "Позиция списана")
         elif st.get("manual"):
@@ -952,7 +960,27 @@ class UI:
                              lambda v: {"strict": "strict", "fomo": "fomo", "off": "выкл"}[v]),
                   self._opts(u, "Совпадение", "gates.confluence_min", [1, 2, 3], lambda v: "выкл" if v == 1 else f"≥{v}"),
                   self._opts(u, "Окно совпад.", "gates.confluence_window_min", [5, 10, 30], lambda v: f"{v} мин"),
+                  [B("🕵️ Инсайдеры", "s:ins")],
                   back]
+            return text, kb
+        if name == "ins":
+            g = cfg["gates"]
+            text = ("🕵️ Фильтр инсайдеров\n\n"
+                    "Проверяет токен перед покупкой: доля пачки на запуске, доля создателя, концентрация топ-10 "
+                    "держателей, кошельки вокруг создателя, прошлые раги.\n\n"
+                    "Режим: off — не проверять; soft (по умолч.) — пропускать только при явном нарушении; "
+                    "strict — пропускать ещё и когда данных нет.\n"
+                    "Данные: MadeOnSol (если задан ключ) + встроенные эвристики по ончейну. Проверка за 3 секунды.\n\n"
+                    f"Сейчас: режим {g.get('insider_check', 'soft')}")
+            kb = [self._opts(u, "Режим", "gates.insider_check", ["off", "soft", "strict"],
+                             lambda v: {"off": "выкл", "soft": "мягко", "strict": "строго"}[v]),
+                  self._opts(u, "Пачка ≤", "gates.max_bundle_pct", [15, 25, 40], lambda v: f"{v}%"),
+                  self._opts(u, "Создатель ≤", "gates.max_dev_pct", [5, 10, 20], lambda v: f"{v}%"),
+                  self._opts(u, "Топ-10 ≤", "gates.max_top10_pct", [40, 60, 80], lambda v: f"{v}%"),
+                  self._opts(u, "Инсайдеры ≤", "gates.max_insider_pct", [10, 20, 35], lambda v: f"{v}%"),
+                  [B(("✅" if g.get("skip_dev_rugger", True) else "❌") + " Пропускать токены раг-дева",
+                     "tog:gates.skip_dev_rugger")],
+                  [B("⬅ Фильтры", "s:filt")]]
             return text, kb
         if name == "net":
             ch = cfg.get("chains") or {}
