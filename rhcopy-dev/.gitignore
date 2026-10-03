@@ -1,0 +1,9 @@
+.env
+data/
+__pycache__/
+*.pyc
+.venv/
+data-dev/
+*.log
+.pytest_cache/
+CLAUDE.md

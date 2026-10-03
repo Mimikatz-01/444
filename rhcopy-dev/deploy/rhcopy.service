@@ -1,0 +1,13 @@
+[Unit]
+Description=rhcopy — FOMO copy bot (Robinhood Chain)
+After=network-online.target
+
+[Service]
+WorkingDirectory=/opt/rhcopy
+ExecStart=/opt/rhcopy/.venv/bin/python main.py run --config config.yaml --db data/bot.db
+Restart=always
+RestartSec=5
+User=rhcopy
+
+[Install]
+WantedBy=multi-user.target

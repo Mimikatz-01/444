@@ -1,0 +1,6 @@
+requests>=2.31
+eth-account>=0.10
+pyyaml>=6.0
+solders>=0.21
+websocket-client>=1.7
+base58>=2.1

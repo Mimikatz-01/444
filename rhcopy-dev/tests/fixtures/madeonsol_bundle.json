@@ -1,0 +1,31 @@
+{
+ "status": 200,
+ "body": {
+  "mint": "fCUBpdeRn76xfRaa4UPHDauGeRG3EvMB3MjuRgdpump",
+  "bundle": {
+   "wallet_count": 16,
+   "bundle_kind": "same_slot",
+   "held_ratio": 0.0381,
+   "held_pct_of_supply": 0.0093,
+   "fully_exited": false,
+   "buy_volume": 217236745.094158,
+   "tokens_held": 8280262.804179
+  },
+  "wallets": [],
+  "coverage": {
+   "history_start": 1775984757,
+   "scope": "pump.fun pipeline (pump.fun, LaunchLab/bonk, bags)",
+   "in_scope": true,
+   "data_observed": true,
+   "eligibility": "admitted_previously",
+   "eligibility_basis": "persisted_rows",
+   "completeness": "not_verified",
+   "size_floor": {
+    "min_sol": 0.05,
+    "min_stable_usd": 3.5,
+    "applies_to": "buys and SOL-spending legs; SOL-receiving sells of any size are kept"
+   },
+   "note": "Presence of rows does not prove every trade in a window was captured (ingest gaps and indexing lag of a few seconds are not tracked per subject). Stored trades exclude small buys: a buy under 0.05 SOL (under $3.50 when paid in USDC/USDT) is not persisted; sells that receive SOL are kept at any size. Counts, volumes and wallet stats derived from this data therefore omit sub-floor buys. Live streams, prices and candles are not subject to this floor."
+  }
+ }
+}

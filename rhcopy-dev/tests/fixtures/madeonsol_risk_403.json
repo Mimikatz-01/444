@@ -1,0 +1,20 @@
+{
+ "status": 403,
+ "body": {
+  "error": "tier_required",
+  "message": "Token risk score requires PRO tier — you're on BASIC.",
+  "feature": "Token risk score",
+  "your_tier": "BASIC",
+  "required_tier": "PRO",
+  "upgrade": {
+   "tier": "PRO",
+   "price_eur_per_month": 43,
+   "price_usdc_per_month": 49,
+   "daily_limit": 10000,
+   "burst_limit": 300,
+   "pitch": "€43/mo (≈ $49): the token risk score (0-100) with per-factor breakdown and dev self-activity, with 10k calls/day at 300/min.",
+   "url": "https://madeonsol.com/pricing",
+   "upgrade_url": "https://madeonsol.com/checkout?tier=PRO"
+  }
+ }
+}

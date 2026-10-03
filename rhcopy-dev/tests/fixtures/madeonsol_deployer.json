@@ -1,0 +1,61 @@
+{
+ "status": 200,
+ "body": {
+  "is_deployer": true,
+  "deployer": {
+   "id": "054972e3-3189-4076-9029-46bdbf69354c",
+   "wallet_address": "kThbSbHeMkPSdpw7PjDXGco988rkTz6znzQUUHCSU4J",
+   "total_tokens_deployed": 1,
+   "total_bonded": 1,
+   "instant_bonds": 0,
+   "bonding_rate": 1,
+   "recent_bond_rate": 1,
+   "tier": "rising",
+   "is_tracked": true,
+   "avg_time_to_bond_minutes": 7,
+   "best_token_peak_mc": 195614.72,
+   "avg_peak_mc": 195614.72,
+   "recent_outcomes": "B",
+   "runner_rate": 1,
+   "runner_tokens": 1,
+   "labeled_tokens": 1,
+   "post_bond_survival_rate": 1,
+   "post_bond_2x_rate": 1,
+   "post_bond_labeled_count": 1,
+   "first_seen_at": "2026-10-03T04:57:08.835766+00:00",
+   "last_deploy_at": "2026-10-03T04:57:08.834+00:00",
+   "last_bond_at": "2026-10-03T05:03:44.881+00:00",
+   "label": null
+  },
+  "pump_stats": {
+   "total": 1,
+   "bonded": 1,
+   "bondingRate": 1,
+   "bestAthMc": 209159.80542653377,
+   "avgAthMc": 209159.80542653377
+  },
+  "pump_tokens": [
+   {
+    "mint": "FKQCt17wdmUokbMwNnn2Bs55TYvSWgikKcRCFEAFpump",
+    "name": "Escro Tech",
+    "symbol": "ESCRO",
+    "image_uri": "https://ipfs.io/ipfs/bafybeibmrt6z7khvnbyh6zp544odda3bfpa4lrjod7dsmrogyztkzwcb7u",
+    "creator": "kThbSbHeMkPSdpw7PjDXGco988rkTz6znzQUUHCSU4J",
+    "created_timestamp": 1791003428000,
+    "complete": true,
+    "ath_market_cap": 209159.80542653377,
+    "usd_market_cap": 13087.228237360481,
+    "market_cap": 109.78312752484764,
+    "reply_count": 0,
+    "pool_address": "9KTHkYoPBc8a3y259Cg7gyg5BgVfJkdAMA7gubocPgTt",
+    "pump_swap_pool": "9KTHkYoPBc8a3y259Cg7gyg5BgVfJkdAMA7gubocPgTt"
+   }
+  ],
+  "pump_error": false,
+  "launchpad_tokens": [],
+  "coverage": {
+   "scope": "launchpad pipeline (pump.fun and LaunchLab/bonk deploys; bags.fm tokens are covered in trade data but their deploys are not attributed here; no direct-to-DEX launches)",
+   "note": "This dataset is built from launchpad ingest. A wallet or token absent here, an empty profile, or a `false` reputation flag means 'not observed by this pipeline', not 'clean' or 'no activity'."
+  }
+ }
+}

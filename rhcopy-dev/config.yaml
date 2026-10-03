@@ -1,0 +1,80 @@
+# rhcopy — config. Copy to config.yaml and edit.
+# Anything under sizing / gates / exits / execution can also be changed live from Telegram:
+#   /set exits.stop_loss_pct 40      /get gates.max_chase_pct      /config
+
+live: false                 # false = PAPER: real Relay quotes, simulated fills, nothing is sent
+paper_cash_usd: 500         # paper bankroll
+
+rpc: https://rpc.mainnet.chain.robinhood.com
+fallback_rpc: https://robinhood.drpc.org
+poll_seconds: 1.0
+max_catchup_blocks: 3000    # ~5 min at 0.1 s blocks; older signals are stale anyway
+log_chunk_blocks: 2000
+
+usdg: "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168"   # canonical USDG (6 decimals). Other "USDG" are fakes.
+weth: "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73"
+ignore_tokens: []           # extra tokens never to copy
+
+# Traders to copy. EVM address: copyfomo -> /find <name>. Solana pair: same /find, or /learnpair <label>.
+wallets:
+  - address: "0xddd462bb053b57d5d73c9615e11a7284cfee9233"
+    label: "iruletrenches"
+    solana: ""              # paired Solana wallet (needed for relay_gate: strict)
+    # ticket_usd: 20        # optional per-trader ticket
+
+sizing:
+  ticket_usd: 15            # fixed ticket per copy
+  max_bank_fraction: 0.04   # never more than 4% of equity in one position
+  max_liquidity_fraction: 0.0025   # never more than 0.25% of pool liquidity (~0.5% impact)
+  max_positions: 10
+  min_ticket_usd: 3
+
+gates:
+  max_signal_age_s: 60      # never chase a buy older than this
+  min_origin_usd: 50        # ignore the trader's dust/probe buys
+  min_liquidity_usd: 10000
+  min_mcap_usd: 0           # 0 = off
+  max_mcap_usd: 0           # 0 = off
+  min_pool_age_minutes: 2
+  max_chase_pct: 25         # skip if our price is already this far above the trader's fill
+  max_price_impact_pct: 5
+  max_round_trip_loss_pct: 15   # buy-then-sell-back quote loses more -> thin pool / tax / trap
+  honeypot_min_buys: 30
+  honeypot_min_sell_ratio: 0.15 # with 30+ buys in 24h, require sells >= 15% of buys
+  plant_gate: true          # skip fills someone else paid for in ETH
+  relay_gate: strict        # strict: FOMO fill signed by the trader's own Solana wallet
+                            # fomo:   any FOMO fill from Solana (weaker)   off: no provenance check
+  relay_wait_s: 1.5         # Relay indexes a fill ~5-7 s after the block; don't wait that long
+  relay_unknown: buy        # buy = verify every second after buying, dump at once if planted | skip
+  relay_watch_s: 120
+  max_gas_pct: 1.0          # skip if gas > 1% of the ticket (protects during gas spikes)
+  reentry_cooldown_hours: 24
+  skip_stock_tokens: true
+  require_market_data: true # skip tokens DexScreener does not know yet
+
+exits:
+  mode: ladder              # ladder | timed | both
+  ladder:                   # price take-profits; `sell` = share of the ORIGINAL position
+    - {at_pct: 50, sell: 0.50}
+    - {at_pct: 300, sell: 0.25}
+  timed:                    # time tranches (used in mode timed/both)
+    - {after_min: 5, sell: 0.75}
+    - {after_min: 10, sell: 0.25}
+  stop_loss_pct: 50
+  stop_after_tp: keep       # keep | breakeven
+  follow_origin_exit: true  # sell the rest when the trader starts selling
+  max_hold_hours: 24
+  price_check_seconds: 10
+
+execution:
+  buy_slippage_bps: 300
+  sell_slippage_bps: 600
+  sell_slippage_max_bps: 2500   # failed sells retry with 1.5x wider slippage up to this
+  receipt_timeout_s: 60
+  unsellable_failures: 12
+  unsellable_hours: 3
+  min_gas_eth: 0.0005       # below this no new buys (gas is reserved for exits)
+
+telegram:
+  enabled: true
+  notify_skips: false
