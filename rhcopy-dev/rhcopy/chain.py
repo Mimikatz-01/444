@@ -27,10 +27,21 @@ def topic_addr(t: str) -> str:
 
 class Chain:
     def __init__(self, urls, timeout=20, log=None):
-        self.urls = [u for u in urls if u]
+        self.log = log
+        self.urls = []
+        for u in urls:
+            if not u:
+                continue
+            if not str(u).startswith(("http://", "https://")):
+                # a bare API key in RPC_URL / ETH_RPC_URL / BSC_RPC_URL / BASE_RPC_URL, not a full URL:
+                # drop it once at startup instead of failing on it every scan (don't log the key itself)
+                if log:
+                    log.warning("RPC entry %s… ignored: not a URL — put a full https://… endpoint in .env, not an API key",
+                                str(u)[:6])
+                continue
+            self.urls.append(u)
         self.i = 0
         self.timeout = timeout
-        self.log = log
         self.s = requests.Session()
         self.s.headers.update({"Content-Type": "application/json", "User-Agent": "rhcopy/0.1"})
         self._code, self._dec, self._sym, self._name, self._ts = {}, {}, {}, {}, {}
