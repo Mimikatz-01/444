@@ -19,7 +19,6 @@ import base64
 import time
 from dataclasses import dataclass, field
 
-import base58
 import requests
 from solders.pubkey import Pubkey
 

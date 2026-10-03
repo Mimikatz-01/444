@@ -7,7 +7,6 @@ paper executor, the position row, cash accounting, notifications and strategy.ex
 
 This is the regression guard the task (Этап 0) asks for: it must pass before and after the feature
 work. A real-quote variant is covered by the @network UI/relay smoke tests."""
-import json
 import time
 
 import pytest

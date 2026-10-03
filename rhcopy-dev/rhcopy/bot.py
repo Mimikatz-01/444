@@ -13,7 +13,7 @@ from . import risk, strategy
 from .chain import SWAP_TOPICS, TRANSFER, Chain, RPCError, pad_addr, topic_addr
 from .db import DB, norm
 from .executor import ExecError, Executor
-from .fmt import NOISE, SKIP_RU, big, exit_reason, skip_detail, usd
+from .fmt import NOISE, big, exit_reason, skip_detail, usd
 from .market import Market
 from .relay import APPROVAL_PROXY, SOLANA_CHAIN_ID, Relay
 from .sources import MadeOnSol
@@ -162,12 +162,12 @@ class CopyBot:
                           float(sec["min_gas_eth"]), float(sec["max_gas_pct"]),
                           usd_decimals=usd_decimals, coin=coin, usd_name=usd_name, explorer=explorer)
 
-        for key, section, cfgkey, cid, rpc_env, usd, stables, last_key, dec, coin, name, expl in (
+        for key, section, cfgkey, cid, rpc_env, usd_addr, stables, last_key, dec, coin, name, expl in (
                 ("eth", "ethereum", "ethereum", 1, "ETH_RPC_URL", ETH_USDC, ETH_STABLES, "last_block_eth", 6, "ETH", "USDC", "https://etherscan.io"),
                 ("bsc", "bsc", "bsc", 56, "BSC_RPC_URL", BSC_USDT, BSC_STABLES, "last_block_bsc", 18, "BNB", "USDT", "https://bscscan.com"),
                 ("base", "base", "base", 8453, "BASE_RPC_URL", BASE_USDC, BASE_STABLES, "last_block_base", 6, "ETH", "USDC", "https://basescan.org")):
             if cfg["chains"].get(cfgkey, True):
-                self.nets[key] = evm_net(key, section, cid, rpc_env, usd, stables, last_key, dec, coin, name, expl)
+                self.nets[key] = evm_net(key, section, cid, rpc_env, usd_addr, stables, last_key, dec, coin, name, expl)
         # ---- Solana
         scfg = cfg.get("solana") or {}
         helius = env.get("HELIUS_API_KEY")
