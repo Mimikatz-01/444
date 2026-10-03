@@ -937,9 +937,12 @@ class UI:
                     "Возраст пула — совсем свежие пулы пропускаются.\n"
                     "Влияние — максимальное влияние нашей сделки на цену.\n"
                     "Защита от подставных: strict — только покупки, подписанные Solana-кошельком трейдера; "
-                    "fomo — любые покупки через FOMO; выкл — без проверки.\n\n"
+                    "fomo — любые покупки через FOMO; выкл — без проверки.\n"
+                    "Совпадение — вход только если монету за окно купили несколько независимых кошельков "
+                    "(1 = выкл).\n\n"
                     f"Сейчас: догон ≤{g['max_chase_pct']}% · пул ≥{big(g['min_liquidity_usd'])} · "
-                    f"покупка от {usd(g['min_origin_usd'])} · защита {g.get('relay_gate')}")
+                    f"покупка от {usd(g['min_origin_usd'])} · защита {g.get('relay_gate')} · "
+                    f"совпадение {'выкл' if int(g.get('confluence_min', 1) or 1) <= 1 else '≥' + str(g['confluence_min'])}")
             kb = [self._opts(u, "Догон", "gates.max_chase_pct", [10, 25, 50], lambda v: f"≤{v}%"),
                   self._opts(u, "Пул", "gates.min_liquidity_usd", [5000, 10000, 25000], lambda v: f"${v // 1000}k"),
                   self._opts(u, "Покупка от", "gates.min_origin_usd", [20, 50, 200], lambda v: f"${v}"),
@@ -947,6 +950,8 @@ class UI:
                   self._opts(u, "Влияние", "gates.max_price_impact_pct", [3, 5, 10], lambda v: f"≤{v}%"),
                   self._opts(u, "Защита", "gates.relay_gate", ["strict", "fomo", "off"],
                              lambda v: {"strict": "strict", "fomo": "fomo", "off": "выкл"}[v]),
+                  self._opts(u, "Совпадение", "gates.confluence_min", [1, 2, 3], lambda v: "выкл" if v == 1 else f"≥{v}"),
+                  self._opts(u, "Окно совпад.", "gates.confluence_window_min", [5, 10, 30], lambda v: f"{v} мин"),
                   back]
             return text, kb
         if name == "net":

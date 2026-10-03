@@ -11,7 +11,7 @@ from eth_account import Account
 
 from . import strategy
 from .chain import SWAP_TOPICS, TRANSFER, Chain, RPCError, pad_addr, topic_addr
-from .db import DB
+from .db import DB, norm
 from .executor import ExecError, Executor
 from .fmt import NOISE, SKIP_RU, big, exit_reason, skip_detail, usd
 from .market import Market
@@ -90,6 +90,9 @@ class CopyBot:
                      "ws_wallets_per_conn": 50}.items():  # one WebSocket per this many watched wallets
             cfg["solana"].setdefault(k, v)
         cfg.setdefault("sources", {}).setdefault("max_traders_per_user", 200)
+        cfg.setdefault("gates", {})
+        for k, v in {"confluence_min": 1, "confluence_window_min": 10}.items():
+            cfg["gates"].setdefault(k, v)
         cfg["chains"].setdefault("ethereum", True)
         cfg.setdefault("ethereum", {})
         for k, v in {"rpc": ["https://eth.drpc.org", "https://rpc.mevblocker.io", "https://eth-mainnet.public.blastapi.io"],
@@ -135,6 +138,7 @@ class CopyBot:
         self._last_prices = self._last_beat = 0.0
         self._gas_alert, self._hinted = {}, {}
         self._rr = 0
+        self.pending = {}  # confluence buffer: (uid, chain, token) -> [entry]; entries age out of the window
         tg_token = env.get("TELEGRAM_BOT_TOKEN")
         self.tg = Telegram(tg_token, log) if tg_token and cfg.get("telegram", {}).get("enabled", True) else None
         self.ui = UI(self) if self.tg else None
@@ -380,6 +384,7 @@ class CopyBot:
                 self.scan()
                 self.scan_sol()
                 self.recheck_provenance()
+                self.sweep_confluence()
                 if time.time() - self._last_prices >= float(self.base_cfg["exits"].get("price_check_seconds", 10)):
                     self._last_prices = time.time()
                     self.update_positions()
@@ -636,13 +641,7 @@ class CopyBot:
         self._rr += 1
         k = self._rr % len(followers)
         for t in followers[k:] + followers[:k]:
-            u = users[t["user_id"]]
-            try:
-                ticket, d = self.judge(u, t, mint, f)
-            except Skip as s:
-                self.log_skip(u, t, mint, symbol, sig, tr.get("slot") or 0, s, f)
-                continue
-            self.buy(u, t, mint, symbol, ticket, d, tr.get("slot") or 0, sig)
+            self.enter(users[t["user_id"]], t, mint, symbol, f, sig, tr.get("slot") or 0)
 
     def facts_sol(self, wallet, mint, ev, tr, info):
         """What a Solana fill looks like regardless of whose bot it is."""
@@ -677,13 +676,7 @@ class CopyBot:
         self._rr += 1
         k = self._rr % len(followers)
         for t in followers[k:] + followers[:k]:  # take turns: nobody is always second in line
-            u = users[t["user_id"]]
-            try:
-                ticket, d = self.judge(u, t, token, f)
-            except Skip as s:
-                self.log_skip(u, t, token, symbol, txh, blk, s, f)
-                continue
-            self.buy(u, t, token, symbol, ticket, d, blk, txh)
+            self.enter(users[t["user_id"]], t, token, symbol, f, txh, blk)
 
     def facts(self, wallet, token, amount_raw, blk, txh, users, net=None):
         """Everything about the fill that does not depend on whose bot it is."""
@@ -874,6 +867,68 @@ class CopyBot:
                B("🔕 Не присылать такие", f"mute:{s.reason}")]]
         self.tg.send(u["chat_id"], text, kb=kb)
 
+    # ------------------------------------------------------------------ per-user entry (direct / confluence)
+    def enter(self, u, t, token, symbol, f, txh, blk):
+        """One follower's entry. Direct when confluence is off, else buffer until enough independent
+        wallets bought the same coin inside the window."""
+        cmin = int(self.ucfg(u)["gates"].get("confluence_min", 1) or 1)
+        if cmin <= 1:
+            try:
+                ticket, d = self.judge(u, t, token, f)
+            except Skip as s:
+                return self.log_skip(u, t, token, symbol, txh, blk, s, f)
+            return self.buy(u, t, token, symbol, ticket, d, blk, txh)
+        self.add_confluence(u, t, token, symbol, f, txh, blk, cmin)
+
+    def _ident(self, address):
+        """The set of addresses that stand for one person: the wallet plus its Solana pair(s).
+        Two traders are the same person if these sets intersect (shared pair, or one in another's)."""
+        return {norm(address)} | self.db.pairs(address)
+
+    def add_confluence(self, u, t, token, symbol, f, txh, blk, cmin):
+        chain, now = f.get("chain", "rh"), time.time()
+        window = float(self.ucfg(u)["gates"].get("confluence_window_min", 10)) * 60
+        key = (u["id"], chain, token)
+        ident = self._ident(t["address"])
+        buf = [e for e in self.pending.get(key, []) if now - e["ts"] <= window and not (e["ident"] & ident)]
+        buf.append({"ident": ident, "label": t["label"], "ts": now, "facts": f, "trader": t,
+                    "txh": txh, "blk": blk, "symbol": symbol})
+        self.pending[key] = buf
+        if len(buf) < cmin:  # not enough independent wallets yet: record, don't notify, don't buy
+            self.db.signal(u["id"], t["address"], t["label"], token, symbol, txh, blk, "pending", "confluence_wait",
+                           {"chain": chain, "sources": len(buf), "need": cmin}, source="confluence")
+            return
+        self.pending.pop(key, None)
+        last, labels = buf[-1], [e["label"] for e in buf]
+        f2 = dict(last["facts"])  # judge on the LAST signal's facts (age counted from the last)
+        try:
+            ticket, d = self.judge(u, last["trader"], token, f2)
+        except Skip as s:
+            return self.log_skip(u, last["trader"], token, symbol, last["txh"], last["blk"], s, f2)
+        d["source"] = "confluence"
+        d["confluence_note"] = f"совпадение: {' + '.join(labels)} за {int((now - buf[0]['ts']) / 60)} мин"
+        self.buy(u, last["trader"], token, symbol, ticket, d, last["blk"], last["txh"])
+
+    def sweep_confluence(self):
+        """Drop confluence buffers whose window fully elapsed without reaching the threshold, and
+        report that miss once as no_confluence (muteable)."""
+        if not self.pending:
+            return
+        now = time.time()
+        for key in list(self.pending):
+            uid, chain, token = key
+            g = self.ucfg(self.db.user(uid))["gates"]
+            window = float(g.get("confluence_window_min", 10)) * 60
+            buf = self.pending[key]
+            fresh = [e for e in buf if now - e["ts"] <= window]
+            if fresh:
+                self.pending[key] = fresh
+                continue
+            self.pending.pop(key, None)
+            last = buf[-1]
+            s = Skip("no_confluence", chain=chain, sources=len(buf), need=int(g.get("confluence_min", 1) or 1))
+            self.log_skip(self.db.user(uid), last["trader"], token, last["symbol"], last["txh"], last["blk"], s, last["facts"])
+
     def buy(self, u, t, token, symbol, ticket, d, blk, txh):
         chain = d.get("chain", "rh")
         live = self.live_on(u, chain)
@@ -902,9 +957,10 @@ class CopyBot:
         if not live:
             self.add_paper_cash(u["id"], -fill.usd)
         self.db.signal(u["id"], t["address"], t["label"], token, symbol, txh, blk, "bought", "", d, source=source)
-        self.notify(u, f"🟢 КУПИЛ {symbol} ({CHAIN_NAME[chain]}) на {usd(fill.usd)} вслед за {t['label']}"
-                       f"{'' if live else ' [paper]'}\n"
-                       f"пул {big(d.get('liq', 0))} · капа {big(d.get('mcap', 0))} · догон {d.get('chase', 0):+.1f}%",
+        head = f"🟢 КУПИЛ {symbol} ({CHAIN_NAME[chain]}) на {usd(fill.usd)}"
+        head += f" — {d['confluence_note']}" if d.get("confluence_note") else f" вслед за {t['label']}"
+        self.notify(u, head + ("" if live else " [paper]") +
+                       f"\nпул {big(d.get('liq', 0))} · капа {big(d.get('mcap', 0))} · догон {d.get('chase', 0):+.1f}%",
                     kb=[[B("📄 Позиция", f"p:{pid}"), B("🔴 Продать всё", f"ps:{pid}:100")],
                         [{"text": "📈 DexScreener", "url": f"https://dexscreener.com/{DEX_PATH[chain]}/{token}"}]])
 
